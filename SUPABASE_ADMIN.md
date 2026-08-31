@@ -44,6 +44,46 @@ from combo_parts cp join combos c on c.id = cp.combo_id
 where cp.part_id = 'UUID-DA-PECA';
 ```
 
+## A armadilha que já mordeu duas vezes: RLS ≠ GRANT
+
+São **duas camadas independentes**, e as duas precisam estar certas:
+
+| Camada | Responde a | Se faltar |
+|---|---|---|
+| `GRANT` | "este role pode tocar nesta tabela?" | `42501 permission denied` |
+| Policy RLS | "quais linhas ele enxerga?" | consulta devolve zero linhas |
+
+Sem `GRANT`, o Postgres recusa **antes** de avaliar qualquer policy. Ter policy
+não é ter acesso.
+
+Isto derrubou o projeto duas vezes, dos dois lados:
+
+1. **Onda 0** — as policies de leitura pública existiam, mas faltavam os grants
+   a `anon`. O app quebrou com `permission denied for table anatomy_slots` na
+   primeira leitura real. Corrigido na `0010`.
+2. **Onda 1** — a `0010` concedeu a `anon` e `authenticated` e esqueceu
+   `service_role`. O script de seed falhava em toda escrita, mesmo com a chave
+   correta. Corrigido na `0012`, que também define *default privileges* para que
+   tabelas futuras herdem o grant.
+
+**"`service_role` ignora RLS" não quer dizer "`service_role` pode escrever".**
+
+Ao criar tabela nova, confirme os três roles:
+
+```sql
+select c.relname as tabela,
+       has_table_privilege('anon',          c.oid, 'SELECT') as anon_le,
+       has_table_privilege('authenticated', c.oid, 'SELECT') as auth_le,
+       has_table_privilege('service_role',  c.oid, 'INSERT') as admin_escreve,
+       c.relrowsecurity as rls
+from pg_class c
+where c.relnamespace = 'public'::regnamespace and c.relkind = 'r'
+order by c.relname;
+```
+
+`admin_escreve` **falso em qualquer linha** significa que o seed vai falhar
+naquela tabela.
+
 ## Diagnóstico rápido
 
 ```sql

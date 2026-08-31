@@ -33,12 +33,19 @@
 - `DetalhePeca` com "onde conseguir esta peça" (a busca inversa do spec §4.9)
 - `src/components/rotulos.ts` centralizando a tradução para pt-BR
 
-**Ressalva:** `scripts/seed.ts` **nunca foi executado.** Ele exige a
-`service_role` key, que o assistente não tem nem deve ter. A parte testável
-dele — carregamento e validação — é a mesma que os 9 testes de integridade
-exercitam; falta provar a escrita no Supabase. **Rode o Step 4 da Task 2 antes
-de confiar nele**: com os dados do piloto já no banco, o resultado esperado é
-`25 peças, 11 beys, 33 ligações` sem duplicar nada.
+**Seed executado e idempotência provada.** Rodado duas vezes seguidas; o banco
+permaneceu em `25 peças, 11 beys, 33 ligações, 0 beys sem peça`. As credenciais
+ficam em `.env.seed` (ignorado pelo git), carregado por `--env-file-if-exists`.
+
+**Ao executar, apareceu o mesmo defeito da Onda 0, do outro lado.** A migration
+`0010` concedeu grants a `anon` e `authenticated` e esqueceu `service_role`; o
+seed falhava com `42501` em toda escrita, mesmo com a chave correta. Corrigido
+na `0012`, que também define *default privileges* para que tabelas futuras
+herdem o grant.
+
+A lição — **`service_role` ignora RLS, mas não ignora GRANT** — está registrada
+em `SUPABASE_ADMIN.md` com a consulta que confere os três roles de uma vez. É a
+segunda vez que essa confusão derruba o projeto.
 
 **Descoberta durante a execução:** o teste de integridade pegou de imediato uma
 divergência real — os JSON do piloto declaram a fonte uma vez por arquivo
