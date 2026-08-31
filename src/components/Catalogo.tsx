@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
 import { T } from "../theme.ts";
-import { useCatalog, somaBruta, type BeyCompleto } from "../hooks/useCatalog.ts";
+import { useCatalog, somaBruta, type Composicao } from "../hooks/useCatalog.ts";
 import type { Database } from "../types/database.ts";
 
 type BeyType = Database["public"]["Enums"]["bey_type"];
 type Rarity = Database["public"]["Enums"]["rarity"];
+type Brand = Database["public"]["Enums"]["brand"];
 
 const COR_TIPO: Record<BeyType, string> = {
   attack: T.typeAttack,
@@ -26,6 +27,11 @@ const ROTULO_RARIDADE: Record<Rarity, string> = {
   rare: "Raro",
   very_rare: "Muito raro",
   exclusive: "Exclusivo",
+};
+
+const MARCA: Record<Brand, { rotulo: string; cor: string }> = {
+  takara_tomy: { rotulo: "Takara Tomy", cor: T.accentDim },
+  hasbro: { rotulo: "Hasbro", cor: T.accentWarm },
 };
 
 const ROTULO_SLOT: Record<string, string> = {
@@ -57,9 +63,7 @@ function Barra({ rotulo, valor, max, cor }: {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12 }}>
       <span style={{ color: T.textMuted, width: 58, flexShrink: 0 }}>{rotulo}</span>
-      <div style={{
-        flex: 1, height: 6, background: T.bgInput, borderRadius: 3, overflow: "hidden",
-      }}>
+      <div style={{ flex: 1, height: 6, background: T.bgInput, borderRadius: 3, overflow: "hidden" }}>
         <div style={{
           width: `${Math.min(100, (valor / max) * 100)}%`,
           height: "100%", background: cor, borderRadius: 3,
@@ -72,9 +76,35 @@ function Barra({ rotulo, valor, max, cor }: {
   );
 }
 
-function Card({ bey, maxAtributo }: { bey: BeyCompleto; maxAtributo: number }) {
-  const soma = somaBruta(bey);
-  const cor = bey.bey_type ? COR_TIPO[bey.bey_type] : T.textMuted;
+function Etiqueta({ texto, cor, forte = false }: { texto: string; cor: string; forte?: boolean }) {
+  return (
+    <span style={{
+      color: cor,
+      border: `1px solid ${cor}${forte ? "77" : "44"}`,
+      background: `${cor}${forte ? "1f" : "14"}`,
+      borderRadius: 999,
+      padding: "2px 9px",
+      fontSize: 11.5,
+      whiteSpace: "nowrap",
+    }}>
+      {texto}
+    </span>
+  );
+}
+
+function Card({ comp, maxAtributo }: { comp: Composicao; maxAtributo: number }) {
+  const soma = somaBruta(comp.pecas);
+  const principal = comp.lancamentos[0];
+  if (!principal) return null;
+
+  const cor = principal.bey_type ? COR_TIPO[principal.bey_type] : T.textMuted;
+  const marca = MARCA[principal.brand];
+  const anos = [...new Set(
+    comp.lancamentos.map((l) => l.release_date?.slice(0, 4)).filter(Boolean),
+  )];
+  const tiposLancamento = [...new Set(
+    comp.lancamentos.map((l) => ROTULO_LANCAMENTO[l.release_type] ?? l.release_type),
+  )];
 
   return (
     <article style={{
@@ -87,24 +117,29 @@ function Card({ bey, maxAtributo }: { bey: BeyCompleto; maxAtributo: number }) {
       <header style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "baseline" }}>
         <div style={{ minWidth: 0 }}>
           <div style={{ color: T.textMuted, fontSize: 11.5, letterSpacing: 0.4 }}>
-            {bey.release_code}
-            {bey.release_date && ` · ${new Date(bey.release_date).getFullYear()}`}
+            {comp.lancamentos.map((l) => l.release_code).join(" · ")}
+            {anos.length > 0 && ` · ${anos.join("/")}`}
           </div>
-          <h3 style={{ margin: "2px 0 0", fontSize: 16, fontWeight: 600 }}>{bey.name}</h3>
+          <h3 style={{ margin: "2px 0 0", fontSize: 16, fontWeight: 600 }}>{comp.nome}</h3>
         </div>
-        {bey.bey_type && (
-          <span style={{
-            color: cor, border: `1px solid ${cor}55`, background: `${cor}18`,
-            borderRadius: 999, padding: "2px 9px", fontSize: 11.5, whiteSpace: "nowrap",
-          }}>
-            {ROTULO_TIPO[bey.bey_type]}
-          </span>
+        {principal.bey_type && (
+          <Etiqueta texto={ROTULO_TIPO[principal.bey_type]} cor={cor} forte />
         )}
       </header>
 
+      <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+        <Etiqueta texto={marca.rotulo} cor={marca.cor} />
+        {comp.lancamentos.length > 1 && (
+          <Etiqueta
+            texto={`${comp.lancamentos.length} versões`}
+            cor={T.textMuted}
+          />
+        )}
+      </div>
+
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "10px 0 12px" }}>
-        {bey.pecas.map(({ slot, part }) => (
-          <span key={slot} title={ROTULO_SLOT[slot] ?? slot} style={{
+        {comp.pecas.map(({ slot, part }) => (
+          <span key={slot} style={{
             background: T.bgInput, border: `1px solid ${T.border}`, borderRadius: 6,
             padding: "3px 8px", fontSize: 12, color: T.textSecondary,
           }}>
@@ -123,14 +158,15 @@ function Card({ bey, maxAtributo }: { bey: BeyCompleto; maxAtributo: number }) {
 
       <footer style={{
         marginTop: 10, paddingTop: 9, borderTop: `1px solid ${T.border}`,
-        display: "flex", justifyContent: "space-between", fontSize: 11.5, color: T.textMuted,
+        display: "flex", justifyContent: "space-between", gap: 10,
+        fontSize: 11.5, color: T.textMuted,
       }}>
-        <span>{ROTULO_LANCAMENTO[bey.release_type] ?? bey.release_type}</span>
-        <span>
+        <span>{tiposLancamento.join(" · ")}</span>
+        <span style={{ whiteSpace: "nowrap" }}>
           {soma.weight_g.toFixed(1)} g{soma.pesoParcial && "*"}
           {" · "}
-          <span style={{ color: bey.rarity === "common" ? T.textMuted : T.accentWarm }}>
-            {ROTULO_RARIDADE[bey.rarity]}
+          <span style={{ color: comp.raridade === "common" ? T.textMuted : T.accentWarm }}>
+            {ROTULO_RARIDADE[comp.raridade]}
           </span>
         </span>
       </footer>
@@ -139,30 +175,35 @@ function Card({ bey, maxAtributo }: { bey: BeyCompleto; maxAtributo: number }) {
 }
 
 export default function Catalogo() {
-  const { beys, error, loading } = useCatalog();
+  const { composicoes, totalProdutos, error, loading } = useCatalog();
   const [busca, setBusca] = useState("");
   const [tipo, setTipo] = useState<BeyType | "todos">("todos");
 
-  // Escala das barras: o maior atributo somado entre os beys carregados.
-  // É provisória de propósito — o denominador definitivo (§5.4) é o máximo
+  // Escala das barras: a maior soma entre as composições carregadas.
+  // Provisória de propósito — o denominador definitivo (§5.4) é o máximo
   // teórico por anatomia, e nasce com o motor na onda 3.
   const maxAtributo = useMemo(() => {
-    const valores = beys.flatMap((b) => {
-      const s = somaBruta(b);
+    const valores = composicoes.flatMap((c) => {
+      const s = somaBruta(c.pecas);
       return [s.attack, s.defense, s.stamina];
     });
     return Math.max(100, ...valores);
-  }, [beys]);
+  }, [composicoes]);
 
-  const filtrados = useMemo(() => {
+  const filtradas = useMemo(() => {
     const termo = busca.trim().toLowerCase();
-    return beys.filter((b) => {
-      if (tipo !== "todos" && b.bey_type !== tipo) return false;
+    return composicoes.filter((c) => {
+      if (tipo !== "todos" && c.lancamentos[0]?.bey_type !== tipo) return false;
       if (!termo) return true;
-      const alvo = `${b.release_code} ${b.name} ${b.pecas.map((p) => p.part.name).join(" ")}`;
+      const alvo = [
+        c.nome,
+        ...c.lancamentos.map((l) => l.release_code),
+        ...c.pecas.map((p) => p.part.name),
+        MARCA[c.lancamentos[0]!.brand].rotulo,
+      ].join(" ");
       return alvo.toLowerCase().includes(termo);
     });
-  }, [beys, busca, tipo]);
+  }, [composicoes, busca, tipo]);
 
   const estiloFiltro = (ativo: boolean, cor: string) => ({
     background: ativo ? `${cor}22` : T.bgCard,
@@ -176,18 +217,17 @@ export default function Catalogo() {
 
   return (
     <section>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 14 }}>
-        <input
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-          placeholder="Buscar por nome, código ou peça…"
-          style={{
-            flex: "1 1 240px", background: T.bgInput, color: T.textPrimary,
-            border: `1px solid ${T.border}`, borderRadius: 8,
-            padding: "9px 12px", fontSize: 14, outline: "none",
-          }}
-        />
-      </div>
+      <input
+        value={busca}
+        onChange={(e) => setBusca(e.target.value)}
+        placeholder="Buscar por nome, código, peça ou marca…"
+        style={{
+          width: "100%", boxSizing: "border-box",
+          background: T.bgInput, color: T.textPrimary,
+          border: `1px solid ${T.border}`, borderRadius: 8,
+          padding: "9px 12px", fontSize: 14, outline: "none", marginBottom: 12,
+        }}
+      />
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 16 }}>
         <button onClick={() => setTipo("todos")} style={estiloFiltro(tipo === "todos", T.accent)}>
@@ -210,7 +250,8 @@ export default function Catalogo() {
 
       {!loading && !error && (
         <p style={{ color: T.textMuted, fontSize: 13, margin: "0 0 12px" }}>
-          {filtrados.length} de {beys.length} beyblades
+          {filtradas.length} de {composicoes.length} composições
+          {totalProdutos > composicoes.length && ` · ${totalProdutos} produtos lançados`}
         </p>
       )}
 
@@ -218,18 +259,20 @@ export default function Catalogo() {
         display: "grid", gap: 12,
         gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
       }}>
-        {filtrados.map((bey) => (
-          <Card key={bey.id} bey={bey} maxAtributo={maxAtributo} />
+        {filtradas.map((comp) => (
+          <Card key={comp.chave} comp={comp} maxAtributo={maxAtributo} />
         ))}
       </div>
 
-      {!loading && !error && filtrados.length === 0 && beys.length > 0 && (
+      {!loading && !error && filtradas.length === 0 && composicoes.length > 0 && (
         <p style={{ color: T.textMuted }}>Nada encontrado para esse filtro.</p>
       )}
 
       <p style={{ color: T.textMuted, fontSize: 11.5, marginTop: 24, lineHeight: 1.6 }}>
-        Piloto da Onda 1 — 11 beys da Basic Line. Os atributos são a soma bruta das peças;
-        a normalização, o arquétipo e a contribuição por peça entram com o motor na Onda 3.
+        Piloto da Onda 1 — Basic Line. Produtos com a mesma composição aparecem num
+        card só: BX-03 e BX-05 são o mesmo Wizard Arrow, mudando só a caixa.
+        Os atributos são a soma bruta das peças; a normalização, o arquétipo e a
+        contribuição por peça entram com o motor na Onda 3.
         <br />
         Dados medidos pela comunidade em{" "}
         <a href="https://byybladebuilder.com/parts" style={{ color: T.accentDim }}>byybladebuilder</a>{" "}
