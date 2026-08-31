@@ -13,6 +13,42 @@
 
 ---
 
+## Estado da execução — atualizado em 2026-08-31
+
+| Bloco | Estado |
+|---|---|
+| **Chunk 1** — infraestrutura do seed | ✅ Feito, com uma ressalva (abaixo) |
+| **Chunk 2** — curadoria | ⬜ **Não iniciado.** É o grosso da onda |
+| **Chunk 3** — Tasks 9 a 12 (rotas e telas) | ✅ Feito, menos o prefetch offline |
+| **Chunk 3** — Task 8 (imagens) | ⬜ Não iniciado |
+
+**Feito e verificado:**
+
+- `src/lib/seed/schema.ts` — validação Zod, 20 testes
+- `src/lib/seed/carregar.ts` — carregamento compartilhado entre seed e testes
+- `src/lib/seed/integridade.test.ts` — 9 testes sobre os arquivos, sem credencial
+- `scripts/seed.ts` — escrito e compilando
+- Rotas `/`, `/bey/:id`, `/peca/:id`, `/creditos`; busca e filtro na querystring
+- `DetalheBey` com contribuição por peça e "também vendido como"
+- `DetalhePeca` com "onde conseguir esta peça" (a busca inversa do spec §4.9)
+- `src/components/rotulos.ts` centralizando a tradução para pt-BR
+
+**Ressalva:** `scripts/seed.ts` **nunca foi executado.** Ele exige a
+`service_role` key, que o assistente não tem nem deve ter. A parte testável
+dele — carregamento e validação — é a mesma que os 9 testes de integridade
+exercitam; falta provar a escrita no Supabase. **Rode o Step 4 da Task 2 antes
+de confiar nele**: com os dados do piloto já no banco, o resultado esperado é
+`25 peças, 11 beys, 33 ligações` sem duplicar nada.
+
+**Descoberta durante a execução:** o teste de integridade pegou de imediato uma
+divergência real — os JSON do piloto declaram a fonte uma vez por arquivo
+(`_fonte`), mas o schema exige `source_url` por registro. Em vez de repetir a
+URL em 150 linhas, o carregador aplica a fonte do arquivo como padrão e o
+registro pode sobrescrever. O que chega ao banco continua tendo fonte linha a
+linha.
+
+---
+
 ## O que a Onda 1 já herda pronto
 
 O piloto (feito ao fim da Onda 0) adiantou boa parte do que este plano previa:
