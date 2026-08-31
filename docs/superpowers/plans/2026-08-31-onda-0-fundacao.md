@@ -18,25 +18,50 @@ Branch: **`onda-0-fundacao`**
 
 | Bloco | Estado |
 |---|---|
-| **Chunk 1** (Tasks 1–5) | ✅ **Concluído e verificado** — `npm test` 3 passed, `npm run build` OK |
-| **Chunk 2** (Tasks 6–14) | 🟡 **Arquivos escritos, NADA APLICADO** — as 8 migrations, `anatomies.json`, `sync-anatomies.ts` e `schema_checks.sql` existem e passam em verificação estática, mas nenhuma tocou o banco |
-| **Chunk 3** (Tasks 15–16) | ⬜ Só `vercel.json` escrito |
+| **Chunk 1** (Tasks 1–5) | ✅ Concluído e verificado |
+| **Chunk 2** (Tasks 6–14) | ✅ **Aplicado no banco e verificado executando** — 10 migrations em `gbcpfsczjivtwkyheihu` |
+| **Chunk 3** (Task 15) | ✅ Tipos gerados, cliente tipado, app lê o banco sem login |
+| **Chunk 3** (Task 16) | ⬜ **Deploy na Vercel — pendente de decisão do usuário** |
 
-### Bloqueios a resolver antes de continuar
+### Dois defeitos que só apareceram executando
 
-1. **MCP do Supabase não disponível.** O `.mcp.json` está no lugar certo e o servidor é detectado, mas exige login OAuth. Rode `/mcp` numa sessão `claude` **interativa** e reabra a sessão — MCPs só carregam na inicialização.
-2. **`VITE_SUPABASE_ANON_KEY` está vazia** no `.env`. Preencha com a anon key do painel, senão o app abre em branco (o erro sai no console do navegador, não no build).
+Nenhuma das cinco rodadas de revisão do spec, nem a verificação estática das
+migrations, pegou estes dois. Estão corrigidos, e as migrations correspondentes
+existem no repositório:
 
-### Ao retomar, a ordem é
+1. **`0010_grants` — faltavam os GRANTs de tabela.** RLS e GRANT são camadas
+   distintas: sem `grant`, o Postgres recusa **antes** de avaliar a policy. O
+   app quebrou com `permission denied for table anatomy_slots` na primeira
+   leitura real. O spec e o plano especificavam as policies e omitiam os grants
+   — a lição é que "tem policy" não significa "tem acesso".
+2. **`0009_harden_trigger_functions`** — `handle_new_user`, por ser
+   `SECURITY DEFINER`, ficou exposta em `/rest/v1/rpc/`. Apontado pelo linter de
+   segurança do Supabase. Revogada; o trigger segue funcionando.
 
-1. Aplicar `0001` a `0008` via MCP, **na ordem numérica** — `0003` depende de `0002`, e `0004` acrescenta o default que `0003` deixou pendente.
-2. `npm run sync:anatomies` com `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` no ambiente (18 linhas esperadas).
-3. Rodar `supabase/tests/schema_checks.sql`. **É o momento da verdade da Onda 0**: as cinco verificações correspondem a defeitos reais encontrados em revisão. Nenhuma linha `FALHA:` deve aparecer.
-4. Tasks 15 e 16.
+### O que foi verificado executando, e não por análise
 
-### O que NÃO foi possível verificar
+- Combo incompleto recusado, completo aceito → valida `TG_OP` e `::public.part_slot`
+- `share_combo` gera slug de 12 caracteres → valida `extensions.gen_random_bytes` sob `search_path` vazio
+- Revogar e republicar preserva a URL → valida o upsert
+- `get_shared_combo` devolve 3 peças + nome + autor; slug revogado não é legível
+- **`user_parts` resolve Hasbro → canonical** — a verificação mais valiosa da suíte
+- Posse e desejo mutuamente exclusivos; wishlist recusa quantidade > 1
+- Trigger de perfil cria o `profiles` e bloqueia campo imutável
+- 0 tabelas sem RLS · 0 policies de escrita no catálogo · 0 RPCs de escrita expostas a `anon` · view com `security_invoker`
+- App renderiza as 4 anatomias no navegador, sem login
 
-O SQL não foi executado em nenhum Postgres. O Docker Desktop desta máquina não estava em execução, então nem uma validação local foi possível — só análise estática. **Trate as migrations como não testadas até o passo 3 acima passar.**
+### O que falta
+
+Só a **Task 16 (deploy na Vercel)**. Exige decisões do usuário: onde hospedar o
+repositório (não há remote configurado) e se o projeto será público. As
+ferramentas da Vercel estão disponíveis via MCP.
+
+### Nota sobre `sync-anatomies.ts`
+
+O script existe e está correto, mas **não foi executado**: exige a
+`service_role` key no ambiente. `anatomy_slots` foi populada via MCP com o mesmo
+conteúdo de `data/anatomies.json` (18 linhas, conferidas). O script continua
+sendo o caminho oficial para ressincronizar.
 
 ---
 
