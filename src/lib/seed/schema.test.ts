@@ -66,6 +66,18 @@ describe("PartSchema", () => {
     );
   });
 
+  it("aceita ratchet com zero pontos de contato (a linha 0-XX)", () => {
+    expect(() =>
+      PartSchema.parse({
+        slot: "ratchet", name: "0-60", code: "0-60", line: "BX",
+        attack: 3, defense: 14, stamina: 13,
+        weight_g: 6.81, height_mm: 60, contact_points: 0,
+        burst_resistance: "medium",
+        source_url: "https://exemplo.com/fonte",
+      }),
+    ).not.toThrow();
+  });
+
   it("aceita um ratchet com height_mm e contact_points", () => {
     expect(() =>
       PartSchema.parse({

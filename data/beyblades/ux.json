@@ -1,0 +1,247 @@
+{
+  "_fonte": "https://beyblade.wiki/beyblade-x-list/",
+  "_nota": "Composicao extraida do nome do produto ('Dran Sword 3-60F' = blade + ratchet + bit) e conferida contra a lista de pecas. release_date nula onde nao houve confirmacao — data errada e pior que ausente. bey_type herdado do tipo da lamina.",
+  "beyblades": [
+    {
+      "release_code": "UX-01",
+      "name": "Dran Buster 1-60A",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "parts": {
+        "blade": "Dran Buster",
+        "ratchet": "1-60",
+        "bit": "Accel"
+      }
+    },
+    {
+      "release_code": "UX-02",
+      "name": "Hells Hammer 3-70H",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "balance",
+      "parts": {
+        "blade": "Hells Hammer",
+        "ratchet": "3-70",
+        "bit": "Hexa"
+      }
+    },
+    {
+      "release_code": "UX-03",
+      "name": "Wizard Rod 5-70DB",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "stamina",
+      "parts": {
+        "blade": "Wizard Rod",
+        "ratchet": "5-70",
+        "bit": "Disc Ball"
+      }
+    },
+    {
+      "release_code": "UX-05",
+      "name": "Shinobi Shadow 1-80MN",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "defense",
+      "parts": {
+        "blade": "Shinobi Shadow",
+        "ratchet": "1-80",
+        "bit": "Metal Needle"
+      }
+    },
+    {
+      "release_code": "UX-06",
+      "name": "Leon Crest 7-60GN",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "defense",
+      "parts": {
+        "blade": "Leon Crest",
+        "ratchet": "7-60",
+        "bit": "Gear Needle"
+      }
+    },
+    {
+      "release_code": "UX-07",
+      "name": "Phoenix Rudder 9-70G",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "deck_set",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "stamina",
+      "parts": {
+        "blade": "Phoenix Rudder",
+        "ratchet": "9-70",
+        "bit": "Glide"
+      }
+    },
+    {
+      "release_code": "UX-08",
+      "name": "Silver Wolf 3-80FB",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "stamina",
+      "parts": {
+        "blade": "Silver Wolf",
+        "ratchet": "3-80",
+        "bit": "Free Ball"
+      }
+    },
+    {
+      "release_code": "UX-09",
+      "name": "Samurai Saber 2-70L",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "parts": {
+        "blade": "Samurai Saber",
+        "ratchet": "2-70",
+        "bit": "Level"
+      },
+      "notes": "Listado como 'Samurai Saber 2-70 Level' na fonte; L e o codigo do bit Level."
+    },
+    {
+      "release_code": "UX-10",
+      "name": "Knight Mail 3-85BS",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "custom_set",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "defense",
+      "parts": {
+        "blade": "Knight Mail",
+        "ratchet": "3-85",
+        "bit": "Bound Spike"
+      }
+    },
+    {
+      "release_code": "UX-11",
+      "name": "Impact Drake 9-60LR",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "parts": {
+        "blade": "Impact Drake",
+        "ratchet": "9-60",
+        "bit": "Low Rush"
+      }
+    },
+    {
+      "release_code": "UX-12",
+      "name": "Ghost Circle 0-80GB",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "stamina",
+      "parts": {
+        "blade": "Ghost Circle",
+        "ratchet": "0-80",
+        "bit": "Gear Ball"
+      }
+    },
+    {
+      "release_code": "UX-13",
+      "name": "Golem Rock 1-60UN",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "defense",
+      "parts": {
+        "blade": "Golem Rock",
+        "ratchet": "1-60",
+        "bit": "Under Needle"
+      }
+    },
+    {
+      "release_code": "UX-14",
+      "name": "Scorpio Spear 0-70Z",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "balance",
+      "parts": {
+        "blade": "Scorpio Spear",
+        "ratchet": "0-70",
+        "bit": "Zap"
+      }
+    },
+    {
+      "release_code": "UX-15",
+      "name": "Shark Scale 4-50UF",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "deck_set",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "parts": {
+        "blade": "Shark Scale",
+        "ratchet": "4-50",
+        "bit": "Under Flat"
+      }
+    },
+    {
+      "release_code": "UX-17",
+      "name": "Meteor Dragoon 3-70J",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "parts": {
+        "blade": "Meteor Dragoon",
+        "ratchet": "3-70",
+        "bit": "Jolt"
+      }
+    },
+    {
+      "release_code": "UX-18",
+      "name": "Mummy Curse 7-55W",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "defense",
+      "parts": {
+        "blade": "Mummy Curse",
+        "ratchet": "7-55",
+        "bit": "Wedge"
+      }
+    }
+  ]
+}

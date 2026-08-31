@@ -43,7 +43,10 @@ export const PartSchema = z
     stamina: Atributo,
     weight_g: z.number().positive().max(100).nullish(),
     height_mm: z.number().positive().max(200).nullish(),
-    contact_points: z.number().int().positive().max(20).nullish(),
+    // nonnegative, não positive: os ratchets 0-60, 0-70 e 0-80 têm ZERO pontos
+    // de contato — é a característica do produto (ratchet liso), não dado
+    // faltando. A validação original recusava a linha inteira dos "0-".
+    contact_points: z.number().int().nonnegative().max(20).nullish(),
     burst_resistance: Resistencia.nullish(),
     dash_performance: Resistencia.nullish(),
     spin_direction: Giro.nullish(),
