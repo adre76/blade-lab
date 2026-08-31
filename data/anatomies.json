@@ -1,0 +1,6 @@
+{
+  "basic":         ["blade", "ratchet", "bit"],
+  "unique":        ["blade", "assist_blade", "ratchet", "bit"],
+  "custom":        ["lock_chip", "main_blade", "assist_blade", "ratchet", "bit"],
+  "custom_expand": ["lock_chip", "metal_blade", "over_blade", "assist_blade", "ratchet", "bit"]
+}
