@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "seed": "tsx scripts/seed.ts",
     "sync:anatomies": "tsx scripts/sync-anatomies.ts"
   },
   "dependencies": {
