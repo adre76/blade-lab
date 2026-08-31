@@ -91,7 +91,7 @@ Ordem importa: `0004` cria `gen_share_slug`, mas `0003` já a usa como `default`
 
 **Interfaces:** produz um `App` exportado como default de `src/App.tsx`, montado por `src/main.tsx`. Tasks 3, 5 e 15 editam esses arquivos.
 
-- [ ] **Step 1: Criar `.gitignore` antes de qualquer coisa**
+- [x] **Step 1: Criar `.gitignore` antes de qualquer coisa**
 
 Primeiro, para que nenhum segredo ou artefato seja rastreado por acidente:
 
@@ -108,7 +108,7 @@ dist-ssr
 coverage
 ```
 
-- [ ] **Step 2: Criar `package.json`**
+- [x] **Step 2: Criar `package.json`**
 
 ```json
 {
@@ -118,7 +118,7 @@ coverage
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -134,19 +134,23 @@ coverage
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^6.1.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
-    "vite": "^8.0.10",
-    "vite-plugin-pwa": "LEIA O STEP 3",
-    "vitest": "LEIA O STEP 3"
+    "vite": "^8.2.2",
+    "vite-plugin-pwa": "^1.3.0",
+    "vitest": "^4.1.11"
   }
 }
 ```
 
+> **Resolvido em 2026-08-31** pelo Step 3 abaixo: as três suportam Vite 8
+> (`vitest@4` tem peer `^6||^7||^8`; `vite-plugin-pwa@1.3` inclui `^8`;
+> `@vitejs/plugin-react@6.1` exige `^8`). Reconfira se for reexecutar meses depois.
+
 `@types/node` não é opcional: o `tsconfig.json` inclui `scripts/`, e `scripts/sync-anatomies.ts` (Task 13) usa `node:fs` e `process.env`. Sem ele, `tsc -b` falha com `Cannot find module 'node:fs'`.
 
-- [ ] **Step 3: Resolver as versões de `vitest` e `vite-plugin-pwa` compatíveis com Vite 8**
+- [x] **Step 3: Resolver as versões de `vitest` e `vite-plugin-pwa` compatíveis com Vite 8**
 
 **Não copie versões deste plano para estes dois pacotes.** Ambos declaram peer dependency sobre o Vite, e as faixas mudam a cada major do Vite. Descubra as compatíveis antes de instalar:
 
@@ -156,12 +160,12 @@ npm view vitest peerDependencies && npm view vite-plugin-pwa peerDependencies
 
 Escolha as versões cuja faixa de peer inclua `vite@8` e escreva-as no `package.json`. Se nenhuma versão publicada suportar Vite 8, a decisão é sua e deve ser registrada: baixar o Vite para a major suportada, ou trocar o plugin de PWA.
 
-- [ ] **Step 4: Instalar**
+- [x] **Step 4: Instalar**
 
 Run: `npm install`
 Expected: termina sem `ERESOLVE`. Se conflitar, **volte ao Step 3 e ajuste a versão — nunca use `--force`**. O `--force` esconde incompatibilidade real que reaparece no build da Vercel, onde é bem mais caro diagnosticar.
 
-- [ ] **Step 5: Criar `tsconfig.json` e `tsconfig.node.json`**
+- [x] **Step 5: Criar `tsconfig.json`** (um só, sem project references)
 
 ```json
 {
@@ -170,6 +174,7 @@ Expected: termina sem `ERESOLVE`. Se conflitar, **volte ao Step 3 e ajuste a ver
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
+    "types": ["node", "vite/client"],
     "skipLibCheck": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -184,38 +189,19 @@ Expected: termina sem `ERESOLVE`. Se conflitar, **volte ao Step 3 e ajuste a ver
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["src", "scripts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "scripts", "vite.config.ts"]
 }
 ```
 
 `noUncheckedIndexedAccess` é deliberado: o motor da onda 3 indexa peças por slot, e sem essa flag um slot ausente vira `undefined` silencioso — exatamente o caso de borda que o spec §5.3 manda tratar.
 
-`tsconfig.node.json`:
+**Não crie um `tsconfig.node.json` separado, e não use `tsc -b`.**
 
-```json
-{
-  "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2023"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "composite": true,
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-    "noEmit": true,
-    "strict": true
-  },
-  "include": ["vite.config.ts"]
-}
-```
+A versão anterior deste plano mandava dividir em dois tsconfigs com project references, e o referenciado precisava de `composite: true`. Isso **não funciona**: `composite: true` junto de `noEmit: true` é o erro `TS6310 — Referenced project may not disable emit`, e isso vale inclusive no TypeScript 5.9. (A flexibilização do TS 5.6 se aplica ao `--noEmit` na linha de comando, não a um projeto referenciado em build mode.)
 
-`composite: true` é obrigatório: o script de build é `tsc -b`, e em build mode todo projeto referenciado sem `composite` faz o TypeScript abortar com TS6306. Sem ele, o Step 9 desta task falha.
+Em vez de remendar o `composite`, a razão de existir dele foi removida: um único `tsconfig.json` cobre `src/`, `scripts/` e `vite.config.ts`, e o build usa `tsc --noEmit`. A separação só existia para dar libs diferentes ao código de browser e ao de Node — o que `"types": ["node", "vite/client"]` com `lib` incluindo DOM já resolve. Menos arquivo, menos modo de falha.
 
-- [ ] **Step 6: Criar `index.html`**
+- [x] **Step 6: Criar `index.html`**
 
 ```html
 <!doctype html>
@@ -233,7 +219,7 @@ Expected: termina sem `ERESOLVE`. Se conflitar, **volte ao Step 3 e ajuste a ver
 </html>
 ```
 
-- [ ] **Step 7: Criar `vite.config.ts` (Vitest entra na Task 2, PWA na Task 4)**
+- [x] **Step 7: Criar `vite.config.ts` (Vitest entra na Task 2, PWA na Task 4)**
 
 O import vem de `vitest/config` desde já — o Vitest foi instalado no Step 4, e começar por `vite` obrigaria a trocar o import na Task 2, que é justamente onde esse detalhe vira erro de compilação.
 
@@ -248,7 +234,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 8: Criar `src/App.tsx` e `src/main.tsx` mínimos**
+- [x] **Step 8: Criar `src/App.tsx` e `src/main.tsx` mínimos**
 
 `src/App.tsx`:
 
@@ -275,12 +261,12 @@ createRoot(root).render(
 );
 ```
 
-- [ ] **Step 9: Verificar que compila e roda**
+- [x] **Step 9: Verificar que compila e roda**
 
 Run: `npm run build`
 Expected: termina com `built in ...` e cria `dist/`. Sem erro de TypeScript.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add .gitignore package.json package-lock.json tsconfig.json tsconfig.node.json vite.config.ts index.html src/main.tsx src/App.tsx
@@ -297,7 +283,7 @@ git commit -m "feat: scaffold Vite + React 19 + TypeScript"
 
 Um teste trivial não prova nada. Vamos usar a primeira função real que precisamos de qualquer jeito — a leitura validada das variáveis de ambiente — para provar que o Vitest funciona.
 
-- [ ] **Step 1: Escrever o teste que falha**
+- [x] **Step 1: Escrever o teste que falha**
 
 `src/lib/env.test.ts`:
 
@@ -331,7 +317,7 @@ describe("readSupabaseEnv", () => {
 
 O terceiro caso existe porque a Vercel entrega variável não configurada como string vazia, não como `undefined` — falhar aqui com mensagem clara evita uma hora de depuração cega em produção.
 
-- [ ] **Step 2: Adicionar a seção `test` ao `vite.config.ts`**
+- [x] **Step 2: Adicionar a seção `test` ao `vite.config.ts`**
 
 O import vem de `vitest/config`, **não** de `vite`. A propriedade `test` não existe no `UserConfig` do Vite, e `vite.config.ts` está dentro do `tsconfig.node.json` — importar de `vite` compila aqui (o Vitest não checa tipo em runtime) mas quebra o `npm run build` da Task 3 com `'test' does not exist in type 'UserConfig'`.
 
@@ -350,12 +336,12 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 3: Rodar o teste e confirmar que falha**
+- [x] **Step 3: Rodar o teste e confirmar que falha**
 
 Run: `npm test`
 Expected: FAIL — `Failed to resolve import "./env.ts"` ou `readSupabaseEnv is not a function`.
 
-- [ ] **Step 4: Implementar o mínimo**
+- [x] **Step 4: Implementar o mínimo**
 
 `src/lib/env.ts`:
 
@@ -374,12 +360,12 @@ export function readSupabaseEnv(source: Record<string, string | undefined>): Sup
 }
 ```
 
-- [ ] **Step 5: Rodar e confirmar que passa**
+- [x] **Step 5: Rodar e confirmar que passa**
 
 Run: `npm test`
 Expected: PASS — `3 passed`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add vite.config.ts src/lib/env.ts src/lib/env.test.ts
@@ -396,7 +382,7 @@ git commit -m "test: configura Vitest e valida leitura das variaveis do Supabase
 
 O Trocação centraliza a paleta em `theme.js` e importa `T` em todo componente. Mesmo padrão aqui, em TS.
 
-- [ ] **Step 1: Escrever `src/theme.ts`**
+- [x] **Step 1: Escrever `src/theme.ts`**
 
 Paleta escura, condizente com o tema de laboratório e arena. Nenhum componente pode escrever cor literal fora deste arquivo.
 
@@ -439,7 +425,7 @@ export type ThemeColor = keyof typeof T;
 
 As quatro cores `type*` correspondem ao enum `bey_type` do banco (spec §4.2) e serão usadas para colorir natureza no catálogo.
 
-- [ ] **Step 2: Usar o tema no `App.tsx` para provar que a importação funciona**
+- [x] **Step 2: Usar o tema no `App.tsx` para provar que a importação funciona**
 
 ```tsx
 import { T } from "./theme.ts";
@@ -453,12 +439,12 @@ export default function App() {
 }
 ```
 
-- [ ] **Step 3: Verificar o build**
+- [x] **Step 3: Verificar o build**
 
 Run: `npm run build`
 Expected: sucesso, sem erro de TypeScript.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/theme.ts src/App.tsx
@@ -475,7 +461,7 @@ git commit -m "feat: paleta central em theme.ts"
 
 O spec §3.3 pede cache do app shell e do catálogo com *stale-while-revalidate*. O catálogo só existe a partir da onda 1; aqui fica o app shell e a regra de runtime já preparada.
 
-- [ ] **Step 1: Criar um ícone provisório em `public/favicon.svg`**
+- [x] **Step 1: Criar um ícone provisório em `public/favicon.svg`**
 
 Ícone definitivo é trabalho de design, fora do escopo desta onda. Um SVG serve para o manifest validar:
 
@@ -487,7 +473,7 @@ O spec §3.3 pede cache do app shell e do catálogo com *stale-while-revalidate*
 </svg>
 ```
 
-- [ ] **Step 2: Adicionar `vite-plugin-pwa` ao `vite.config.ts`**
+- [x] **Step 2: Adicionar `vite-plugin-pwa` ao `vite.config.ts`**
 
 ```ts
 import { defineConfig } from "vitest/config";
@@ -544,11 +530,11 @@ export default defineConfig({
 
 O `urlPattern` lista as tabelas explicitamente, em vez de casar `/rest/v1/*`. Um padrão amplo cachearia `inventory_items` e `combos` no disco do dispositivo — dado de usuário em cache compartilhado é vazamento, especialmente em aparelho de uso comum.
 
-- [ ] **Step 3: Ícones PNG do manifest**
+- [x] **Step 3: Ícones PNG do manifest**
 
 Um SVG basta para instalar em navegadores modernos, mas Android pede PNG para a tela inicial. Gere `public/logo-192.png` e `public/logo-512.png` a partir do SVG e acrescente ao array `icons`, incluindo uma entrada `purpose: "maskable"`. Se não houver ferramenta de conversão disponível no ambiente, **deixe esta etapa registrada como pendência da onda 1** em vez de inventar um binário.
 
-- [ ] **Step 4: Verificar que o manifest é gerado**
+- [x] **Step 4: Verificar que o manifest é gerado**
 
 Run: `npm run build`
 Expected: sucesso, e `dist/manifest.webmanifest` e `dist/sw.js` existem.
@@ -556,7 +542,7 @@ Expected: sucesso, e `dist/manifest.webmanifest` e `dist/sw.js` existem.
 Run: `ls dist/manifest.webmanifest dist/sw.js`
 Expected: os dois caminhos listados.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add vite.config.ts package.json package-lock.json public/favicon.svg
@@ -571,7 +557,7 @@ git commit -m "feat: PWA instalavel com cache stale-while-revalidate do catalogo
 - Create: `src/lib/supabase.ts`, `.env.example`
 - Modify: nenhum
 
-- [ ] **Step 1: Criar `.env.example`** (versionado; o `.env` real não é)
+- [x] **Step 1: Criar `.env.example`** (versionado; o `.env` real não é)
 
 ```
 # Painel do Supabase > Project Settings > API
@@ -581,14 +567,14 @@ VITE_SUPABASE_URL=https://gbcpfsczjivtwkyheihu.supabase.co
 VITE_SUPABASE_ANON_KEY=
 ```
 
-- [ ] **Step 2: Criar o `.env` local**
+- [ ] **Step 2: Criar o `.env` local** — PENDENTE: exige a anon key do painel
 
 Copie `.env.example` para `.env` e preencha a `anon key` a partir do painel. Confirme que o `.gitignore` da Task 1 já a exclui:
 
 Run: `git check-ignore -v .env`
 Expected: uma linha apontando para a regra `.env` do `.gitignore`. Se não sair nada, **pare** e corrija o `.gitignore` antes de seguir.
 
-- [ ] **Step 3: Criar `src/lib/supabase.ts`**
+- [x] **Step 3: Criar `src/lib/supabase.ts`**
 
 ```ts
 import { createClient } from "@supabase/supabase-js";
@@ -609,14 +595,14 @@ export const supabase = createClient(url, anonKey, {
 
 Diferente do Trocação, que apenas registra um `console.error` quando falta variável, aqui `readSupabaseEnv` lança. Uma tela em branco com erro claro no console é melhor que um app que carrega e falha em toda consulta sem explicar por quê.
 
-- [ ] **Step 4: Verificar o build**
+- [x] **Step 4: Verificar o build**
 
 Run: `npm run build`
 Expected: sucesso.
 
 **Atenção à expectativa:** o build **não** falha por variável ausente. O Vite substitui `import.meta.env` textualmente e não executa o topo dos módulos; o `throw` de `readSupabaseEnv` só acontece no navegador. Variável faltando aparece como tela em branco com o erro no console — não como build quebrado. Não perca tempo procurando no log de build.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add .env.example src/lib/supabase.ts
