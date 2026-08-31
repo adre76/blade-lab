@@ -2,60 +2,13 @@ import { useState } from "react";
 import { T } from "../theme.ts";
 import { somaBruta, type Composicao } from "../hooks/useCatalog.ts";
 import { urlImagem } from "../lib/imagens.ts";
-import type { Database } from "../types/database.ts";
 
-type BeyType = Database["public"]["Enums"]["bey_type"];
-type Rarity = Database["public"]["Enums"]["rarity"];
-type Brand = Database["public"]["Enums"]["brand"];
+import { Link } from "react-router-dom";
 
-export const COR_TIPO: Record<BeyType, string> = {
-  attack: T.typeAttack,
-  defense: T.typeDefense,
-  stamina: T.typeStamina,
-  balance: T.typeBalance,
-};
-
-export const ROTULO_TIPO: Record<BeyType, string> = {
-  attack: "Ataque",
-  defense: "Defesa",
-  stamina: "Stamina",
-  balance: "Equilíbrio",
-};
-
-export const MARCA: Record<Brand, { rotulo: string; cor: string }> = {
-  takara_tomy: { rotulo: "Takara Tomy", cor: T.accentDim },
-  hasbro: { rotulo: "Hasbro", cor: T.accentWarm },
-};
-
-const ROTULO_RARIDADE: Record<Rarity, string> = {
-  common: "Comum",
-  uncommon: "Incomum",
-  rare: "Raro",
-  very_rare: "Muito raro",
-  exclusive: "Exclusivo",
-};
-
-const ROTULO_SLOT: Record<string, string> = {
-  blade: "Lâmina",
-  ratchet: "Ratchet",
-  bit: "Bit",
-  lock_chip: "Lock Chip",
-  main_blade: "Main Blade",
-  metal_blade: "Metal Blade",
-  over_blade: "Over Blade",
-  assist_blade: "Assist Blade",
-};
-
-const ROTULO_LANCAMENTO: Record<string, string> = {
-  starter: "Starter",
-  booster: "Booster",
-  random_booster: "Random Booster",
-  deck_set: "Deck Set",
-  custom_set: "Custom Set",
-  limited: "Limitado",
-  event_exclusive: "Exclusivo de evento",
-  other: "Outro",
-};
+import {
+  COR_TIPO, ROTULO_TIPO, MARCA, ROTULO_SLOT,
+  ROTULO_RARIDADE, ROTULO_LANCAMENTO,
+} from "./rotulos.ts";
 
 function Etiqueta({ texto, cor, forte = false }: { texto: string; cor: string; forte?: boolean }) {
   return (
@@ -163,15 +116,20 @@ export default function BeyCard({ comp, maxAtributo }: {
   )];
 
   return (
-    <article style={{
-      background: T.bgCard,
-      border: `1px solid ${T.border}`,
-      borderLeft: `3px solid ${cor}`,
-      borderRadius: 10,
-      overflow: "hidden",
-      display: "flex",
-      flexDirection: "column",
-    }}>
+    <Link
+      to={`/bey/${principal.id}`}
+      style={{
+        textDecoration: "none",
+        color: "inherit",
+        background: T.bgCard,
+        border: `1px solid ${T.border}`,
+        borderLeft: `3px solid ${cor}`,
+        borderRadius: 10,
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Imagem caminho={principal.image_path} cor={cor} alt={comp.nome} />
 
       <div style={{ padding: "13px 16px 14px", display: "flex", flexDirection: "column", flex: 1 }}>
@@ -229,6 +187,6 @@ export default function BeyCard({ comp, maxAtributo }: {
           </span>
         </footer>
       </div>
-    </article>
+    </Link>
   );
 }

@@ -1,15 +1,36 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import { T } from "../theme.ts";
 import { useCatalog, somaBruta } from "../hooks/useCatalog.ts";
-import BeyCard, { COR_TIPO, ROTULO_TIPO, MARCA } from "./BeyCard.tsx";
+import BeyCard from "./BeyCard.tsx";
+import { COR_TIPO, ROTULO_TIPO, MARCA } from "./rotulos.ts";
 import type { Database } from "../types/database.ts";
 
 type BeyType = Database["public"]["Enums"]["bey_type"];
 
+const TIPOS = Object.keys(ROTULO_TIPO) as BeyType[];
+
 export default function Catalogo() {
   const { composicoes, totalProdutos, error, loading } = useCatalog();
-  const [busca, setBusca] = useState("");
-  const [tipo, setTipo] = useState<BeyType | "todos">("todos");
+
+  // Busca e filtro vivem na URL (spec §3.2). Além de tornar o resultado
+  // compartilhável por link, é o que faz voltar do detalhe de um bey
+  // preservar o filtro que estava aplicado.
+  const [params, setParams] = useSearchParams();
+  const busca = params.get("q") ?? "";
+  const tipoParam = params.get("tipo");
+  const tipo: BeyType | "todos" =
+    tipoParam && TIPOS.includes(tipoParam as BeyType) ? (tipoParam as BeyType) : "todos";
+
+  const atualizar = (chave: "q" | "tipo", valor: string) => {
+    const novo = new URLSearchParams(params);
+    if (valor && valor !== "todos") novo.set(chave, valor);
+    else novo.delete(chave);
+    setParams(novo, { replace: true });
+  };
+
+  const setBusca = (v: string) => atualizar("q", v);
+  const setTipo = (v: BeyType | "todos") => atualizar("tipo", v);
 
   // Escala das barras: a maior soma entre as composições carregadas.
   // Provisória de propósito — o denominador definitivo (§5.4) é o máximo
@@ -65,7 +86,7 @@ export default function Catalogo() {
         <button onClick={() => setTipo("todos")} style={estiloFiltro(tipo === "todos", T.accent)}>
           Todos
         </button>
-        {(Object.keys(ROTULO_TIPO) as BeyType[]).map((t) => (
+        {TIPOS.map((t) => (
           <button key={t} onClick={() => setTipo(t)} style={estiloFiltro(tipo === t, COR_TIPO[t])}>
             {ROTULO_TIPO[t]}
           </button>

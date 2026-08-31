@@ -28,7 +28,8 @@ export type Composicao = {
   raridade: Rarity;
 };
 
-const ORDEM_SLOT: PartSlot[] = [
+/** Ordem de exibição das peças: da lâmina para a ponteira. */
+export const ORDEM_SLOT: PartSlot[] = [
   "lock_chip", "main_blade", "metal_blade", "over_blade",
   "assist_blade", "blade", "ratchet", "bit",
 ];
