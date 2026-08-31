@@ -49,6 +49,36 @@ Duas armadilhas que custaram tempo e ficam registradas:
 Estão marcadas apenas para *Production*. Deploys de preview (branches) vão gerar
 página em branco até serem marcadas também para *Preview*.
 
+### Terceira armadilha: o service worker serve a versão anterior
+
+Depois de configurar as variáveis e refazer o deploy, o site **continuou em
+branco** — e a causa não era mais as variáveis.
+
+O bundle servido pelo navegador (`index-_bzRUppx.js`) era diferente do que o
+build da Vercel havia gerado (`index-DTMEEO8a.js`). Baixando o arquivo do
+servidor com `curl` e procurando a URL do Supabase dentro dele, ficou provado
+que **o build estava correto**: o problema era o service worker do PWA servindo
+o `index.html` precacheado, que apontava para o bundle antigo.
+
+O `sw.js` publicado já tem `skipWaiting` e `clientsClaim` — a configuração está
+certa. É o comportamento normal do precache: o carregamento atual usa o cache, o
+service worker novo assume no seguinte. Na prática, **todo visitante recorrente
+vê a versão anterior no primeiro carregamento após um deploy**, e a correta no
+segundo.
+
+Para forçar na hora: `Ctrl+Shift+R`, ou desregistrar o service worker pelo
+DevTools.
+
+Não foi alterado nada por causa disso. Trocar o precache do HTML por
+`NetworkFirst` eliminaria o atraso, mas põe em risco o funcionamento offline que
+o spec §3.3 exige — e o custo atual (uma carga atrasada) não justifica mexer em
+service worker, que é onde bugs ficam difíceis de reproduzir. Se incomodar
+quando houver usuários reais, é aí que se reavalia.
+
+**Ao depurar "a página não atualizou" neste projeto, compare sempre o hash do
+bundle no console com o do build log antes de suspeitar de qualquer outra
+coisa.**
+
 Nenhum segredo foi versionado: auditado o histórico completo do repositório
 público — nenhuma `service_role` key, a publishable key só no `.env` ignorado, e
 o `.env` nunca entrou no git.
