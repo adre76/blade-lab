@@ -12,6 +12,34 @@
 
 ---
 
+## Estado da execução — atualizado em 2026-08-31
+
+Branch: **`onda-0-fundacao`**
+
+| Bloco | Estado |
+|---|---|
+| **Chunk 1** (Tasks 1–5) | ✅ **Concluído e verificado** — `npm test` 3 passed, `npm run build` OK |
+| **Chunk 2** (Tasks 6–14) | 🟡 **Arquivos escritos, NADA APLICADO** — as 8 migrations, `anatomies.json`, `sync-anatomies.ts` e `schema_checks.sql` existem e passam em verificação estática, mas nenhuma tocou o banco |
+| **Chunk 3** (Tasks 15–16) | ⬜ Só `vercel.json` escrito |
+
+### Bloqueios a resolver antes de continuar
+
+1. **MCP do Supabase não disponível.** O `.mcp.json` está no lugar certo e o servidor é detectado, mas exige login OAuth. Rode `/mcp` numa sessão `claude` **interativa** e reabra a sessão — MCPs só carregam na inicialização.
+2. **`VITE_SUPABASE_ANON_KEY` está vazia** no `.env`. Preencha com a anon key do painel, senão o app abre em branco (o erro sai no console do navegador, não no build).
+
+### Ao retomar, a ordem é
+
+1. Aplicar `0001` a `0008` via MCP, **na ordem numérica** — `0003` depende de `0002`, e `0004` acrescenta o default que `0003` deixou pendente.
+2. `npm run sync:anatomies` com `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` no ambiente (18 linhas esperadas).
+3. Rodar `supabase/tests/schema_checks.sql`. **É o momento da verdade da Onda 0**: as cinco verificações correspondem a defeitos reais encontrados em revisão. Nenhuma linha `FALHA:` deve aparecer.
+4. Tasks 15 e 16.
+
+### O que NÃO foi possível verificar
+
+O SQL não foi executado em nenhum Postgres. O Docker Desktop desta máquina não estava em execução, então nem uma validação local foi possível — só análise estática. **Trate as migrations como não testadas até o passo 3 acima passar.**
+
+---
+
 ## Restrições globais
 
 - TypeScript em todo o `src/` (spec §3).
