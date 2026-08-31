@@ -1,7 +1,7 @@
 # Blade X Lab — Design
 
 **Data:** 2026-08-31
-**Status:** Aprovado pelo usuário, revisado em três rodadas, aguardando plano de implementação
+**Status:** Aprovado pelo usuário, revisado em quatro rodadas, aguardando plano de implementação
 **Projeto Supabase:** `gbcpfsczjivtwkyheihu` (BLADEXLAB, us-east-1)
 
 ---
@@ -85,10 +85,14 @@ O motor nunca vê uma peça Hasbro nem um `part_id` não resolvido. Essa é a ra
 
 O fluxo **não é de mão única**. `stats.ts` e `explain.ts` produzem valores brutos, que a
 apresentação normaliza; mas `archetype.ts` (§5.5) classifica sobre valores já normalizados
-e sobre quartis derivados do catálogo inteiro. Para que ele continue puro e testável, a
-apresentação calcula uma vez o **contexto de normalização** — o denominador por atributo de
-§5.4 mais os quartis de peso de §5.5 — e o passa como argumento explícito. O motor recebe o
-contexto; nunca vai buscá-lo.
+e sobre quartis derivados do catálogo inteiro. O **contexto de normalização** — o
+denominador por atributo de §5.4 mais os quartis de peso de §5.5 — é produzido por
+`normalization.ts`, uma função pura do motor que recebe o catálogo como argumento. A
+apresentação a chama uma vez, guarda o resultado e o repassa a `archetype.ts`.
+
+Manter esse cálculo dentro do motor, e não nos componentes, é deliberado: é aritmética de
+verdade, e a interface é a única camada sem testes (§2). O motor continua cego a rede — ele
+recebe o catálogo, não vai buscá-lo.
 
 ### 3.2 Rotas
 
@@ -200,6 +204,13 @@ sincronizada de forma destrutiva** pelo seed: linhas presentes no banco e ausent
 deixaria viva uma linha obsoleta — e obsoleta justamente na tabela que o trigger de
 validade consulta, o que faria o banco aceitar combos com um slot que a anatomia não tem
 mais. É uma tabela de referência minúscula e sem dados de usuário, então apagar é seguro.
+
+**Cuidado operacional:** os triggers de §4.6 validam apenas em escrita, nunca em repouso.
+Remover um slot de uma anatomia deixa os combos já salvos daquela anatomia inválidos e
+silenciosamente **imutáveis** — não podem mais ser sequer renomeados, porque `update_combo`
+revalida o conjunto inteiro. `SUPABASE_ADMIN.md` registra isso junto ao procedimento de
+aposentadoria de peça: alterar uma anatomia já em uso exige migrar os combos afetados na
+mesma transação.
 
 ### 4.4 Catálogo
 
@@ -476,9 +487,16 @@ Três detalhes que a implementação não pode simplificar:
   persistiria — servido por `get_shared_combo` como zero linhas, indistinguível de link
   inválido), e um `update combos set anatomy = ...` que invalidaria um combo já salvo sem
   tocar em `combo_parts`.
-- **`deferrable initially deferred`** faz a validação rodar no commit, permitindo que o
-  `insert` de `combos` e o das suas peças aconteçam na mesma transação. O `exists` sobre
-  `combos` também neutraliza o cascade delete: apagado o combo, não há o que validar.
+- **`deferrable initially deferred`** faz a validação rodar no commit, e por isso **exige**
+  que o `insert` de `combos` e o das suas peças aconteçam na mesma transação. Não é uma
+  permissão, é um requisito — e é o que determina o caminho de escrita de §4.7. O `exists`
+  sobre `combos` neutraliza o cascade delete: apagado o combo, não há o que validar.
+
+Esse requisito transacional é a consequência de projeto mais importante desta seção. Via
+PostgREST **cada requisição é sua própria transação**, e não existe escrita multi-tabela em
+uma requisição. Um `insert` direto em `combos` seguido de outro em `combo_parts` falharia
+no primeiro: o combo recém-criado ainda não tem peça alguma quando o trigger roda. Por isso
+combos não são gravados por escrita direta, e sim pelas funções de §4.7.
 
 ### 4.7 RLS e funções públicas
 
@@ -487,11 +505,36 @@ Três detalhes que a implementação não pode simplificar:
 | `parts`, `beyblades`, `beyblade_parts`, `anatomy_slots` | Pública (`anon` + `authenticated`) | Nenhuma via API — apenas `service_role` (seed) e SQL no painel |
 | `profiles` | Própria | Própria, só `display_name` (trigger de §4.6) |
 | `inventory_items` | Própria | Própria |
-| `combos`, `combo_parts` | **Própria apenas** | Própria |
+| `combos`, `combo_parts` | **Própria apenas** | `delete` próprio; `insert`/`update` **nenhum** — só as funções abaixo |
 | `combo_shares` | Própria (via `combo_id`) | **Nenhuma** — só as funções abaixo |
 
 O catálogo é deliberadamente somente-leitura pela API. Não existe tela de administração;
 correções entram por SQL, como decidido.
+
+**Gravação de combos.** O trigger de §4.6 exige que combo e peças cheguem na mesma
+transação, e o PostgREST dá uma transação por requisição. Logo, `insert` e `update` de
+`combos`/`combo_parts` não são expostos ao cliente: a escrita passa por duas funções
+`security definer`, restritas ao dono, que fazem tudo de uma vez:
+
+```sql
+create function save_combo(p_name text, p_anatomy anatomy, p_notes text, p_parts jsonb)
+returns uuid ...
+-- insere em combos e em combo_parts na mesma transação, devolve o id
+
+create function update_combo(p_combo_id uuid, p_name text, p_anatomy anatomy,
+                             p_notes text, p_parts jsonb)
+returns void ...
+-- substitui nome, anatomia e o conjunto inteiro de peças, também atômico
+```
+
+`p_parts` é um array JSON de `{slot, part_id}`. Trocar a anatomia de um combo salvo só é
+possível por aqui, porque exige alterar `combos` e `combo_parts` juntos — por escrita
+direta, a primeira requisição já invalidaria o combo.
+
+`delete` continua por RLS direta: apagar é atômico e o cascade cuida das peças.
+
+Este é o mesmo padrão de `share_combo`, e a mesma razão de §10: sem backend, toda regra de
+integridade que não couber numa constraint tem de morar numa função do banco.
 
 **Combo compartilhado.** Não existe policy de leitura pública em `combos`. Uma policy do
 tipo "leitura se público" permitiria a qualquer visitante *listar todos* os combos públicos
@@ -633,6 +676,7 @@ aplicação** com testes automatizados (os dados de seed também são testados �
 | `stats.ts` | Agrega atributos do combo | 3 |
 | `archetype.ts` | Classifica o combo em um arquétipo legível | 3 |
 | `explain.ts` | Contribuição de cada peça em cada atributo | 3 |
+| `normalization.ts` | Deriva o contexto de normalização a partir do catálogo | 3 |
 | `battle.ts` | Confronto especulativo entre dois combos | **5 — fora do escopo deste design** |
 
 ### 5.1 Slots por anatomia (`slots.ts`)
@@ -708,8 +752,8 @@ híbridos: uma barra que estoura os 100% quando o usuário monta algo melhor que
 de fábrica seria um bug visível.
 
 O denominador é derivado do **catálogo completo** e recalculado quando ele carrega — daí a
-exigência de prefetch integral em §3.3. A normalização vive na camada de apresentação
-(§3.1), nunca dentro do motor.
+exigência de prefetch integral em §3.3. Quem o calcula é `normalization.ts` (§3.1),
+recebendo o catálogo como argumento; a apresentação apenas aplica o resultado às barras.
 
 ### 5.5 Arquétipo (`archetype.ts`)
 
@@ -849,6 +893,8 @@ Vitest, cobrindo:
   sem qualificador, peso parcial sem qualificador, e o desempate determinístico.
 - **`explain.ts`** — a soma das contribuições reproduz o total agregado bruto, em todas as
   anatomias.
+- **`normalization.ts`** — denominador por atributo em cada anatomia; quartis de peso com e
+  sem beys de peso parcial na população; catálogo vazio ou com um único bey.
 - **`slots.ts`** — paridade com `data/anatomies.json`.
 - **Integridade do seed** — todo bey com o conjunto de slots exato de sua anatomia; ausência
   de duplicatas por chave natural; atributos dentro da faixa; toda peça referenciada
