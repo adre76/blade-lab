@@ -4,6 +4,7 @@ import { useBey } from "../hooks/useBey.ts";
 import { somaBruta } from "../hooks/useCatalog.ts";
 import { urlImagem } from "../lib/imagens.ts";
 import AvisoDivergencia from "./AvisoDivergencia.tsx";
+import ControleInventario from "./ControleInventario.tsx";
 import {
   COR_TIPO, ROTULO_TIPO, MARCA, ROTULO_SLOT,
   ROTULO_RARIDADE, ROTULO_LANCAMENTO,
@@ -62,6 +63,10 @@ export default function DetalheBey() {
           }}>{ROTULO_LANCAMENTO[bey.release_type] ?? bey.release_type}</span>
         </div>
       </header>
+
+      <div style={{ marginBottom: 18 }}>
+        <ControleInventario beybladeId={bey.id} />
+      </div>
 
       <div style={{
         display: "grid", gap: 18,

@@ -1,5 +1,90 @@
+import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { T } from "./theme.ts";
+import { useAuth } from "./hooks/AuthContext.tsx";
+
+function MenuUsuario() {
+  const { usuario, perfil, carregando, sair } = useAuth();
+  const [aberto, setAberto] = useState(false);
+
+  if (carregando) return null;
+
+  if (!usuario) {
+    return (
+      <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+        <Link to="/creditos" style={{ color: T.textMuted, fontSize: 13 }}>
+          Fontes e créditos
+        </Link>
+        <Link
+          to="/entrar"
+          style={{
+            color: T.accent, border: `1px solid ${T.accent}55`,
+            background: `${T.accent}14`, borderRadius: 999,
+            padding: "5px 14px", fontSize: 13.5, textDecoration: "none",
+          }}
+        >
+          Entrar
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ position: "relative", display: "flex", gap: 14, alignItems: "center" }}>
+      <Link to="/creditos" style={{ color: T.textMuted, fontSize: 13 }}>
+        Fontes e créditos
+      </Link>
+      <button
+        onClick={() => setAberto((v) => !v)}
+        style={{
+          background: T.bgCard, border: `1px solid ${T.border}`,
+          color: T.textPrimary, borderRadius: 999,
+          padding: "5px 14px", fontSize: 13.5, cursor: "pointer",
+        }}
+      >
+        {perfil?.display_name ?? "Conta"} ▾
+      </button>
+
+      {aberto && (
+        <div
+          onClick={() => setAberto(false)}
+          style={{
+            position: "absolute", top: "calc(100% + 6px)", right: 0,
+            background: T.bgCard, border: `1px solid ${T.borderStrong}`,
+            borderRadius: 9, padding: 6, minWidth: 170, zIndex: 10,
+            display: "grid", gap: 2,
+          }}
+        >
+          {[
+            ["/inventario", "Meu inventário"],
+            ["/perfil", "Alterar nome"],
+          ].map(([para, rotulo]) => (
+            <Link
+              key={para}
+              to={para!}
+              style={{
+                color: T.textSecondary, textDecoration: "none",
+                padding: "8px 11px", borderRadius: 6, fontSize: 13.5,
+              }}
+            >
+              {rotulo}
+            </Link>
+          ))}
+          <button
+            onClick={() => void sair()}
+            style={{
+              background: "transparent", border: "none", color: T.textMuted,
+              textAlign: "left", padding: "8px 11px", fontSize: 13.5,
+              cursor: "pointer", borderTop: `1px solid ${T.border}`, marginTop: 2,
+            }}
+          >
+            Sair
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function App() {
   return (
@@ -25,9 +110,7 @@ export default function App() {
             Catálogo de Beyblade X
           </p>
         </Link>
-        <Link to="/creditos" style={{ color: T.textMuted, fontSize: 13 }}>
-          Fontes e créditos
-        </Link>
+        <MenuUsuario />
       </header>
 
       <main style={{ maxWidth: 1100, margin: "0 auto" }}>

@@ -3,6 +3,7 @@ import { T } from "../theme.ts";
 import { somaBruta, type Composicao } from "../hooks/useCatalog.ts";
 import { urlImagem } from "../lib/imagens.ts";
 import AvisoDivergencia from "./AvisoDivergencia.tsx";
+import ControleInventario from "./ControleInventario.tsx";
 
 import { Link } from "react-router-dom";
 
@@ -191,8 +192,12 @@ export default function BeyCard({ comp, maxAtributo }: {
           <Barra rotulo="Stamina" valor={soma.stamina} max={maxAtributo} cor={T.typeStamina} />
         </div>
 
+        <div style={{ marginTop: 10, paddingTop: 9, borderTop: `1px solid ${T.border}` }}>
+          <ControleInventario beybladeId={principal.id} compacto />
+        </div>
+
         <footer style={{
-          marginTop: 10, paddingTop: 9, borderTop: `1px solid ${T.border}`,
+          marginTop: 9, paddingTop: 9, borderTop: `1px solid ${T.border}`,
           display: "flex", justifyContent: "space-between", gap: 10,
           fontSize: 11.5, color: T.textMuted,
         }}>
