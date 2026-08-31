@@ -17,10 +17,22 @@
 
 | Bloco | Estado |
 |---|---|
-| **Chunk 1** — infraestrutura do seed | ✅ Feito, com uma ressalva (abaixo) |
-| **Chunk 2** — curadoria | ⬜ **Não iniciado.** É o grosso da onda |
-| **Chunk 3** — Tasks 9 a 12 (rotas e telas) | ✅ Feito, menos o prefetch offline |
-| **Chunk 3** — Task 8 (imagens) | ⬜ Não iniciado |
+| **Chunk 1** — infraestrutura do seed | ✅ Feito, executado e idempotência provada |
+| **Chunk 2** — curadoria BX + UX | ✅ **146 peças e 37 beys no ar** |
+| **Chunk 3** — rotas e telas de detalhe | ✅ Feito |
+| **Chunk 3** — imagens | ✅ 37/37 beys, 108/146 peças |
+| **Chunk 3** — prefetch offline (Task 12) | ⬜ Único item pendente |
+
+### Números do catálogo em produção
+
+| | |
+|---|---|
+| Peças | 146 — 59 lâminas, 35 ratchets, 52 bits |
+| Beyblades | 37 — 21 BX, 16 UX |
+| Composições exibidas | 35 (dois pares agrupados) |
+| Ligações bey↔peça | 111 = 37 × 3 |
+| Beys sem peça / anatomia divergente | 0 / 0 |
+| Imagens | 37 beys, 108 peças |
 
 **Feito e verificado:**
 
