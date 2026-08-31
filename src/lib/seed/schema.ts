@@ -1,5 +1,5 @@
 import { z } from "zod";
-import anatomias from "../../../data/anatomies.json";
+import { slotsDaAnatomia } from "./anatomias.ts";
 
 export const SLOTS = [
   "lock_chip", "main_blade", "metal_blade", "over_blade",
@@ -113,8 +113,7 @@ export const BeybladeSchema = z
     // anatomies.json é a MESMA fonte que popula anatomy_slots no banco
     // (spec §4.3). Importá-la aqui é o que impede a validação do arquivo e a
     // do banco de divergirem.
-    const tabela = anatomias as Record<string, string[]>;
-    const esperados = [...(tabela[b.anatomy] ?? [])].sort();
+    const esperados = [...slotsDaAnatomia(b.anatomy)].sort();
     const informados = Object.keys(b.parts).sort();
 
     if (JSON.stringify(esperados) !== JSON.stringify(informados)) {

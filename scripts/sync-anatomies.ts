@@ -10,8 +10,8 @@
  * Uso (a service_role key vem do ambiente, NUNCA de arquivo versionado):
  *   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... npm run sync:anatomies
  */
-import { readFileSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
+import { ANATOMIAS } from "../src/lib/seed/anatomias.ts";
 
 const url = process.env["SUPABASE_URL"];
 const serviceKey = process.env["SUPABASE_SERVICE_ROLE_KEY"];
@@ -32,11 +32,8 @@ if (!url || !serviceKey) {
   process.exit(1);
 }
 
-const anatomies = JSON.parse(
-  readFileSync(new URL("../data/anatomies.json", import.meta.url), "utf8"),
-) as Record<string, string[]>;
 
-const rows = Object.entries(anatomies).flatMap(([anatomy, slots]) =>
+const rows = Object.entries(ANATOMIAS).flatMap(([anatomy, slots]) =>
   slots.map((slot) => ({ anatomy, slot })),
 );
 

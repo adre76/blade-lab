@@ -57,3 +57,4 @@ export function carregarBeyblades(raiz: URL): Beyblade[] {
     return r.data;
   });
 }
+

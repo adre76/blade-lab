@@ -1,6 +1,9 @@
 {
+  "_nota": "Fonte de verdade da composicao de cada anatomia. Popula anatomy_slots no banco (spec 4.3) e gera slots.ts no motor. Sincronizada DESTRUTIVAMENTE por scripts/sync-anatomies.ts.",
+  "_correcao_2026_08_31": "unique tinha 4 slots, com assist_blade. ERRADO. Confirmado em beyblade.fandom.com/wiki/Unique_Line e malloftoys: a Unique Line usa lamina de UMA PECA — Blade + Ratchet + Bit, igual a Basic. O Assist Blade e EXCLUSIVO da Custom Line. A distincao entre BX e UX e comercial (product_line), nao de composicao. Erro pego ao curar os 16 beys UX: os nomes dos produtos ('Dran Buster 1-60A', 'Leon Crest 7-60GN') codificam tres pecas, nao quatro.",
+
   "basic":         ["blade", "ratchet", "bit"],
-  "unique":        ["blade", "assist_blade", "ratchet", "bit"],
+  "unique":        ["blade", "ratchet", "bit"],
   "custom":        ["lock_chip", "main_blade", "assist_blade", "ratchet", "bit"],
   "custom_expand": ["lock_chip", "metal_blade", "over_blade", "assist_blade", "ratchet", "bit"]
 }

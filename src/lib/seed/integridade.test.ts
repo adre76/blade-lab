@@ -7,7 +7,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { carregarPartes, carregarBeyblades } from "./carregar.ts";
-import anatomias from "../../../data/anatomies.json";
+import { ANATOMIAS } from "./anatomias.ts";
 
 const RAIZ = new URL("../../../data/", import.meta.url);
 
@@ -57,7 +57,7 @@ describe("integridade do catálogo", () => {
   });
 
   it("toda anatomia usada existe em anatomies.json", () => {
-    const conhecidas = Object.keys(anatomias);
+    const conhecidas = Object.keys(ANATOMIAS);
     const desconhecidas = [...new Set(beys.map((b) => b.anatomy))].filter(
       (a) => !conhecidas.includes(a),
     );

@@ -122,7 +122,11 @@ describe("BeybladeSchema", () => {
 
   it("aceita as quatro anatomias com seus slots corretos", () => {
     const casos = [
-      ["unique", { blade: "a", assist_blade: "b", ratchet: "c", bit: "d" }],
+      // A Unique Line usa lâmina de UMA peça, igual à Basic. O Assist Blade é
+      // exclusivo da Custom Line — confirmado em beyblade.fandom.com/wiki/
+      // Unique_Line. A diferença entre BX e UX é comercial (`product_line`),
+      // não de composição.
+      ["unique", { blade: "a", ratchet: "b", bit: "c" }],
       ["custom", { lock_chip: "a", main_blade: "b", assist_blade: "c", ratchet: "d", bit: "e" }],
       ["custom_expand", {
         lock_chip: "a", metal_blade: "b", over_blade: "c",
@@ -132,5 +136,15 @@ describe("BeybladeSchema", () => {
     for (const [anatomy, parts] of casos) {
       expect(() => BeybladeSchema.parse({ ...BEY_VALIDO, anatomy, parts })).not.toThrow();
     }
+  });
+
+  it("recusa unique com assist_blade — o erro que a curadoria da UX revelou", () => {
+    expect(() =>
+      BeybladeSchema.parse({
+        ...BEY_VALIDO,
+        anatomy: "unique",
+        parts: { blade: "a", assist_blade: "b", ratchet: "c", bit: "d" },
+      }),
+    ).toThrow(/anatomia/);
   });
 });
