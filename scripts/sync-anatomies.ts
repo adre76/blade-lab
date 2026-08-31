@@ -16,7 +16,20 @@ import { createClient } from "@supabase/supabase-js";
 const url = process.env["SUPABASE_URL"];
 const serviceKey = process.env["SUPABASE_SERVICE_ROLE_KEY"];
 if (!url || !serviceKey) {
-  throw new Error("Defina SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY no ambiente");
+  console.error(
+    [
+      "Faltam credenciais de administração.",
+      "",
+      "  1. cp .env.seed.example .env.seed",
+      "  2. preencha SUPABASE_SERVICE_ROLE_KEY com a chave 'secret' do painel",
+      "     (Supabase > Project Settings > API Keys)",
+      "  3. rode de novo",
+      "",
+      "O .env.seed é ignorado pelo git. NÃO cole essa chave em chat nem em",
+      "arquivo versionado: ela ignora todo o RLS.",
+    ].join("\n"),
+  );
+  process.exit(1);
 }
 
 const anatomies = JSON.parse(

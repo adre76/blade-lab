@@ -9,8 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "seed": "tsx scripts/seed.ts",
-    "sync:anatomies": "tsx scripts/sync-anatomies.ts"
+    "seed": "tsx --env-file-if-exists=.env.seed scripts/seed.ts",
+    "sync:anatomies": "tsx --env-file-if-exists=.env.seed scripts/sync-anatomies.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.3",
