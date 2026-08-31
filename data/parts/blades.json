@@ -1,0 +1,51 @@
+{
+  "_fonte": "https://byybladebuilder.com/parts",
+  "_nota": "Stats ATK/DEF/STA medidos pela comunidade, nao folha oficial da Takara Tomy. spin_direction so e preenchida na lamina principal (spec 4.4).",
+  "parts": [
+    {
+      "slot": "blade", "name": "Dran Sword", "line": "BX",
+      "attack": 55, "defense": 25, "stamina": 20,
+      "weight_g": 34.9, "spin_direction": "right", "part_type": "attack"
+    },
+    {
+      "slot": "blade", "name": "Hells Scythe", "line": "BX",
+      "attack": 30, "defense": 35, "stamina": 35,
+      "weight_g": 33.7, "spin_direction": "right", "part_type": "balance"
+    },
+    {
+      "slot": "blade", "name": "Wizard Arrow", "line": "BX",
+      "attack": 15, "defense": 30, "stamina": 55,
+      "weight_g": 31.8, "spin_direction": "right", "part_type": "stamina"
+    },
+    {
+      "slot": "blade", "name": "Knight Shield", "line": "BX",
+      "attack": 20, "defense": 55, "stamina": 25,
+      "weight_g": 32.5, "spin_direction": "right", "part_type": "defense"
+    },
+    {
+      "slot": "blade", "name": "Shark Edge", "line": "BX",
+      "attack": 60, "defense": 25, "stamina": 15,
+      "weight_g": 34.5, "spin_direction": "right", "part_type": "attack"
+    },
+    {
+      "slot": "blade", "name": "Leon Claw", "line": "BX",
+      "attack": 40, "defense": 40, "stamina": 20,
+      "weight_g": 31.4, "spin_direction": "right", "part_type": "balance"
+    },
+    {
+      "slot": "blade", "name": "Viper Tail", "line": "BX",
+      "attack": 30, "defense": 20, "stamina": 50,
+      "weight_g": 34.6, "spin_direction": "right", "part_type": "stamina"
+    },
+    {
+      "slot": "blade", "name": "Rhino Horn", "line": "BX",
+      "attack": 20, "defense": 50, "stamina": 30,
+      "weight_g": 32.8, "spin_direction": "right", "part_type": "defense"
+    },
+    {
+      "slot": "blade", "name": "Phoenix Wing", "line": "BX",
+      "attack": 65, "defense": 30, "stamina": 20,
+      "weight_g": 38.3, "spin_direction": "right", "part_type": "attack"
+    }
+  ]
+}

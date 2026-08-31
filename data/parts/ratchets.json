@@ -1,0 +1,48 @@
+{
+  "_fonte": "https://byybladebuilder.com/parts",
+  "_nota": "O nome do ratchet ja codifica os dados: '3-60' = 3 pontos de contato, 60 = 6,0mm de altura. height_mm e contact_points sao redundantes com o nome, mas existem como coluna para permitir ordenar e filtrar sem parsear string.",
+  "parts": [
+    {
+      "slot": "ratchet", "name": "3-60", "code": "3-60", "line": "BX",
+      "attack": 15, "defense": 9, "stamina": 6,
+      "weight_g": 6.29, "height_mm": 60, "contact_points": 3,
+      "burst_resistance": "medium"
+    },
+    {
+      "slot": "ratchet", "name": "4-60", "code": "4-60", "line": "BX",
+      "attack": 11, "defense": 13, "stamina": 6,
+      "weight_g": 6.26, "height_mm": 60, "contact_points": 4,
+      "burst_resistance": "very_low"
+    },
+    {
+      "slot": "ratchet", "name": "4-80", "code": "4-80", "line": "BX",
+      "attack": 11, "defense": 11, "stamina": 8,
+      "weight_g": 6.9, "height_mm": 80, "contact_points": 4,
+      "burst_resistance": "very_low"
+    },
+    {
+      "slot": "ratchet", "name": "5-60", "code": "5-60", "line": "BX",
+      "attack": 12, "defense": 9, "stamina": 9,
+      "weight_g": 6.59, "height_mm": 60, "contact_points": 5,
+      "burst_resistance": "medium"
+    },
+    {
+      "slot": "ratchet", "name": "3-80", "code": "3-80", "line": "BX",
+      "attack": 15, "defense": 7, "stamina": 8,
+      "weight_g": 6.93, "height_mm": 80, "contact_points": 3,
+      "burst_resistance": "very_low"
+    },
+    {
+      "slot": "ratchet", "name": "5-80", "code": "5-80", "line": "BX",
+      "attack": 12, "defense": 8, "stamina": 10,
+      "weight_g": 7.22, "height_mm": 80, "contact_points": 5,
+      "burst_resistance": "very_low"
+    },
+    {
+      "slot": "ratchet", "name": "9-60", "code": "9-60", "line": "BX",
+      "attack": 13, "defense": 10, "stamina": 7,
+      "weight_g": 6.19, "height_mm": 60, "contact_points": 9,
+      "burst_resistance": "very_high"
+    }
+  ]
+}

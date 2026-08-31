@@ -1,0 +1,60 @@
+{
+  "_fonte": "https://byybladebuilder.com/parts",
+  "_nota": "ATENCAO: a fonte publica burst resistance dos bits numa escala numerica propria (80 ou 30 nestes registros), que NAO e o enum resistance do nosso schema. Convertido como 80 -> high e 30 -> low. E uma derivacao nossa, nao um dado da fonte, e esta registrada no campo notes de cada peca. Revisar na onda 1 com fonte melhor. dash_performance ficou nula: nao ha dado confiavel.",
+  "parts": [
+    {
+      "slot": "bit", "name": "Flat", "code": "F", "line": "BX",
+      "attack": 40, "defense": 15, "stamina": 10,
+      "weight_g": 2.3, "burst_resistance": "high", "part_type": "attack",
+      "notes": "burst_resistance derivado de 80 na escala da fonte"
+    },
+    {
+      "slot": "bit", "name": "Taper", "code": "T", "line": "BX",
+      "attack": 35, "defense": 20, "stamina": 20,
+      "weight_g": 2.2, "burst_resistance": "high", "part_type": "attack",
+      "notes": "burst_resistance derivado de 80 na escala da fonte"
+    },
+    {
+      "slot": "bit", "name": "Ball", "code": "B", "line": "BX",
+      "attack": 15, "defense": 25, "stamina": 50,
+      "weight_g": 2.1, "burst_resistance": "low", "part_type": "stamina",
+      "notes": "burst_resistance derivado de 30 na escala da fonte"
+    },
+    {
+      "slot": "bit", "name": "Needle", "code": "N", "line": "BX",
+      "attack": 10, "defense": 50, "stamina": 30,
+      "weight_g": 2.0, "burst_resistance": "low", "part_type": "defense",
+      "notes": "burst_resistance derivado de 30 na escala da fonte"
+    },
+    {
+      "slot": "bit", "name": "Gear Flat", "code": "GF", "line": "BX",
+      "attack": 50, "defense": 5, "stamina": 5,
+      "weight_g": 2.3, "burst_resistance": "high", "part_type": "attack",
+      "notes": "burst_resistance derivado de 80 na escala da fonte"
+    },
+    {
+      "slot": "bit", "name": "Point", "code": "P", "line": "BX",
+      "attack": 25, "defense": 25, "stamina": 25,
+      "weight_g": 2.2, "burst_resistance": "high", "part_type": "balance",
+      "notes": "burst_resistance derivado de 80 na escala da fonte"
+    },
+    {
+      "slot": "bit", "name": "Orb", "code": "O", "line": "BX",
+      "attack": 10, "defense": 30, "stamina": 50,
+      "weight_g": 2.0, "burst_resistance": "low", "part_type": "stamina",
+      "notes": "burst_resistance derivado de 30 na escala da fonte"
+    },
+    {
+      "slot": "bit", "name": "Spike", "code": "S", "line": "BX",
+      "attack": 10, "defense": 45, "stamina": 35,
+      "weight_g": 2.0, "burst_resistance": "low", "part_type": "defense",
+      "notes": "burst_resistance derivado de 30 na escala da fonte"
+    },
+    {
+      "slot": "bit", "name": "Low Flat", "code": "LF", "line": "BX",
+      "attack": 45, "defense": 5, "stamina": 10,
+      "weight_g": 2.1, "burst_resistance": "high", "part_type": "attack",
+      "notes": "burst_resistance derivado de 80 na escala da fonte"
+    }
+  ]
+}
