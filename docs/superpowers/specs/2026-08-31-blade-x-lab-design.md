@@ -79,9 +79,16 @@ Sem backend, a fronteira entre "dados" e "cálculo" precisa ser explícita:
 |---|---|---|
 | `lib/supabase.ts` + `hooks/` | Busca dados, **resolve equivalências Hasbro → canonical** (§4.8), monta objetos de domínio | Sim |
 | `lib/engine/` | Recebe peças já resolvidas e canonical; calcula | **Não** |
-| `components/` | Exibe; **normaliza para 0–100 apenas na apresentação** (§5.4) | Não |
+| `components/` | Exibe; calcula o **contexto de normalização** e normaliza para 0–100 (§5.4) | Não |
 
 O motor nunca vê uma peça Hasbro nem um `part_id` não resolvido. Essa é a razão de a resolução morar na camada de dados: mantém o motor puro, testável com objetos literais e independente do catálogo.
+
+O fluxo **não é de mão única**. `stats.ts` e `explain.ts` produzem valores brutos, que a
+apresentação normaliza; mas `archetype.ts` (§5.5) classifica sobre valores já normalizados
+e sobre quartis derivados do catálogo inteiro. Para que ele continue puro e testável, a
+apresentação calcula uma vez o **contexto de normalização** — o denominador por atributo de
+§5.4 mais os quartis de peso de §5.5 — e o passa como argumento explícito. O motor recebe o
+contexto; nunca vai buscá-lo.
 
 ### 3.2 Rotas
 
@@ -166,7 +173,7 @@ Todos os valores de enum são em inglês, inclusive `rarity`. A decisão de inte
 vale para os rótulos exibidos, não para os dados.
 
 **A ordem de declaração de `rarity` e `resistance` é significativa** — ambos são ordenados
-por comparação de enum (§4.7 ordena por raridade crescente; §5.3 tira o mínimo de
+por comparação de enum (§4.9 ordena por raridade crescente; §5.3 tira o mínimo de
 `resistance`). Inserir um valor no meio do enum muda essas ordenações silenciosamente;
 valores novos vão nas extremidades, ou a alteração é acompanhada de revisão das duas
 seções.
@@ -185,7 +192,14 @@ create table anatomy_slots (
 
 É a fonte de verdade usada pela validação de combos salvos (§4.6) e pelo teste de
 integridade do seed. `src/lib/engine/slots.ts` (§5.1) é gerado do mesmo arquivo de dados
-que popula esta tabela, de modo que banco e motor não podem divergir.
+que popula esta tabela.
+
+Para que "não podem divergir" seja verdade e não intenção, esta é a **única tabela
+sincronizada de forma destrutiva** pelo seed: linhas presentes no banco e ausentes de
+`data/anatomies.json` são apagadas (§6). O upsert idempotente usado no resto do catálogo
+deixaria viva uma linha obsoleta — e obsoleta justamente na tabela que o trigger de
+validade consulta, o que faria o banco aceitar combos com um slot que a anatomia não tem
+mais. É uma tabela de referência minúscula e sem dados de usuário, então apagar é seguro.
 
 ### 4.4 Catálogo
 
@@ -374,8 +388,32 @@ sem e-mail não pode derrubar o cadastro. O `on conflict` torna o trigger idempo
 **`updated_at`** é mantido por trigger `before update` em todas as tabelas que o possuem,
 nunca por responsabilidade do cliente.
 
-**Imutabilidade de `profiles`.** A RLS não restringe colunas, então um trigger
-`before update` rejeita alteração de qualquer campo que não seja `display_name`.
+**Imutabilidade de `profiles`.** A RLS não restringe colunas, então um trigger precisa
+rejeitar alteração de campo que não seja `display_name`. Essa checagem e a de `updated_at`
+vivem no **mesmo trigger**, e não em dois:
+
+```sql
+create function touch_profile() returns trigger
+language plpgsql as $$
+begin
+  if new.id is distinct from old.id
+     or new.created_at is distinct from old.created_at then
+    raise exception 'campo imutavel em profiles';
+  end if;
+  new.updated_at := now();   -- ignora o valor enviado pelo cliente
+  return new;
+end;
+$$;
+
+create trigger profiles_before_update
+  before update on profiles
+  for each row execute function touch_profile();
+```
+
+Separá-los seria uma armadilha: triggers `before` disparam em ordem alfabética do nome, e
+o de imutabilidade veria o `updated_at` recém-alterado pelo outro como campo proibido,
+rejeitando **toda** atualização — inclusive a troca de nome, que é legítima. Fundidos, a
+ordem deixa de importar.
 
 **Validade do combo salvo.** §5.2 exige que só um combo válido seja salvo, mas com escrita
 direta via RLS o cliente poderia gravar um `custom_expand` sem ratchet — e §4.7 serviria
@@ -384,10 +422,22 @@ isso a visitantes anônimos. A garantia é do banco:
 ```sql
 create function validate_combo_slots() returns trigger
 language plpgsql as $$
+declare
+  v_combo_id uuid;
 begin
+  -- NEW nao existe em DELETE e OLD nao existe em INSERT: decidir por TG_OP
+  -- ANTES de referenciar qualquer um dos dois registros.
+  if TG_TABLE_NAME = 'combos' then
+    v_combo_id := new.id;
+  elsif TG_OP = 'DELETE' then
+    v_combo_id := old.combo_id;
+  else
+    v_combo_id := new.combo_id;
+  end if;
+
   if exists (
     select 1 from public.combos c
-    where c.id = coalesce(new.combo_id, old.combo_id)
+    where c.id = v_combo_id
       and (
         select array_agg(cp.slot order by cp.slot) from public.combo_parts cp
         where cp.combo_id = c.id
@@ -402,14 +452,33 @@ begin
 end;
 $$;
 
-create constraint trigger combo_must_be_complete
+create constraint trigger combo_parts_must_match_anatomy
   after insert or update or delete on combo_parts
+  deferrable initially deferred
+  for each row execute function validate_combo_slots();
+
+create constraint trigger combo_must_be_complete
+  after insert or update on combos
   deferrable initially deferred
   for each row execute function validate_combo_slots();
 ```
 
-`deferrable initially deferred` é essencial: a validação roda no commit, permitindo que o
-`insert` de `combos` e o das suas peças aconteçam na mesma transação.
+Três detalhes que a implementação não pode simplificar:
+
+- **`TG_OP` decidido antes de tocar no registro.** Escrever
+  `coalesce(new.combo_id, old.combo_id)` parece equivalente e não é: em PL/pgSQL, `NEW` não
+  é atribuído num trigger de `DELETE` e `OLD` não é atribuído num de `INSERT`, e a
+  substituição do registro acontece *antes* da avaliação do `coalesce`. A expressão falha
+  em toda escrita, com `record "new"/"old" is not assigned yet`. Na prática, nenhum combo
+  poderia ser salvo.
+- **Dois triggers, um sobre cada tabela.** Só o de `combo_parts` deixaria passar dois casos:
+  um `insert into combos` sem peça alguma (nenhum trigger dispararia, e o combo vazio
+  persistiria — servido por `get_shared_combo` como zero linhas, indistinguível de link
+  inválido), e um `update combos set anatomy = ...` que invalidaria um combo já salvo sem
+  tocar em `combo_parts`.
+- **`deferrable initially deferred`** faz a validação rodar no commit, permitindo que o
+  `insert` de `combos` e o das suas peças aconteçam na mesma transação. O `exists` sobre
+  `combos` também neutraliza o cascade delete: apagado o combo, não há o que validar.
 
 ### 4.7 RLS e funções públicas
 
@@ -459,6 +528,20 @@ grant execute on function get_shared_combo(text) to anon, authenticated;
 
 Funções irmãs `share_combo(uuid)` e `revoke_combo_share(uuid)`, ambas `security definer` e
 restritas ao dono do combo, são o único caminho de escrita em `combo_shares`.
+`share_combo` é **upsert**, não insert:
+
+```sql
+insert into public.combo_shares (combo_id) values (p_combo_id)
+on conflict (combo_id) do update set is_active = true;
+```
+
+A PK é `combo_id`, então um `insert` simples falharia ao republicar um combo revogado — e
+gerar uma linha nova quebraria a URL que o usuário já compartilhou, anulando a razão de
+`is_active` existir.
+
+**Ordem de execução da migration.** A leitura acima é didática, não cronológica:
+`create extension pgcrypto` e `gen_share_slug()` precisam existir antes de `combo_shares`
+(§4.5), que usa a função como `default` de coluna.
 
 `get_shared_combo` devolve o `display_name` do autor — a única informação de perfil que sai
 para um visitante anônimo, e sai por escolha explícita de quem compartilhou.
@@ -485,6 +568,11 @@ Regras:
 canonical antes de entregar qualquer coisa ao motor. Isso vale para o catálogo, para a
 seleção no laboratório e — de forma crítica — para o estoque derivado de §4.9. O motor
 nunca vê marca.
+
+**Invariante:** `combo_parts` guarda somente `part_id` canonical. A resolução acontece na
+seleção, antes da gravação, e não na leitura. Como a resolução também roda na leitura, um
+combo com peça Hasbro gravada ainda funcionaria — mas os combos ficariam com procedência
+mista e a comparação direta entre eles deixaria de ser confiável.
 
 ### 4.9 Estoque de peças derivado
 
@@ -636,8 +724,10 @@ A classificação usa os três atributos **normalizados** (§5.4), recebidos com
 - **Qualificadores de peso:** `pesado` ou `leve` conforme o peso total do combo caia no
   quartil superior ou inferior da **distribuição de pesos totais dos beys de fábrica do
   catálogo**. Essa população é a certa porque é a referência que o usuário tem na mão; os
-  quartis são calculados junto com o denominador de §5.4. Peso parcial (§5.3) não recebe
-  qualificador.
+  quartis são calculados junto com o denominador de §5.4. **Beys de fábrica cujo peso total
+  seja parcial — alguma peça com `weight_g` nula — ficam fora da população**, pois puxariam
+  a distribuição para baixo e produziriam `pesado` com folga demais. Um combo de peso
+  parcial (§5.3) também não recebe qualificador.
 
 Empate exato entre atributos é resolvido na ordem fixa Ataque > Defesa > Stamina, para que
 a classificação seja determinística e testável.
@@ -678,6 +768,11 @@ Uma única passada resolve dados e imagens, já que a fonte é a mesma:
 3. `npm run seed` valida e envia ao Supabase usando a chave `service_role`. É
    **idempotente**: reexecutar não duplica nem apaga, faz upsert por chave natural
    (`brand + slot + name` para peças, `brand + release_code + name` para beys).
+   **Exceção:** `anatomy_slots` é sincronizada de forma destrutiva (§4.3) — linhas ausentes
+   de `data/anatomies.json` são apagadas. É a única tabela com esse tratamento, porque é
+   tabela de referência sem dado de usuário e é a fonte de verdade do trigger de validade
+   de combos; uma linha obsoleta ali faria o banco aceitar um combo com slot que a anatomia
+   já não tem.
 4. `npm run seed:images` baixa as artes, otimiza e envia ao bucket `bey-images`, também de
    forma idempotente.
 5. `npm run types` regenera `src/types/database.ts` a partir do schema.
@@ -757,9 +852,15 @@ Vitest, cobrindo:
 - **`slots.ts`** — paridade com `data/anatomies.json`.
 - **Integridade do seed** — todo bey com o conjunto de slots exato de sua anatomia; ausência
   de duplicatas por chave natural; atributos dentro da faixa; toda peça referenciada
-  existindo; `source_url` presente em todo registro; `spin_direction` preenchida apenas na
-  lâmina principal e nula nos demais slots; toda peça e todo bey `hasbro` com
+  existindo; `source_url` presente em todo registro; toda peça e todo bey `hasbro` com
   `equivalent_id` apontando para um registro `takara_tomy`.
+- **Colunas restritas a certos slots** — `spin_direction` preenchida apenas na lâmina
+  principal, `height_mm` apenas em `ratchet`, `dash_performance` apenas em `bit`, e nulas
+  em todos os demais slots. As três têm comentário restritivo no schema (§4.4) e nada além
+  do teste as faz valer.
+- **Paridade banco ↔ arquivo** — `anatomy_slots` no banco reproduz exatamente
+  `data/anatomies.json` após o seed. Sem este teste, a afirmação de §4.3 de que banco e
+  motor não podem divergir dependeria apenas da sincronização destrutiva ter funcionado.
 
 A interface segue sem testes automatizados, como no Trocação.
 
