@@ -37,6 +37,20 @@ artes. Acrescentada regra `CacheFirst` para o bucket `bey-images` — CacheFirst
 não stale-while-revalidate porque o conteúdo de um caminho de imagem nunca muda:
 trocar a arte de um bey significa caminho novo.
 
+**Armadilha ao testar cache de service worker.** Depois de publicar a regra, o
+cache `imagens-catalogo` continuava não aparecendo, mesmo com o service worker
+controlando a página e a regra presente no `sw.js` servido. A regra não estava
+errada: **as imagens já estavam no cache HTTP do navegador**, das visitas
+anteriores, e por isso não geravam requisição de rede — e o que não vai à rede o
+service worker não vê. Um `fetch(url, { cache: "reload" })` criou o cache na
+hora.
+
+Ao investigar cache de service worker neste projeto, force a requisição antes de
+concluir que a regra falhou. Duas outras coisas também enganam: desregistrar o
+SW faz a carga seguinte rodar sem ele (as requisições dela não passam por
+lugar nenhum), e o SW novo só assume o controle no carregamento seguinte ao da
+instalação.
+
 ### Pendências do usuário (registradas para não se perderem)
 
 1. **Variáveis de ambiente só existem em Production.** A Vercel não permite
