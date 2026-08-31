@@ -21,7 +21,31 @@ Branch: **`onda-0-fundacao`**
 | **Chunk 1** (Tasks 1–5) | ✅ Concluído e verificado |
 | **Chunk 2** (Tasks 6–14) | ✅ **Aplicado no banco e verificado executando** — 10 migrations em `gbcpfsczjivtwkyheihu` |
 | **Chunk 3** (Task 15) | ✅ Tipos gerados, cliente tipado, app lê o banco sem login |
-| **Chunk 3** (Task 16) | ⬜ **Deploy na Vercel — pendente de decisão do usuário** |
+| **Chunk 3** (Task 16) | 🟡 **Publicado, aguardando as variáveis de ambiente** |
+
+### Publicação
+
+- **GitHub:** `github.com/adre76/blade-lab`, branch `main` (repositório público)
+- **Vercel:** projeto `blade-x-lab` (`prj_eb4u3gODFSWS5qOg2pmsogjUZP3b`), ligado ao repo, production branch `main`, deploy automático a cada push
+- **URL:** https://blade-x-lab.vercel.app
+
+**Falta uma ação manual:** adicionar em *Settings → Environment Variables*, para
+Production e Preview:
+
+```
+VITE_SUPABASE_URL       = https://gbcpfsczjivtwkyheihu.supabase.co
+VITE_SUPABASE_ANON_KEY  = sb_publishable_Yl1VyMgXm8NbuuSt3mIROQ_Qsj-TqJg
+```
+
+O MCP da Vercel não tem ferramenta para criar variáveis de ambiente — só o painel.
+Sem elas o build passa, mas o Vite embute os valores **durante o build**, e a
+página abre em branco com `Variável de ambiente ausente: VITE_SUPABASE_URL` no
+console. Depois de adicioná-las é preciso **refazer o deploy**, porque o bundle
+já construído não as contém.
+
+Nenhum segredo foi versionado: auditado o histórico completo do repositório
+público — nenhuma `service_role` key, a publishable key só no `.env` ignorado, e
+o `.env` nunca entrou no git.
 
 ### Dois defeitos que só apareceram executando
 
