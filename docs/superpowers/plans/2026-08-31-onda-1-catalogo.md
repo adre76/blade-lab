@@ -21,7 +21,30 @@
 | **Chunk 2** — curadoria BX + UX | ✅ **146 peças e 37 beys no ar** |
 | **Chunk 3** — rotas e telas de detalhe | ✅ Feito |
 | **Chunk 3** — imagens | ✅ 37/37 beys, 108/146 peças |
-| **Chunk 3** — prefetch offline (Task 12) | ⬜ Único item pendente |
+| **Chunk 3** — offline (Task 12) | ✅ Feito, sem prefetch — ver abaixo |
+
+### Offline: por que não há prefetch
+
+A Task 12 previa um prefetch do catálogo completo para o cache. **Ele não foi
+escrito, e não deve ser**: inspecionando o cache do service worker depois de uma
+única visita à home, ele contém **exatamente uma entrada** — a consulta que traz
+os 37 beys com todas as peças aninhadas. O catálogo inteiro já está lá. Um
+prefetch explícito seria código a mais fazendo o que já acontece.
+
+O que a inspeção revelou de verdade foi outra coisa: `imagens: 0`. A regra de
+runtime cobria `/rest/v1/` e não o Storage, então offline os cards perderiam as
+artes. Acrescentada regra `CacheFirst` para o bucket `bey-images` — CacheFirst e
+não stale-while-revalidate porque o conteúdo de um caminho de imagem nunca muda:
+trocar a arte de um bey significa caminho novo.
+
+### Pendências do usuário (registradas para não se perderem)
+
+1. **Variáveis de ambiente só existem em Production.** A Vercel não permite
+   alterar o ambiente de uma variável já criada — é preciso removê-la e recriar,
+   ou criar uma segunda entrada marcada para Preview. Enquanto isso, deploys de
+   branch geram página em branco. Decidido fazer depois.
+2. **Chaves não serão rotacionadas.** Decisão do usuário, tomada com os riscos
+   apresentados. Não voltar ao assunto.
 
 ### Números do catálogo em produção
 

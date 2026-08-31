@@ -33,6 +33,11 @@ export default defineConfig({
             // As tabelas públicas estão listadas nominalmente de propósito: um
             // padrão amplo como /rest/v1/* cachearia inventory_items e combos
             // no disco do aparelho — dado de usuário em cache é vazamento.
+            //
+            // Não há prefetch explícito, e não precisa: a home carrega os beys
+            // com as peças aninhadas numa consulta só, então uma visita já
+            // deixa o catálogo inteiro em cache (verificado: 1 entrada,
+            // contendo tudo).
             urlPattern: ({ url }) =>
               url.hostname.endsWith(".supabase.co") &&
               /\/rest\/v1\/(parts|beyblades|beyblade_parts|anatomy_slots)/.test(url.pathname),
@@ -40,6 +45,29 @@ export default defineConfig({
             options: {
               cacheName: "catalogo",
               expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 30 },
+            },
+          },
+          {
+            // Imagens do catálogo, servidas pelo Storage.
+            //
+            // CacheFirst, e não stale-while-revalidate: o conteúdo de
+            // `beys/bx-01-....webp` nunca muda — trocar a arte de um bey
+            // significa um caminho novo. Revalidar seria tráfego jogado fora.
+            //
+            // Só o bucket público. O padrão exclui qualquer outro caminho do
+            // Storage, pela mesma razão de o catálogo listar as tabelas
+            // nominalmente.
+            urlPattern: ({ url }) =>
+              url.hostname.endsWith(".supabase.co") &&
+              url.pathname.includes("/storage/v1/object/public/bey-images/"),
+            handler: "CacheFirst",
+            options: {
+              cacheName: "imagens-catalogo",
+              // Teto de entradas para não encher o disco do aparelho: são ~145
+              // imagens hoje, e o limite acomoda o crescimento do catálogo sem
+              // virar depósito.
+              expiration: { maxEntries: 300, maxAgeSeconds: 60 * 60 * 24 * 90 },
+              cacheableResponse: { statuses: [0, 200] },
             },
           },
         ],
