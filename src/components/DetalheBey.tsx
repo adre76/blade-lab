@@ -3,6 +3,7 @@ import { T } from "../theme.ts";
 import { useBey } from "../hooks/useBey.ts";
 import { somaBruta } from "../hooks/useCatalog.ts";
 import { urlImagem } from "../lib/imagens.ts";
+import AvisoDivergencia from "./AvisoDivergencia.tsx";
 import {
   COR_TIPO, ROTULO_TIPO, MARCA, ROTULO_SLOT,
   ROTULO_RARIDADE, ROTULO_LANCAMENTO,
@@ -177,7 +178,9 @@ export default function DetalheBey() {
             </div>
           )}
 
-          {bey.notes && (
+          <AvisoDivergencia ativo={bey.data_disputed} detalhe={bey.notes} />
+
+          {bey.notes && !bey.data_disputed && (
             <p style={{
               marginTop: 16, color: T.textSecondary, fontSize: 13,
               background: T.bgCard, border: `1px solid ${T.border}`,

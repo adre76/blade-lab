@@ -2,6 +2,7 @@ import { useState } from "react";
 import { T } from "../theme.ts";
 import { somaBruta, type Composicao } from "../hooks/useCatalog.ts";
 import { urlImagem } from "../lib/imagens.ts";
+import AvisoDivergencia from "./AvisoDivergencia.tsx";
 
 import { Link } from "react-router-dom";
 
@@ -151,6 +152,11 @@ export default function BeyCard({ comp, maxAtributo }: {
           {comp.lancamentos.length > 1 && (
             <Etiqueta texto={`${comp.lancamentos.length} versões`} cor={T.textMuted} />
           )}
+          <AvisoDivergencia
+            ativo={principal.data_disputed}
+            detalhe={principal.notes}
+            compacto
+          />
         </div>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "10px 0 12px" }}>

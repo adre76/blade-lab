@@ -888,14 +888,55 @@ Onda 0.
 - [ ] `/creditos` no ar.
 - [ ] Nenhum segredo versionado.
 
-## Dúvidas para o usuário — não bloqueiam, mas mudam decisões
+## Decisões do usuário — 2026-08-31
 
-1. **Escopo dos "beys" da Onda 1.** O plano assume Takara Tomy completo (BX + UX
-   + CX). Se a linha CX ainda tiver pouca informação pública confiável, a
-   alternativa é fechar a onda com BX + UX e mover CX para uma onda própria.
-2. **Origem das imagens.** As artes oficiais têm melhor qualidade e maior risco
-   de direito autoral; fotos da comunidade, o inverso. O spec registra que o
-   risco é assumido, mas não escolhe a fonte.
-3. **Dado divergente entre fontes.** A regra deste plano é deixar nulo. Se você
-   preferir registrar o valor mais citado e marcar em `notes`, o catálogo fica
-   mais completo e menos confiável — é uma troca, e é sua.
+As três dúvidas que este plano deixou em aberto foram respondidas:
+
+### 1. Escopo: BX + UX. A linha CX ganha onda própria
+
+A Onda 1 cobre **Basic Line e Unique Line**. A Custom Line (incluindo a
+composição Expand) sai para uma onda dedicada.
+
+Além de reduzir o risco da curadoria, o usuário apontou um segundo motivo, que é
+melhor que o primeiro: **serve de ensaio para o lançamento de uma linha nova.**
+O schema foi desenhado para absorver uma anatomia nova sem migração (spec §4.1);
+trazer a CX depois, com o catálogo já em produção, exercita exatamente esse
+caminho — e descobre agora, num caso controlado, o que teria de ser descoberto
+sob pressão quando a Takara Tomy anunciar a próxima linha.
+
+Consequência prática nas tasks abaixo: a Task 5 fica só com as peças UX, e a
+Task 6 com `bx.json` e `ux.json`. Nada de `cx.json` nesta onda.
+
+### 2. Imagens: repositórios públicos, baixadas para o nosso Storage
+
+Fonte: Beyblade Wiki, BeyWiki ou outro repositório público. As imagens **não são
+referenciadas por hotlink** — são baixadas e servidas pelo bucket `bey-images`
+do Supabase (spec §4.10). O app não tem fins comerciais, e a página `/creditos`
+já registra o uso de fã e o canal para pedido de remoção.
+
+Motivo de não usar hotlink, além do óbvio de não onerar servidor alheio: um link
+externo quebra quando a outra ponta reorganiza os arquivos, e o catálogo passaria
+a exibir buracos sem ninguém perceber.
+
+### 3. Dado divergente: registrar o valor e marcar a divergência
+
+A regra original deste plano era **deixar nulo** quando as fontes divergissem. O
+usuário propôs melhor: informar que não há valor oficial, dizer qual foi
+encontrado e em quais sites. Deixar nulo esconde informação que temos.
+
+**Implementado** (migration `0011_dado_divergente`):
+
+- Coluna `data_disputed boolean` em `parts` e `beyblades`
+- O valor gravado é **o mais citado** entre as fontes
+- O detalhe vai em `notes`: *"55 em byybladebuilder, 57 em beybxdb"*
+- `src/components/AvisoDivergencia.tsx` mostra isso nas três telas — etiqueta
+  discreta no card, bloco explicativo no detalhe
+
+Booleano em vez de só texto em `notes` porque precisa ser **filtrável**: sem
+coluna própria não há como listar "tudo que precisa de revisão", e um índice
+parcial cobre essa consulta.
+
+Isto **não substitui** a ressalva geral do catálogo: *todo* atributo é medição de
+comunidade, e isso está em `/creditos`. `data_disputed` diz algo mais específico
+— as fontes não concordam entre si sobre este registro.
+

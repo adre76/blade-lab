@@ -52,6 +52,12 @@ export const PartSchema = z
     equivalent_name: z.string().nullish(),
     image_path: z.string().nullish(),
     image_source_url: z.string().url().nullish(),
+    /**
+     * true quando as fontes públicas divergem sobre este registro.
+     * O valor gravado é o mais citado; o detalhe da divergência vai em `notes`
+     * ("55 em byybladebuilder, 57 em beybxdb").
+     */
+    data_disputed: z.boolean().default(false),
     source_url: z.string().url(),
     notes: z.string().nullish(),
   })
@@ -94,6 +100,12 @@ export const BeybladeSchema = z
     // bey. Quais slots são obrigatórios depende da anatomia, e é o superRefine
     // abaixo que decide isso contra data/anatomies.json.
     parts: z.partialRecord(Slot, z.string().min(1)),
+    /**
+     * true quando as fontes públicas divergem sobre este registro.
+     * O valor gravado é o mais citado; o detalhe da divergência vai em `notes`
+     * ("55 em byybladebuilder, 57 em beybxdb").
+     */
+    data_disputed: z.boolean().default(false),
     source_url: z.string().url(),
     notes: z.string().nullish(),
   })

@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { T } from "../theme.ts";
 import { usePeca } from "../hooks/usePeca.ts";
+import AvisoDivergencia from "./AvisoDivergencia.tsx";
 import {
   COR_TIPO, ROTULO_TIPO, MARCA, ROTULO_SLOT, ROTULO_RARIDADE,
   ROTULO_LANCAMENTO, ROTULO_RESISTENCIA, ROTULO_GIRO, ROTULO_LINHA,
@@ -159,7 +160,9 @@ export default function DetalhePeca() {
         )}
       </section>
 
-      {peca.notes && (
+      <AvisoDivergencia ativo={peca.data_disputed} detalhe={peca.notes} />
+
+      {peca.notes && !peca.data_disputed && (
         <p style={{
           marginTop: 18, color: T.textSecondary, fontSize: 13,
           background: T.bgCard, border: `1px solid ${T.border}`,

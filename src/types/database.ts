@@ -68,6 +68,7 @@ export type Database = {
           bey_type: Database["public"]["Enums"]["bey_type"] | null
           brand: Database["public"]["Enums"]["brand"]
           created_at: string
+          data_disputed: boolean
           equivalent_id: string | null
           id: string
           image_path: string | null
@@ -86,6 +87,7 @@ export type Database = {
           bey_type?: Database["public"]["Enums"]["bey_type"] | null
           brand?: Database["public"]["Enums"]["brand"]
           created_at?: string
+          data_disputed?: boolean
           equivalent_id?: string | null
           id?: string
           image_path?: string | null
@@ -104,6 +106,7 @@ export type Database = {
           bey_type?: Database["public"]["Enums"]["bey_type"] | null
           brand?: Database["public"]["Enums"]["brand"]
           created_at?: string
+          data_disputed?: boolean
           equivalent_id?: string | null
           id?: string
           image_path?: string | null
@@ -280,6 +283,7 @@ export type Database = {
           code: string | null
           contact_points: number | null
           created_at: string
+          data_disputed: boolean
           dash_performance: Database["public"]["Enums"]["resistance"] | null
           defense: number
           equivalent_id: string | null
@@ -304,6 +308,7 @@ export type Database = {
           code?: string | null
           contact_points?: number | null
           created_at?: string
+          data_disputed?: boolean
           dash_performance?: Database["public"]["Enums"]["resistance"] | null
           defense?: number
           equivalent_id?: string | null
@@ -328,6 +333,7 @@ export type Database = {
           code?: string | null
           contact_points?: number | null
           created_at?: string
+          data_disputed?: boolean
           dash_performance?: Database["public"]["Enums"]["resistance"] | null
           defense?: number
           equivalent_id?: string | null
