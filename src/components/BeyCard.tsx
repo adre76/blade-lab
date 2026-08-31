@@ -72,7 +72,18 @@ function Imagem({ caminho, cor, alt }: { caminho: string | null; cor: string; al
       // de a imagem dominar o card. Sem isso o card muda de proporção
       // conforme a largura da tela.
       maxHeight: 165,
-      background: `linear-gradient(140deg, ${cor}14, ${T.bgInput} 65%)`,
+      // Fundo CLARO, e não o gradiente escuro do tema.
+      //
+      // As artes de produto da wiki vêm de dois jeitos: algumas com fundo
+      // branco opaco, outras com transparência. Sobre fundo escuro isso
+      // produzia uma faixa branca em alguns cards e escura em outros — a
+      // grade inteira ficava desalinhada visualmente.
+      //
+      // Padronizar em claro resolve os dois casos de uma vez, e é o fundo
+      // para o qual essas artes foram desenhadas: elas ganham contraste em
+      // vez de sumir. O acento da natureza fica na borda esquerda do card,
+      // que já cumpre o papel de identificar o tipo.
+      background: `linear-gradient(140deg, #ffffff, #e8ecf1 70%)`,
       borderBottom: `1px solid ${T.border}`,
       borderRadius: "9px 9px 0 0",
       display: "flex",
@@ -90,8 +101,10 @@ function Imagem({ caminho, cor, alt }: { caminho: string | null; cor: string; al
         />
       ) : (
         // Placeholder: o mesmo desenho do ícone do app, na cor da natureza.
+        // Placeholder sobre fundo claro: opacidade menor, para insinuar a
+        // ausência da arte sem competir com os cards que já a têm.
         <svg viewBox="0 0 64 64" width="52" height="52" aria-hidden="true"
-             style={{ opacity: 0.3 }}>
+             style={{ opacity: 0.22 }}>
           <circle cx="32" cy="32" r="19" fill="none" stroke={cor} strokeWidth="5" />
           <circle cx="32" cy="32" r="6" fill={cor} />
         </svg>

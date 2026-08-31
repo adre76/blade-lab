@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "seed": "tsx --env-file-if-exists=.env.seed scripts/seed.ts",
+    "seed:images": "tsx --env-file-if-exists=.env.seed scripts/seed-images.ts",
     "sync:anatomies": "tsx --env-file-if-exists=.env.seed scripts/sync-anatomies.ts"
   },
   "dependencies": {
@@ -24,6 +25,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.1.1",
+    "sharp": "^0.35.4",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vite": "^8.2.2",

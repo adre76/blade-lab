@@ -72,6 +72,7 @@ export type Database = {
           equivalent_id: string | null
           id: string
           image_path: string | null
+          image_source_url: string | null
           line: Database["public"]["Enums"]["product_line"]
           name: string
           notes: string | null
@@ -91,6 +92,7 @@ export type Database = {
           equivalent_id?: string | null
           id?: string
           image_path?: string | null
+          image_source_url?: string | null
           line: Database["public"]["Enums"]["product_line"]
           name: string
           notes?: string | null
@@ -110,6 +112,7 @@ export type Database = {
           equivalent_id?: string | null
           id?: string
           image_path?: string | null
+          image_source_url?: string | null
           line?: Database["public"]["Enums"]["product_line"]
           name?: string
           notes?: string | null
@@ -290,6 +293,7 @@ export type Database = {
           height_mm: number | null
           id: string
           image_path: string | null
+          image_source_url: string | null
           line: Database["public"]["Enums"]["product_line"]
           name: string
           notes: string | null
@@ -315,6 +319,7 @@ export type Database = {
           height_mm?: number | null
           id?: string
           image_path?: string | null
+          image_source_url?: string | null
           line: Database["public"]["Enums"]["product_line"]
           name: string
           notes?: string | null
@@ -340,6 +345,7 @@ export type Database = {
           height_mm?: number | null
           id?: string
           image_path?: string | null
+          image_source_url?: string | null
           line?: Database["public"]["Enums"]["product_line"]
           name?: string
           notes?: string | null

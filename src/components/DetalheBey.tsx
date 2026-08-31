@@ -73,14 +73,15 @@ export default function DetalheBey() {
         }}>
           <div style={{
             aspectRatio: "16 / 9", maxHeight: 240,
-            background: `linear-gradient(140deg, ${cor}14, ${T.bgInput} 65%)`,
+            // Fundo claro, pelo mesmo motivo do card (ver BeyCard.tsx).
+            background: `linear-gradient(140deg, #ffffff, #e8ecf1 70%)`,
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
             {imagem ? (
               <img src={imagem} alt={bey.name}
                    style={{ width: "100%", height: "100%", objectFit: "contain" }} />
             ) : (
-              <svg viewBox="0 0 64 64" width="72" height="72" style={{ opacity: 0.3 }}>
+              <svg viewBox="0 0 64 64" width="72" height="72" style={{ opacity: 0.22 }}>
                 <circle cx="32" cy="32" r="19" fill="none" stroke={cor} strokeWidth="5" />
                 <circle cx="32" cy="32" r="6" fill={cor} />
               </svg>
