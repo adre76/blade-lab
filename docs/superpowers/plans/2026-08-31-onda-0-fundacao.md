@@ -29,19 +29,25 @@ Branch: **`onda-0-fundacao`**
 - **Vercel:** projeto `blade-x-lab` (`prj_eb4u3gODFSWS5qOg2pmsogjUZP3b`), ligado ao repo, production branch `main`, deploy automático a cada push
 - **URL:** https://blade-x-lab.vercel.app
 
-**Falta uma ação manual:** adicionar em *Settings → Environment Variables*, para
-Production e Preview:
+**Variáveis de ambiente** (configuradas em 2026-08-31, ambiente Production):
 
 ```
 VITE_SUPABASE_URL       = https://gbcpfsczjivtwkyheihu.supabase.co
 VITE_SUPABASE_ANON_KEY  = sb_publishable_Yl1VyMgXm8NbuuSt3mIROQ_Qsj-TqJg
 ```
 
-O MCP da Vercel não tem ferramenta para criar variáveis de ambiente — só o painel.
-Sem elas o build passa, mas o Vite embute os valores **durante o build**, e a
-página abre em branco com `Variável de ambiente ausente: VITE_SUPABASE_URL` no
-console. Depois de adicioná-las é preciso **refazer o deploy**, porque o bundle
-já construído não as contém.
+Ambas são públicas por natureza — o Vite as embute no bundle que o navegador
+baixa. Nada com prefixo `VITE_` pode ser segredo.
+
+Duas armadilhas que custaram tempo e ficam registradas:
+
+1. **O Vite embute os valores durante o BUILD.** Configurar as variáveis não
+   conserta um bundle já publicado; é preciso refazer o deploy.
+2. **O MCP da Vercel não tem ferramenta para criar variáveis de ambiente** —
+   nenhuma das 37. Só painel ou `vercel env add`.
+
+Estão marcadas apenas para *Production*. Deploys de preview (branches) vão gerar
+página em branco até serem marcadas também para *Preview*.
 
 Nenhum segredo foi versionado: auditado o histórico completo do repositório
 público — nenhuma `service_role` key, a publishable key só no `.env` ignorado, e
