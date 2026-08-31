@@ -25,7 +25,9 @@
 
 ### Desvio do spec registrado neste plano
 
-O spec descreve a estratégia de cache (§3.3) mas não o meio. Este plano usa **`vite-plugin-pwa`** (Workbox) em vez do `sw.js` escrito à mão do Trocação, porque a estratégia *stale-while-revalidate* do catálogo sai declarativa em vez de manual. É a única divergência de meio em relação ao projeto de referência.
+**PWA.** O spec descreve a estratégia de cache (§3.3) mas não o meio. Este plano usa **`vite-plugin-pwa`** (Workbox) em vez do `sw.js` escrito à mão do Trocação, porque a estratégia *stale-while-revalidate* do catálogo sai declarativa em vez de manual.
+
+**`get_shared_combo`.** A coluna de retorno que o spec §4.7 chama de `anatomy` sai aqui como `combo_anatomy`. O nome do spec colidiria com o tipo `anatomy` na declaração `returns table`. A onda 4 consome esse nome.
 
 ---
 
@@ -129,24 +131,37 @@ coverage
     "react-router-dom": "^7.1.1"
   },
   "devDependencies": {
+    "@types/node": "^22.10.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vite": "^8.0.10",
-    "vite-plugin-pwa": "^0.21.1",
-    "vitest": "^3.0.5"
+    "vite-plugin-pwa": "LEIA O STEP 3",
+    "vitest": "LEIA O STEP 3"
   }
 }
 ```
 
-- [ ] **Step 3: Instalar e confirmar que resolve**
+`@types/node` não é opcional: o `tsconfig.json` inclui `scripts/`, e `scripts/sync-anatomies.ts` (Task 13) usa `node:fs` e `process.env`. Sem ele, `tsc -b` falha com `Cannot find module 'node:fs'`.
+
+- [ ] **Step 3: Resolver as versões de `vitest` e `vite-plugin-pwa` compatíveis com Vite 8**
+
+**Não copie versões deste plano para estes dois pacotes.** Ambos declaram peer dependency sobre o Vite, e as faixas mudam a cada major do Vite. Descubra as compatíveis antes de instalar:
+
+```bash
+npm view vitest peerDependencies && npm view vite-plugin-pwa peerDependencies
+```
+
+Escolha as versões cuja faixa de peer inclua `vite@8` e escreva-as no `package.json`. Se nenhuma versão publicada suportar Vite 8, a decisão é sua e deve ser registrada: baixar o Vite para a major suportada, ou trocar o plugin de PWA.
+
+- [ ] **Step 4: Instalar**
 
 Run: `npm install`
-Expected: termina sem `ERESOLVE`. Se algum peer dependency conflitar, **resolva ajustando a versão, não com `--force`** — `--force` esconde incompatibilidade real que aparece no build da Vercel.
+Expected: termina sem `ERESOLVE`. Se conflitar, **volte ao Step 3 e ajuste a versão — nunca use `--force`**. O `--force` esconde incompatibilidade real que reaparece no build da Vercel, onde é bem mais caro diagnosticar.
 
-- [ ] **Step 4: Criar `tsconfig.json` e `tsconfig.node.json`**
+- [ ] **Step 5: Criar `tsconfig.json` e `tsconfig.node.json`**
 
 ```json
 {
@@ -189,6 +204,8 @@ Expected: termina sem `ERESOLVE`. Se algum peer dependency conflitar, **resolva 
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     "moduleDetection": "force",
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "noEmit": true,
     "strict": true
   },
@@ -196,7 +213,9 @@ Expected: termina sem `ERESOLVE`. Se algum peer dependency conflitar, **resolva 
 }
 ```
 
-- [ ] **Step 5: Criar `index.html`**
+`composite: true` é obrigatório: o script de build é `tsc -b`, e em build mode todo projeto referenciado sem `composite` faz o TypeScript abortar com TS6306. Sem ele, o Step 9 desta task falha.
+
+- [ ] **Step 6: Criar `index.html`**
 
 ```html
 <!doctype html>
@@ -214,10 +233,12 @@ Expected: termina sem `ERESOLVE`. Se algum peer dependency conflitar, **resolva 
 </html>
 ```
 
-- [ ] **Step 6: Criar `vite.config.ts` (PWA entra na Task 4)**
+- [ ] **Step 7: Criar `vite.config.ts` (Vitest entra na Task 2, PWA na Task 4)**
+
+O import vem de `vitest/config` desde já — o Vitest foi instalado no Step 4, e começar por `vite` obrigaria a trocar o import na Task 2, que é justamente onde esse detalhe vira erro de compilação.
 
 ```ts
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
@@ -227,7 +248,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 7: Criar `src/App.tsx` e `src/main.tsx` mínimos**
+- [ ] **Step 8: Criar `src/App.tsx` e `src/main.tsx` mínimos**
 
 `src/App.tsx`:
 
@@ -254,12 +275,12 @@ createRoot(root).render(
 );
 ```
 
-- [ ] **Step 8: Verificar que compila e roda**
+- [ ] **Step 9: Verificar que compila e roda**
 
 Run: `npm run build`
 Expected: termina com `built in ...` e cria `dist/`. Sem erro de TypeScript.
 
-- [ ] **Step 9: Commit**
+- [ ] **Step 10: Commit**
 
 ```bash
 git add .gitignore package.json package-lock.json tsconfig.json tsconfig.node.json vite.config.ts index.html src/main.tsx src/App.tsx
@@ -312,8 +333,10 @@ O terceiro caso existe porque a Vercel entrega variável não configurada como s
 
 - [ ] **Step 2: Adicionar a seção `test` ao `vite.config.ts`**
 
+O import vem de `vitest/config`, **não** de `vite`. A propriedade `test` não existe no `UserConfig` do Vite, e `vite.config.ts` está dentro do `tsconfig.node.json` — importar de `vite` compila aqui (o Vitest não checa tipo em runtime) mas quebra o `npm run build` da Task 3 com `'test' does not exist in type 'UserConfig'`.
+
 ```ts
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
@@ -326,8 +349,6 @@ export default defineConfig({
   },
 });
 ```
-
-Se o TypeScript reclamar da propriedade `test`, troque o import por `import { defineConfig } from "vitest/config";`.
 
 - [ ] **Step 3: Rodar o teste e confirmar que falha**
 
@@ -591,7 +612,9 @@ Diferente do Trocação, que apenas registra um `console.error` quando falta var
 - [ ] **Step 4: Verificar o build**
 
 Run: `npm run build`
-Expected: sucesso. Se falhar por variável ausente, o `.env` do Step 2 não foi criado.
+Expected: sucesso.
+
+**Atenção à expectativa:** o build **não** falha por variável ausente. O Vite substitui `import.meta.env` textualmente e não executa o topo dos módulos; o `throw` de `readSupabaseEnv` só acontece no navegador. Variável faltando aparece como tela em branco com o erro no console — não como build quebrado. Não perca tempo procurando no log de build.
 
 - [ ] **Step 5: Commit**
 
@@ -819,9 +842,12 @@ create table combo_shares (
   created_at timestamptz not null default now()
 );
 
-create index inventory_profile_idx on inventory_items (profile_id, status);
-create index combos_profile_idx    on combos (profile_id);
+create index inventory_profile_idx  on inventory_items (profile_id, status);
+create index inventory_beyblade_idx on inventory_items (beyblade_id);
+create index combos_profile_idx     on combos (profile_id);
 ```
+
+`inventory_beyblade_idx` cobre uma FK sem índice que a view `user_parts` (Task 12) usa no join com `beyblade_parts`.
 
 - [ ] **Step 2: Aplicar via MCP** com nome `0003_user_data`.
 
@@ -853,23 +879,32 @@ Esta é a task mais delicada do plano. As três armadilhas abaixo estão documen
 - [ ] **Step 1: Escrever a migration**
 
 ```sql
-create extension if not exists pgcrypto;
+create extension if not exists pgcrypto with schema extensions;
 
 -- ─── Slug de compartilhamento ────────────────────────────────────────────────
--- 12 caracteres de alfabeto sem ambiguidade visual: 31^12 ~ 7,9e17 combinacoes
+-- 12 caracteres de alfabeto sem ambiguidade visual (sem 0 1 i l o).
+-- ~59,5 bits de entropia. Ha vies de modulo leve (256 % 31 = 8, entao os 8
+-- primeiros caracteres do alfabeto sao um pouco mais provaveis); irrelevante
+-- para um link secreto, mas registrado para nao afirmar uniformidade falsa.
+--
+-- set search_path = '' + qualificacao de gen_random_bytes sao OBRIGATORIOS:
+-- esta funcao e chamada pelo default da coluna a partir de share_combo, que
+-- roda com search_path vazio. Sem qualificar, falha com "function
+-- gen_random_bytes(integer) does not exist" na primeira tentativa de
+-- compartilhar — e de forma intermitente, porque o plano e cacheado por sessao.
 create function gen_share_slug() returns text
-language sql volatile as $$
+language sql volatile set search_path = '' as $$
   select string_agg(
     substr('23456789abcdefghjkmnpqrstuvwxyz', (get_byte(b, i) % 31) + 1, 1), ''
   )
-  from (select gen_random_bytes(12) as b) s, generate_series(0, 11) as i;
+  from (select extensions.gen_random_bytes(12) as b) s, generate_series(0, 11) as i;
 $$;
 
 alter table combo_shares alter column slug set default gen_share_slug();
 
 -- ─── updated_at generico ─────────────────────────────────────────────────────
 create function set_updated_at() returns trigger
-language plpgsql as $$
+language plpgsql set search_path = '' as $$
 begin
   new.updated_at := now();
   return new;
@@ -913,7 +948,7 @@ create trigger on_auth_user_created
 -- em ordem alfabetica, e o de imutabilidade veria o updated_at recem-alterado
 -- pelo outro como campo proibido, rejeitando TODA atualizacao.
 create function touch_profile() returns trigger
-language plpgsql as $$
+language plpgsql set search_path = '' as $$
 begin
   if new.id is distinct from old.id
      or new.created_at is distinct from old.created_at then
@@ -933,8 +968,11 @@ create trigger profiles_before_update
 -- coalesce(new.combo_id, old.combo_id) parece equivalente e NAO e: a
 -- substituicao dos registros ocorre antes da avaliacao do coalesce, e a funcao
 -- falha em toda escrita com "record is not assigned yet". Decidir por TG_OP.
+-- set search_path = '' e seguro aqui porque todas as tabelas abaixo estao
+-- qualificadas com public. e nenhuma funcao fora de pg_catalog e chamada.
+-- Sem ele, o linter do Supabase marca function_search_path_mutable.
 create function validate_combo_slots() returns trigger
-language plpgsql as $$
+language plpgsql set search_path = '' as $$
 declare
   v_combo_id uuid;
 begin
@@ -985,6 +1023,8 @@ select gen_share_slug() as slug, length(gen_share_slug()) as tamanho;
 ```
 
 Expected: `tamanho` = 12, e o slug só com caracteres de `23456789abcdefghjkmnpqrstuvwxyz`. Se vier menor que 12, o `generate_series` está errado.
+
+**Esta verificação não prova que a função funciona onde ela importa.** Aqui ela roda com `search_path` normal; o caso real é a chamada a partir de `share_combo`, que roda com `search_path` vazio. É por isso que a qualificação `extensions.gen_random_bytes` existe — e é a Task 11 que a exercita de verdade.
 
 - [ ] **Step 4: Confirmar que os dois constraint triggers existem**
 
@@ -1119,9 +1159,16 @@ begin
   values (auth.uid(), p_name, p_anatomy, p_notes)
   returning id into v_combo_id;
 
+  -- ::public.part_slot, nao ::part_slot. Sob search_path = '' o tipo nao e
+  -- encontrado e a funcao falha com "type part_slot does not exist" — ou seja,
+  -- nenhum combo poderia ser salvo. ::uuid dispensa qualificacao (pg_catalog).
   insert into public.combo_parts (combo_id, part_id, slot)
-  select v_combo_id, (e->>'part_id')::uuid, (e->>'slot')::part_slot
+  select v_combo_id, (e->>'part_id')::uuid, (e->>'slot')::public.part_slot
   from jsonb_array_elements(p_parts) as e;
+
+  -- Forca os constraint triggers diferidos a rodarem aqui, e nao no commit:
+  -- o erro volta atrelado a esta chamada em vez de vir opaco pelo PostgREST.
+  set constraints all immediate;
 
   return v_combo_id;
 end;
@@ -1146,8 +1193,10 @@ begin
   where id = p_combo_id;
 
   insert into public.combo_parts (combo_id, part_id, slot)
-  select p_combo_id, (e->>'part_id')::uuid, (e->>'slot')::part_slot
+  select p_combo_id, (e->>'part_id')::uuid, (e->>'slot')::public.part_slot
   from jsonb_array_elements(p_parts) as e;
+
+  set constraints all immediate;
 end;
 $$;
 
@@ -1205,15 +1254,28 @@ language sql stable security definer set search_path = '' as $$
   where sh.slug = p_slug and sh.is_active;
 $$;
 
-revoke execute on function save_combo(text, anatomy, text, jsonb)          from anon;
-revoke execute on function update_combo(uuid, text, anatomy, text, jsonb)  from anon;
-revoke execute on function share_combo(uuid)                               from anon;
-revoke execute on function revoke_combo_share(uuid)                        from anon;
+-- Revogar de PUBLIC, nao so de anon. O Postgres concede EXECUTE a PUBLIC por
+-- padrao no CREATE FUNCTION; revogar apenas de anon deixa o privilegio herdado
+-- por PUBLIC intacto, e has_function_privilege('anon', ...) continua TRUE.
+-- Depois de revogar de PUBLIC e preciso reconceder a authenticated.
+revoke execute on function public.save_combo(text, anatomy, text, jsonb)
+  from public, anon;
+revoke execute on function public.update_combo(uuid, text, anatomy, text, jsonb)
+  from public, anon;
+revoke execute on function public.share_combo(uuid)              from public, anon;
+revoke execute on function public.revoke_combo_share(uuid)       from public, anon;
 
-grant execute on function get_shared_combo(text) to anon, authenticated;
+grant execute on function public.save_combo(text, anatomy, text, jsonb)
+  to authenticated;
+grant execute on function public.update_combo(uuid, text, anatomy, text, jsonb)
+  to authenticated;
+grant execute on function public.share_combo(uuid)               to authenticated;
+grant execute on function public.revoke_combo_share(uuid)        to authenticated;
+
+grant execute on function public.get_shared_combo(text) to anon, authenticated;
 ```
 
-Os `revoke ... from anon` são explícitos porque o Postgres concede `execute` a `public` por padrão; sem eles, um visitante não autenticado poderia chamar `save_combo` (a checagem de `auth.uid()` o barraria, mas depender só disso é mais frágil que negar o acesso).
+A checagem de `auth.uid()` dentro de `save_combo` já barraria um anônimo, mas depender só dela é mais frágil que negar o acesso — e a verificação do Step 3 só passa com o `revoke` feito de `public`.
 
 - [ ] **Step 2: Aplicar via MCP** com nome `0006_rpc`.
 
@@ -1278,6 +1340,8 @@ create policy "imagens leitura publica" on storage.objects
 
 Sem policy de escrita: só a `service_role` do script de seed envia imagens.
 
+Se vier `must be owner of table objects`, criar policy em `storage.objects` exige privilégio de `supabase_storage_admin`. Nesse caso crie o bucket e a policy pelo painel (*Storage → New bucket → Public*) e registre no arquivo que a parte de policy foi aplicada manualmente. Note que, com `public = true`, a leitura anônima já funciona pelo endpoint público — a policy é redundante, ainda que inofensiva.
+
 - [ ] **Step 3: Aplicar as duas via MCP** (`0007_views`, `0008_storage`).
 
 - [ ] **Step 4: Confirmar `security_invoker`**
@@ -1340,7 +1404,11 @@ const rows = Object.entries(anatomies).flatMap(([anatomy, slots]) =>
 const db = createClient(url, serviceKey, { auth: { persistSession: false } });
 
 // Destrutivo por design: apaga tudo e reinsere o arquivo inteiro.
-const { error: delErr } = await db.from("anatomy_slots").delete().neq("anatomy", "___");
+// NAO use o idioma .neq(col, "valor_impossivel") aqui: `anatomy` e coluna de
+// enum, e o Postgres tenta coagir o literal ao tipo, falhando com
+// "invalid input value for enum anatomy". O script morreria antes do insert e
+// deixaria a tabela VAZIA — sem fonte de verdade para validate_combo_slots.
+const { error: delErr } = await db.from("anatomy_slots").delete().not("anatomy", "is", null);
 if (delErr) throw delErr;
 
 const { error: insErr } = await db.from("anatomy_slots").insert(rows);
@@ -1364,10 +1432,39 @@ select anatomy, count(*) from anatomy_slots group by anatomy order by anatomy;
 
 Expected: `basic` 3, `custom` 5, `custom_expand` 6, `unique` 4.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Criar `SUPABASE_ADMIN.md` com o aviso operacional**
+
+O spec §4.3 exige que este cuidado esteja registrado, e ele nasce junto com a sincronização destrutiva. Crie o arquivo na raiz com, no mínimo:
+
+```markdown
+# Administração SQL — Blade X Lab
+
+Comandos executados no SQL Editor do painel do Supabase.
+Projeto: `gbcpfsczjivtwkyheihu` (BLADEXLAB).
+
+## Alterar uma anatomia já em uso — LEIA ANTES
+
+Os triggers de validade de combo rodam **apenas em escrita, nunca em repouso**.
+Remover um slot de uma anatomia em `data/anatomies.json` e rodar
+`npm run sync:anatomies` deixa os combos já salvos daquela anatomia inválidos
+e **silenciosamente imutáveis**: não podem mais ser sequer renomeados, porque
+`update_combo` revalida o conjunto inteiro de slots.
+
+Alterar uma anatomia em uso exige migrar os combos afetados na mesma transação.
+
+## Aposentar uma peça
+
+Todas as FKs do catálogo são `on delete restrict`. Apagar peça referenciada
+falha de propósito — para não destruir combos de usuários. Migre as referências
+primeiro.
+```
+
+As demais seções (diagnóstico, atendimento a usuário, LGPD), a exemplo do `SUPABASE_ADMIN.md` do Trocação, entram nas ondas seguintes, quando houver usuários.
+
+- [ ] **Step 6: Commit**
 
 ```bash
-git add data/anatomies.json scripts/sync-anatomies.ts
+git add data/anatomies.json scripts/sync-anatomies.ts SUPABASE_ADMIN.md
 git commit -m "feat(db): anatomias como dado versionado com sync destrutivo"
 ```
 
@@ -1404,7 +1501,16 @@ begin
     insert into combos (profile_id, name, anatomy)
     values (v_user, 'incompleto', 'basic') returning id into v_combo;
     insert into combo_parts (combo_id, part_id, slot) values (v_combo, v_blade, 'blade');
-    -- falta ratchet e bit: o commit do savepoint deve estourar
+
+    -- SET CONSTRAINTS ALL IMMEDIATE e IMPRESCINDIVEL aqui.
+    -- Constraint triggers DEFERRABLE INITIALLY DEFERRED so disparam no commit
+    -- da transacao real. Um bloco BEGIN...EXCEPTION do PL/pgSQL e apenas uma
+    -- subtransacao: ao liberar o savepoint, os eventos pendentes sao
+    -- TRANSFERIDOS para a transacao pai, nao executados. Sem esta linha o
+    -- raise abaixo seria sempre alcancado e o teste REPROVARIA um schema
+    -- correto, abortando a suite antes dos checks 2 a 5.
+    set constraints all immediate;
+
     raise exception 'FALHA: combo incompleto foi aceito';
   exception
     when others then
@@ -1505,6 +1611,8 @@ O caso 5 é o mais valioso da suíte: é o bug que a revisão do spec encontrou 
 Cole o arquivo inteiro na ferramenta de executar SQL do MCP.
 Expected: executa até o `rollback` **sem nenhuma exceção**. Qualquer mensagem começando com `FALHA:` indica regra quebrada — corrija a migration correspondente e reaplique.
 
+Se a ferramenta do MCP já abrir transação própria, o `begin;` inicial produz `WARNING: there is already a transaction in progress`. É inofensivo — não confunda com falha.
+
 Se o ambiente do MCP não permitir escrita em `auth.users`, execute só os blocos 2 e 4 (que não precisam de usuário) e registre os demais como verificação a rodar quando houver acesso — **não os apague**.
 
 - [ ] **Step 3: Commit**
@@ -1530,9 +1638,17 @@ git commit -m "test(db): verificacoes executaveis das regras de integridade"
 
 Prova o caminho inteiro: navegador → `supabase-js` → RLS → tabela pública. Se as anatomias aparecem sem login, a policy de leitura pública funciona.
 
-- [ ] **Step 1: Gerar os tipos do banco**
+- [ ] **Step 1: Gerar os tipos do banco e ligá-los ao cliente**
 
 Use a ferramenta de geração de tipos do MCP do Supabase e salve a saída em `src/types/database.ts`. Se o MCP não oferecer essa função, escreva à mão apenas os tipos usados nesta task e registre a geração completa como pendência da onda 1 — não invente o arquivo inteiro.
+
+Em seguida **ligue o generic em `src/lib/supabase.ts`**, senão o arquivo gerado fica morto e toda linha consultada é `any`:
+
+```ts
+import type { Database } from "../types/database.ts";
+// ...
+export const supabase = createClient<Database>(url, anonKey, { /* ... */ });
+```
 
 - [ ] **Step 2: Criar `src/hooks/useAnatomies.ts`**
 
@@ -1553,6 +1669,7 @@ export function useAnatomies() {
     supabase
       .from("anatomy_slots")
       .select("anatomy, slot")
+      .order("anatomy")
       .then(({ data, error }) => {
         if (cancelado) return;
         if (error) {
@@ -1662,7 +1779,7 @@ Em *Settings → Environment Variables*, defina para *Production*, *Preview* e *
 Abra a URL de produção.
 Expected: os quatro cartões de anatomia, iguais aos do ambiente local.
 
-Se o build falhar por variável ausente, o `readSupabaseEnv` da Task 2 fez seu trabalho — a mensagem dirá qual falta.
+Se a página vier em branco, abra o console: `readSupabaseEnv` (Task 2) nomeia a variável que falta. O build em si passa mesmo sem as variáveis — veja a nota da Task 5, Step 4.
 
 - [ ] **Step 5: Verificar a instalação como PWA**
 
