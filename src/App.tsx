@@ -15,6 +15,9 @@ function MenuUsuario() {
         <Link to="/lab" style={{ color: T.accentDim, fontSize: 13 }}>
           Laboratório
         </Link>
+        <Link to="/faq" style={{ color: T.accentDim, fontSize: 13 }}>
+          Entender o jogo
+        </Link>
         <Link to="/creditos" style={{ color: T.textMuted, fontSize: 13 }}>
           Fontes e créditos
         </Link>
@@ -36,6 +39,9 @@ function MenuUsuario() {
     <div style={{ position: "relative", display: "flex", gap: 14, alignItems: "center" }}>
       <Link to="/lab" style={{ color: T.accentDim, fontSize: 13 }}>
         Laboratório
+      </Link>
+      <Link to="/faq" style={{ color: T.accentDim, fontSize: 13 }}>
+        Entender o jogo
       </Link>
       <Link to="/creditos" style={{ color: T.textMuted, fontSize: 13 }}>
         Fontes e créditos

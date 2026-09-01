@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App.tsx";
 import Catalogo from "./components/Catalogo.tsx";
 import Landing from "./components/Landing.tsx";
+import Faq from "./components/Faq.tsx";
 import Laboratorio from "./components/Laboratorio.tsx";
 import DetalheBey from "./components/DetalheBey.tsx";
 import DetalhePeca from "./components/DetalhePeca.tsx";
@@ -30,6 +31,7 @@ createRoot(root).render(
               <Route path="/catalogo" element={<Catalogo />} />
               <Route path="/bey/:id" element={<DetalheBey />} />
               <Route path="/peca/:id" element={<DetalhePeca />} />
+              <Route path="/faq" element={<Faq />} />
               <Route path="/creditos" element={<Creditos />} />
               <Route path="/entrar" element={<Login />} />
               <Route path="/perfil" element={<Perfil />} />
