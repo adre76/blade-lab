@@ -1078,3 +1078,43 @@ antes se algum inventário aponta para elas.
 npm run obsoletos              # lista
 npm run obsoletos -- --apagar  # remove
 ```
+
+---
+
+## O código do produto não diz a anatomia (01/09/2026)
+
+Descoberto por pergunta do usuário: o **BX-50** (Random Booster Vol. 11) tem
+seis beys, e dois deles — `WolfFlame D9-65L` e `CerberusReaper B0-80WB` — são
+**Custom Line**, com Lock Chip e Assist Blade. Um Random Booster numerado na
+linha Basic contendo beys de outra anatomia.
+
+O coletor deduzia linha e anatomia do **prefixo do código**. Com o catálogo
+BX+UX isso não quebrava nada, porque `basic` e `unique` têm exatamente os mesmos
+três slots. Mas quando a CX entrar, a mesma dedução colocaria um bey de cinco
+slots numa anatomia de três — e o BX-50 é a prova de que isso não é hipótese.
+
+Agora linha e anatomia saem do campo `System` da própria página do produto.
+Conferido bey a bey contra a fonte: **0 divergências em 156**, contra 16 antes.
+Doze beys com código UX são Basic Line, e quatro com código BX são Unique Line.
+
+Isso é a segunda confirmação de que separar `product_line` de `anatomy` no
+schema (spec §4.1) estava certo. A primeira foi o erro do Assist Blade na UX.
+
+**Para a onda da CX:** não basta coletar os códigos `CX-`. Há bey Custom Line
+sob código BX, e provavelmente sob UX. O critério é o campo `System`, e o
+coletor já o aplica — hoje ele descarta explicitamente o que é Custom Line,
+com a razão registrada na lista de descartes.
+
+### Também confirmado nesta passagem
+
+Conferência contra a página **List of Beyblade X products (Takara Tomy)**, o
+índice oficial da wiki, produto a produto. Dos 148 códigos que trazem bey, 37
+não estão no catálogo — e todos por decisão registrada:
+
+- **34 são CX** (onda própria)
+- **2 são Ratchet-Integrated** (`UX-19 BulletGriffon H`, `UX-20 GloryValkyrie LF`)
+- **3 são conjuntos** cujo bey já está no catálogo por outro código
+  (`BX-07 Start Dash Set`, `BX-09 Beybattle Pass`,
+  `BX-22 DranSword 3-60F Entry Package`)
+
+Nenhuma lacuna não intencional em BX e UX.
