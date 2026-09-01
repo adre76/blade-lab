@@ -6,7 +6,7 @@ import BeyCard from "./BeyCard.tsx";
 import {
   COR_TIPO, ROTULO_TIPO, ROTULO_RARIDADE, COR_RARIDADE, BUSCA_SLOT, MARCA,
 } from "./rotulos.ts";
-import { casaTermos, semAcento, termosDaBusca } from "../lib/busca.ts";
+import { casaTermos, termosDaBusca } from "../lib/busca.ts";
 import type { Database } from "../types/database.ts";
 
 type BeyType = Database["public"]["Enums"]["bey_type"];
@@ -100,26 +100,6 @@ export default function Catalogo() {
     });
   }, [composicoes, termos, tipo, raridade]);
 
-  /**
-   * Quando a busca casou por um nome ALTERNATIVO, dizer isso.
-   *
-   * Sem esta linha o acerto fica invisível: quem digita "Talon Ptera" vê um
-   * card escrito "Ptera Swing" e conclui que a busca falhou. O resultado
-   * precisa explicar por que é o resultado.
-   */
-  const porOutroNome = useMemo(() => {
-    if (!termos.length) return [];
-    const achados = new Map<string, string>();
-    for (const c of filtradas) {
-      for (const { part } of c.pecas) {
-        for (const outro of part.aka ?? []) {
-          if (termos.some((t) => semAcento(outro).includes(t))) achados.set(outro, part.name);
-        }
-      }
-    }
-    return [...achados].map(([outro, nome]) => ({ outro, nome }));
-  }, [filtradas, termos]);
-
   const estiloFiltro = (ativo: boolean, cor: string) => ({
     background: ativo ? `${cor}22` : T.bgCard,
     border: `1px solid ${ativo ? cor : T.border}`,
@@ -185,17 +165,6 @@ export default function Catalogo() {
           {totalProdutos > composicoes.length && ` · ${totalProdutos} produtos lançados`}
         </p>
       )}
-
-      {porOutroNome.map(({ outro, nome }) => (
-        <p key={outro} style={{
-          background: `${T.accent}12`, border: `1px solid ${T.accent}33`,
-          borderRadius: 8, padding: "8px 11px", margin: "0 0 12px",
-          color: T.textSecondary, fontSize: 13,
-        }}>
-          <strong style={{ color: T.accent }}>{outro}</strong> é o nome Hasbro de{" "}
-          <strong>{nome}</strong> — o catálogo usa a grafia Takara Tomy.
-        </p>
-      ))}
 
       <div style={{
         display: "grid", gap: 14,

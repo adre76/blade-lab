@@ -278,6 +278,23 @@
     },
     {
       "release_code": "BX-00",
+      "name": "Mosasaurus 9-60U",
+      "line": "BX",
+      "anatomy": "basic",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "defense",
+      "source_url": "https://beyblade.fandom.com/wiki/Mosasaurus_9-60U",
+      "parts": {
+        "blade": "Tricera Spiky",
+        "ratchet": "9-60",
+        "bit": "Unite"
+      },
+      "notes": "Repintura de colaboração: o produto tem nome próprio, e a composição é a mesma do Tricera Spiky 9-60U."
+    },
+    {
+      "release_code": "BX-00",
       "name": "Obi-Wan Kenobi 4-60P",
       "line": "BX",
       "anatomy": "basic",
@@ -342,7 +359,7 @@
     },
     {
       "release_code": "BX-00",
-      "name": "Ptera Swing 4-55D",
+      "name": "Quetzalcoatlus 4-55D",
       "line": "BX",
       "anatomy": "basic",
       "release_type": "booster",
@@ -354,7 +371,8 @@
         "blade": "Ptera Swing",
         "ratchet": "4-55",
         "bit": "Dot"
-      }
+      },
+      "notes": "Repintura de colaboração: o produto tem nome próprio, e a composição é a mesma do Ptera Swing 4-55D."
     },
     {
       "release_code": "BX-00",
@@ -455,6 +473,23 @@
     },
     {
       "release_code": "BX-00",
+      "name": "Spinosaurus 3-85A",
+      "line": "BX",
+      "anatomy": "basic",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/Spinosaurus_3-85A",
+      "parts": {
+        "blade": "Tyranno Roar",
+        "ratchet": "3-85",
+        "bit": "Accel"
+      },
+      "notes": "Repintura de colaboração: o produto tem nome próprio, e a composição é a mesma do Tyranno Roar 3-85A."
+    },
+    {
+      "release_code": "BX-00",
       "name": "Starscream 3-80N",
       "line": "BX",
       "anatomy": "basic",
@@ -503,6 +538,23 @@
     },
     {
       "release_code": "BX-00",
+      "name": "T. Rex 1-80GB",
+      "line": "BX",
+      "anatomy": "basic",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/T._Rex_1-80GB",
+      "parts": {
+        "blade": "Tyranno Beat",
+        "ratchet": "1-80",
+        "bit": "Gear Ball"
+      },
+      "notes": "Repintura de colaboração: o produto tem nome próprio, e a composição é a mesma do Tyranno Beat 1-80GB."
+    },
+    {
+      "release_code": "BX-00",
       "name": "Thanos 4-60P",
       "line": "BX",
       "anatomy": "basic",
@@ -531,54 +583,6 @@
         "blade": "The Mandalorian",
         "ratchet": "3-60",
         "bit": "Flat"
-      }
-    },
-    {
-      "release_code": "BX-00",
-      "name": "Tricera Spiky 9-60U",
-      "line": "BX",
-      "anatomy": "basic",
-      "release_type": "booster",
-      "release_date": null,
-      "rarity": "common",
-      "bey_type": "defense",
-      "source_url": "https://beyblade.fandom.com/wiki/Mosasaurus_9-60U",
-      "parts": {
-        "blade": "Tricera Spiky",
-        "ratchet": "9-60",
-        "bit": "Unite"
-      }
-    },
-    {
-      "release_code": "BX-00",
-      "name": "Tyranno Beat 1-80GB",
-      "line": "BX",
-      "anatomy": "basic",
-      "release_type": "booster",
-      "release_date": null,
-      "rarity": "common",
-      "bey_type": "attack",
-      "source_url": "https://beyblade.fandom.com/wiki/T._Rex_1-80GB",
-      "parts": {
-        "blade": "Tyranno Beat",
-        "ratchet": "1-80",
-        "bit": "Gear Ball"
-      }
-    },
-    {
-      "release_code": "BX-00",
-      "name": "Tyranno Roar 3-85A",
-      "line": "BX",
-      "anatomy": "basic",
-      "release_type": "booster",
-      "release_date": null,
-      "rarity": "common",
-      "bey_type": "attack",
-      "source_url": "https://beyblade.fandom.com/wiki/Spinosaurus_3-85A",
-      "parts": {
-        "blade": "Tyranno Roar",
-        "ratchet": "3-85",
-        "bit": "Accel"
       }
     },
     {

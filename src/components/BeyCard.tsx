@@ -182,6 +182,16 @@ export default function BeyCard({ comp, maxAtributo }: {
               <span style={{ color: T.textMuted, fontSize: 10.5 }}>{ROTULO_SLOT[slot] ?? slot}</span>
               {"  "}
               {part.name}
+              {/*
+                Metade das lâminas tem nome Hasbro diferente, e muita gente
+                conhece a peça só por esse. Mostrar os dois aqui responde de
+                uma vez — antes disso, achar pelo nome Hasbro devolvia um card
+                que não trazia esse nome em lugar nenhum, e parecia resultado
+                errado.
+              */}
+              {part.aka?.length ? (
+                <span style={{ color: T.textMuted }}>{" / "}{part.aka[0]}</span>
+              ) : null}
             </span>
           ))}
         </div>

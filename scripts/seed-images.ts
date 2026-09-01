@@ -81,20 +81,39 @@ function tituloPeca(slot: string, nome: string): string {
   return `${prefixo[slot] ?? slot} - ${nome.replace(/\s+/g, "")}`;
 }
 
-/** Consulta a API em lotes: 50 títulos por requisição em vez de 50 requisições. */
+/**
+ * Consulta a API em lotes: 50 títulos por requisição em vez de 50 requisições.
+ *
+ * `redirects=1` é obrigatório e não é detalhe: metade das lâminas tem página
+ * sob o nome Hasbro, e a grafia Takara Tomy é só um redirect. `Blade -
+ * PteraSwing` aponta para `Blade - Talon Ptera`, e sem seguir o redirect a
+ * consulta devolvia a página de redirecionamento, que não tem imagem — a peça
+ * ficava sem arte e ninguém percebia, porque o placeholder é bonito.
+ *
+ * Seguir o redirect muda o título devolvido, então o mapa é reindexado de volta
+ * para o título PEDIDO: quem chamou não sabe do redirect e procura pelo que
+ * pediu.
+ */
 async function buscarImagens(titulos: string[]): Promise<Map<string, string>> {
   const encontradas = new Map<string, string>();
   for (let i = 0; i < titulos.length; i += 50) {
     const lote = titulos.slice(i, i + 50);
     const resp = await fetch(
-      `${WIKI}?action=query&prop=pageimages&piprop=original&format=json&titles=` +
+      `${WIKI}?action=query&prop=pageimages&piprop=original&redirects=1&format=json&titles=` +
         encodeURIComponent(lote.join("|")),
     );
     const json = (await resp.json()) as {
-      query?: { pages?: Record<string, { title?: string; original?: { source?: string } }> };
+      query?: {
+        pages?: Record<string, { title?: string; original?: { source?: string } }>;
+        redirects?: { from: string; to: string }[];
+      };
     };
+    const pedidoDe = new Map((json.query?.redirects ?? []).map((r) => [r.to, r.from]));
     for (const p of Object.values(json.query?.pages ?? {})) {
-      if (p.title && p.original?.source) encontradas.set(p.title, p.original.source);
+      if (!p.title || !p.original?.source) continue;
+      encontradas.set(p.title, p.original.source);
+      const pedido = pedidoDe.get(p.title);
+      if (pedido) encontradas.set(pedido, p.original.source);
     }
     await pausar(PAUSA_MS);
   }
