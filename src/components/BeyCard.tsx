@@ -189,7 +189,7 @@ export default function BeyCard({ comp, maxAtributo }: {
         <div style={{ display: "grid", gap: 4, marginTop: "auto" }}>
           <Barra rotulo="Ataque" valor={soma.attack} max={maxAtributo} cor={T.typeAttack} />
           <Barra rotulo="Defesa" valor={soma.defense} max={maxAtributo} cor={T.typeDefense} />
-          <Barra rotulo="Stamina" valor={soma.stamina} max={maxAtributo} cor={T.typeStamina} />
+          <Barra rotulo="Resistência" valor={soma.stamina} max={maxAtributo} cor={T.typeStamina} />
         </div>
 
         <div style={{ marginTop: 10, paddingTop: 9, borderTop: `1px solid ${T.border}` }}>

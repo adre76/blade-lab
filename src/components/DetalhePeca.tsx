@@ -74,7 +74,7 @@ export default function DetalhePeca() {
         {([
           ["Ataque", peca.attack, T.typeAttack],
           ["Defesa", peca.defense, T.typeDefense],
-          ["Stamina", peca.stamina, T.typeStamina],
+          ["Resistência", peca.stamina, T.typeStamina],
         ] as const).map(([rotulo, valor, corBarra]) => (
           <div key={rotulo} style={{
             display: "flex", alignItems: "center", gap: 9,

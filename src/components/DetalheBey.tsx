@@ -100,7 +100,7 @@ export default function DetalheBey() {
             {([
               ["Ataque", soma.attack, T.typeAttack],
               ["Defesa", soma.defense, T.typeDefense],
-              ["Stamina", soma.stamina, T.typeStamina],
+              ["Resistência", soma.stamina, T.typeStamina],
             ] as const).map(([rotulo, valor, corBarra]) => (
               <div key={rotulo} style={{
                 display: "flex", alignItems: "center", gap: 9,
@@ -152,9 +152,9 @@ export default function DetalheBey() {
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 12, marginTop: 7, fontSize: 12 }}>
-                  <span style={{ color: T.typeAttack }}>ATK {part.attack}</span>
+                  <span style={{ color: T.typeAttack }}>ATQ {part.attack}</span>
                   <span style={{ color: T.typeDefense }}>DEF {part.defense}</span>
-                  <span style={{ color: T.typeStamina }}>STA {part.stamina}</span>
+                  <span style={{ color: T.typeStamina }}>RES {part.stamina}</span>
                 </div>
               </Link>
             ))}

@@ -405,7 +405,7 @@
       "burst_resistance": null,
       "contact_points": 8,
       "source_url": "https://beyblade.fandom.com/wiki/Ratchet_-_8-80",
-      "notes": "Estreia no UX-21 HellsNether Deck Set (08/08/2026). Peso e resistencia a burst ainda sem medicao publicada."
+      "notes": "Estreia no UX-21 HellsNether Deck Set (08/08/2026). Peso e resistência a burst ainda sem medição publicada."
     },
     {
       "slot": "ratchet",
@@ -470,7 +470,7 @@
       "weight_g": 10.73,
       "height_mm": 85,
       "burst_resistance": "very_low",
-      "notes": "Prefixo 'M' nao e numerico: contact_points fica nulo."
+      "notes": "No nome dos outros ratchets o primeiro número é a quantidade de pontos de contato. Aqui o prefixo é 'M', então esse dado não sai do nome."
     }
   ]
 }

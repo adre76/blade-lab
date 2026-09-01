@@ -22,8 +22,8 @@ export default function Creditos() {
       <section style={caixa}>
         <h3 style={{ margin: "0 0 8px", fontSize: 15 }}>De onde vêm os dados</h3>
         <p style={{ color: T.textSecondary, fontSize: 13.5, lineHeight: 1.65, margin: 0 }}>
-          Os atributos de cada peça — ataque, defesa, stamina, peso, resistência a
-          burst — vêm em boa parte de <strong>medições feitas pela comunidade</strong>,
+          Os atributos de cada peça — ataque, defesa e resistência, além do peso e da
+          resistência a burst — vêm em boa parte de <strong>medições feitas pela comunidade</strong>,
           e não de folha oficial da Takara Tomy. São os melhores números públicos
           disponíveis, mas podem divergir entre fontes.
         </p>

@@ -24,7 +24,7 @@
       "weight_g": 2.1,
       "part_type": "stamina",
       "burst_resistance": "low",
-      "notes": "burst_resistance derivado da escala numerica da fonte (80 -> high, 30 -> low)"
+      "notes": "A fonte publica a resistência a burst numa escala numérica; aqui ela aparece como alta, média ou baixa (80 vira alta, 30 vira baixa)."
     },
     {
       "slot": "bit",
@@ -103,7 +103,7 @@
       "weight_g": 2.3,
       "part_type": "attack",
       "burst_resistance": "high",
-      "notes": "burst_resistance derivado da escala numerica da fonte (80 -> high, 30 -> low)"
+      "notes": "A fonte publica a resistência a burst numa escala numérica; aqui ela aparece como alta, média ou baixa (80 vira alta, 30 vira baixa)."
     },
     {
       "slot": "bit",
@@ -149,7 +149,7 @@
       "weight_g": 2.3,
       "part_type": "attack",
       "burst_resistance": "high",
-      "notes": "burst_resistance derivado da escala numerica da fonte (80 -> high, 30 -> low)"
+      "notes": "A fonte publica a resistência a burst numa escala numérica; aqui ela aparece como alta, média ou baixa (80 vira alta, 30 vira baixa)."
     },
     {
       "slot": "bit",
@@ -294,7 +294,7 @@
       "weight_g": 2.1,
       "part_type": "attack",
       "burst_resistance": "high",
-      "notes": "burst_resistance derivado da escala numerica da fonte (80 -> high, 30 -> low)"
+      "notes": "A fonte publica a resistência a burst numa escala numérica; aqui ela aparece como alta, média ou baixa (80 vira alta, 30 vira baixa)."
     },
     {
       "slot": "bit",
@@ -362,7 +362,7 @@
       "weight_g": 2.0,
       "part_type": "defense",
       "burst_resistance": "low",
-      "notes": "burst_resistance derivado da escala numerica da fonte (80 -> high, 30 -> low)"
+      "notes": "A fonte publica a resistência a burst numa escala numérica; aqui ela aparece como alta, média ou baixa (80 vira alta, 30 vira baixa)."
     },
     {
       "slot": "bit",
@@ -386,7 +386,7 @@
       "weight_g": 2.0,
       "part_type": "stamina",
       "burst_resistance": "low",
-      "notes": "burst_resistance derivado da escala numerica da fonte (80 -> high, 30 -> low)"
+      "notes": "A fonte publica a resistência a burst numa escala numérica; aqui ela aparece como alta, média ou baixa (80 vira alta, 30 vira baixa)."
     },
     {
       "slot": "bit",
@@ -399,7 +399,7 @@
       "weight_g": 2.2,
       "part_type": "balance",
       "burst_resistance": "high",
-      "notes": "burst_resistance derivado da escala numerica da fonte (80 -> high, 30 -> low)"
+      "notes": "A fonte publica a resistência a burst numa escala numérica; aqui ela aparece como alta, média ou baixa (80 vira alta, 30 vira baixa)."
     },
     {
       "slot": "bit",
@@ -445,7 +445,7 @@
       "weight_g": 2.0,
       "part_type": "defense",
       "burst_resistance": "low",
-      "notes": "burst_resistance derivado da escala numerica da fonte (80 -> high, 30 -> low)"
+      "notes": "A fonte publica a resistência a burst numa escala numérica; aqui ela aparece como alta, média ou baixa (80 vira alta, 30 vira baixa)."
     },
     {
       "slot": "bit",
@@ -458,7 +458,7 @@
       "weight_g": 2.2,
       "part_type": "attack",
       "burst_resistance": "high",
-      "notes": "burst_resistance derivado da escala numerica da fonte (80 -> high, 30 -> low)"
+      "notes": "A fonte publica a resistência a burst numa escala numérica; aqui ela aparece como alta, média ou baixa (80 vira alta, 30 vira baixa)."
     },
     {
       "slot": "bit",

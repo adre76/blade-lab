@@ -21,7 +21,11 @@ export const COR_TIPO: Record<Enums["bey_type"], string> = {
 export const ROTULO_TIPO: Record<Enums["bey_type"], string> = {
   attack: "Ataque",
   defense: "Defesa",
-  stamina: "Stamina",
+  // "Resistência", e não "Stamina": é o termo que a Hasbro usou em português, e
+  // deixar um dos quatro em inglês no meio de Ataque, Defesa e Equilíbrio ficava
+  // estranho. Não confundir com a "resistência a burst" da ficha de peça, que é
+  // outra coisa — aquela aparece sempre por extenso, e num bloco separado.
+  stamina: "Resistência",
   balance: "Equilíbrio",
 };
 

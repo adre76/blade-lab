@@ -121,6 +121,27 @@ describe("integridade do catálogo", () => {
     expect(orfas).toEqual([]);
   });
 
+  /**
+   * `notes` não é comentário de desenvolvedor: as telas de bey e de peça
+   * EXIBEM esse texto ao usuário. Uma nota dizendo "burst_resistance derivado
+   * da escala numerica da fonte" não diz nada a quem lê o catálogo — e foi
+   * exatamente isso que ficou na tela por uma onda inteira.
+   *
+   * A procedência técnica de uma decisão vai no `_nota` do arquivo, que
+   * nenhuma tela lê.
+   */
+  it("nenhuma nota exibida cita nome de coluna do banco", () => {
+    const TECNICOS = [
+      "burst_resistance", "dash_performance", "data_disputed", "contact_points",
+      "height_mm", "weight_g", "source_url", "image_path", "part_type",
+      "spin_direction", "release_code", "release_type", "equivalent_",
+    ];
+    const vazando = [...partes, ...beys]
+      .filter((r) => r.notes && TECNICOS.some((t) => r.notes!.includes(t)))
+      .map((r) => `${r.name}: ${r.notes}`);
+    expect(vazando).toEqual([]);
+  });
+
   it("atributos das peças estão numa faixa plausível", () => {
     const fora = partes
       .filter((p) => p.attack + p.defense + p.stamina === 0)
