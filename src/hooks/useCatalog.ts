@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabase.ts";
+import type { Anatomy, Combo } from "../lib/engine/types.ts";
 import type { Database } from "../types/database.ts";
 
 type Tabelas = Database["public"]["Tables"];
@@ -45,23 +46,20 @@ export const ORDEM_SLOT: PartSlot[] = [
 const ORDEM_RARIDADE: Rarity[] = ["common", "uncommon", "rare", "very_rare", "exclusive"];
 
 /**
- * Soma bruta dos atributos das peças (spec §5.3).
+ * Adapta a composição do catálogo para o formato que o motor consome.
  *
- * Antecipação deliberada e mínima do motor da onda 3: serve para conferir se os
- * dados curados fazem sentido olhando a tela. O motor completo — normalização,
- * arquétipo, contribuição por peça — não mora aqui.
+ * O catálogo carrega as peças como lista `{ slot, part }[]` porque é assim que
+ * o PostgREST as devolve aninhadas; o motor as quer indexadas por slot. Esta é
+ * a única tradução entre os dois, e existe para não ser reescrita em cada tela.
+ *
+ * Substituiu a `somaBruta`, que era uma antecipação provisória do motor escrita
+ * na Onda 1 para conferir os dados na tela. Agora que o motor existe, manter as
+ * duas seria convidá-las a divergirem.
  */
-export function somaBruta(pecas: { part: Part }[]) {
-  return pecas.reduce(
-    (acc, { part }) => ({
-      attack: acc.attack + part.attack,
-      defense: acc.defense + part.defense,
-      stamina: acc.stamina + part.stamina,
-      weight_g: acc.weight_g + Number(part.weight_g ?? 0),
-      pesoParcial: acc.pesoParcial || part.weight_g === null,
-    }),
-    { attack: 0, defense: 0, stamina: 0, weight_g: 0, pesoParcial: false },
-  );
+export function comboDoCatalogo(
+  anatomy: Anatomy, pecas: { slot: PartSlot; part: Part }[],
+): Combo {
+  return { anatomy, pecas: Object.fromEntries(pecas.map((p) => [p.slot, p.part])) };
 }
 
 /**

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { T } from "../theme.ts";
-import { somaBruta, type Composicao } from "../hooks/useCatalog.ts";
+import { comboDoCatalogo, type Composicao } from "../hooks/useCatalog.ts";
+import { agregar } from "../lib/engine/stats.ts";
 import { urlImagem } from "../lib/imagens.ts";
 import AvisoDivergencia from "./AvisoDivergencia.tsx";
 import ControleInventario from "./ControleInventario.tsx";
@@ -117,7 +118,7 @@ function Imagem({ caminho, cor, alt }: { caminho: string | null; cor: string; al
 export default function BeyCard({ comp, maxAtributo }: {
   comp: Composicao; maxAtributo: number;
 }) {
-  const soma = somaBruta(comp.pecas);
+  const soma = agregar(comboDoCatalogo(comp.lancamentos[0]!.anatomy, comp.pecas));
   const principal = comp.lancamentos[0];
   if (!principal) return null;
 

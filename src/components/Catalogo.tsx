@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { T } from "../theme.ts";
-import { useCatalog, somaBruta } from "../hooks/useCatalog.ts";
+import { useCatalog, comboDoCatalogo } from "../hooks/useCatalog.ts";
+import { agregar } from "../lib/engine/stats.ts";
 import BeyCard from "./BeyCard.tsx";
 import {
   COR_TIPO, ROTULO_TIPO, ROTULO_RARIDADE, COR_RARIDADE, BUSCA_SLOT, MARCA,
@@ -66,7 +67,7 @@ export default function Catalogo() {
   // teórico por anatomia, e nasce com o motor na onda 3.
   const maxAtributo = useMemo(() => {
     const valores = composicoes.flatMap((c) => {
-      const s = somaBruta(c.pecas);
+      const s = agregar(comboDoCatalogo(c.lancamentos[0]!.anatomy, c.pecas));
       return [s.attack, s.defense, s.stamina];
     });
     return Math.max(100, ...valores);

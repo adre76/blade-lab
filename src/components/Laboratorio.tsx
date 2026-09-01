@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { T } from "../theme.ts";
-import { useCatalog } from "../hooks/useCatalog.ts";
+import { useCatalog, comboDoCatalogo } from "../hooks/useCatalog.ts";
 import { useCombo } from "../hooks/useCombo.ts";
 import { useAuth } from "../hooks/AuthContext.tsx";
 import { useEstoquePecas } from "../hooks/useEstoquePecas.ts";
@@ -45,10 +45,7 @@ export default function Laboratorio() {
    */
   const contexto = useMemo(() => {
     const beys = composicoes.map((c) => {
-      const s = agregar({
-        anatomy: c.lancamentos[0]!.anatomy,
-        pecas: Object.fromEntries(c.pecas.map((p) => [p.slot, p.part])),
-      });
+      const s = agregar(comboDoCatalogo(c.lancamentos[0]!.anatomy, c.pecas));
       return { pesoTotal: s.weight_g, parcial: s.pesoParcial };
     });
     return derivarContexto(pecas, beys);

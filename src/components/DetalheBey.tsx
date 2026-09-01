@@ -1,7 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { T } from "../theme.ts";
 import { useBey } from "../hooks/useBey.ts";
-import { somaBruta } from "../hooks/useCatalog.ts";
+import { comboDoCatalogo } from "../hooks/useCatalog.ts";
+import { agregar } from "../lib/engine/stats.ts";
 import { urlImagem } from "../lib/imagens.ts";
 import AvisoDivergencia from "./AvisoDivergencia.tsx";
 import ControleInventario from "./ControleInventario.tsx";
@@ -24,7 +25,7 @@ export default function DetalheBey() {
     );
   }
 
-  const soma = somaBruta(bey.pecas);
+  const soma = agregar(comboDoCatalogo(bey.anatomy, bey.pecas));
   const cor = bey.bey_type ? COR_TIPO[bey.bey_type] : T.textMuted;
   const marca = MARCA[bey.brand];
   const imagem = urlImagem(bey.image_path);
