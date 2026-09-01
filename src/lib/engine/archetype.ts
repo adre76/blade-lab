@@ -67,8 +67,10 @@ export function classificar(
     else if (ordinal >= 4) qualificadores.push("resistente");
   }
 
-  // Peso parcial também não: o total não é o real.
-  if (contexto.quartis && !atributos.pesoParcial) {
+  // Peso parcial também não: o total não é o real. E peso ZERO menos ainda —
+  // um combo sem peça nenhuma pesa zero, e chamá-lo de "leve" seria classificar
+  // o vazio. Apareceu na primeira vez que a tela abriu.
+  if (contexto.quartis && !atributos.pesoParcial && atributos.weight_g > 0) {
     if (atributos.weight_g > contexto.quartis.q3) qualificadores.push("pesado");
     else if (atributos.weight_g < contexto.quartis.q1) qualificadores.push("leve");
   }

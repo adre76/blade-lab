@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App.tsx";
 import Catalogo from "./components/Catalogo.tsx";
+import Laboratorio from "./components/Laboratorio.tsx";
 import DetalheBey from "./components/DetalheBey.tsx";
 import DetalhePeca from "./components/DetalhePeca.tsx";
 import Creditos from "./components/Creditos.tsx";
@@ -31,7 +32,7 @@ createRoot(root).render(
               <Route path="/entrar" element={<Login />} />
               <Route path="/perfil" element={<Perfil />} />
               <Route path="/inventario" element={<Inventario />} />
-              {/* /lab entra na Onda 3. */}
+              <Route path="/lab" element={<Laboratorio />} />
               <Route path="*" element={<Catalogo />} />
             </Route>
           </Routes>

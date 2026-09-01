@@ -102,4 +102,16 @@ describe("arquétipo", () => {
     expect(r.rotulo).toBe("Equilibrado — Ataque/Defesa");
     expect(r.qualificadores).toEqual([]);
   });
+
+  /**
+   * Peso zero é ausência de peça, não peso baixo. Sem esta regra o laboratório
+   * abria classificando o combo vazio como "leve" — foi o que a tela mostrou
+   * na primeira vez que rodou.
+   */
+  it("peso zero NÃO qualifica como leve: é combo sem peça, não bey leve", () => {
+    const r = classificar(
+      attrs({ weight_g: 0, pesoParcial: false, burst_resistance: DESCONHECIDO }),
+      CTX, "basic");
+    expect(r.qualificadores).toEqual([]);
+  });
 });

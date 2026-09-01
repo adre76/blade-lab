@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabase.ts";
 import type { Database } from "../types/database.ts";
 
@@ -143,5 +143,19 @@ export function useCatalog() {
     };
   }, []);
 
-  return { composicoes, totalProdutos, error, loading };
+  /**
+   * Peças únicas do catálogo, para o seletor do laboratório e para o
+   * denominador das barras (spec §5.4).
+   *
+   * Derivadas das composições já carregadas: uma consulta a mais só para isso
+   * seria desperdício, e o prefetch integral do catálogo já é exigência da
+   * onda 1 justamente porque o denominador precisa do catálogo inteiro.
+   */
+  const pecas = useMemo(() => {
+    const vistas = new Map<string, Part>();
+    for (const c of composicoes) for (const { part } of c.pecas) vistas.set(part.id, part);
+    return [...vistas.values()];
+  }, [composicoes]);
+
+  return { composicoes, pecas, totalProdutos, error, loading };
 }

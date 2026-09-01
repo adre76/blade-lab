@@ -12,6 +12,9 @@ function MenuUsuario() {
   if (!usuario) {
     return (
       <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+        <Link to="/lab" style={{ color: T.accentDim, fontSize: 13 }}>
+          Laboratório
+        </Link>
         <Link to="/creditos" style={{ color: T.textMuted, fontSize: 13 }}>
           Fontes e créditos
         </Link>
@@ -31,6 +34,9 @@ function MenuUsuario() {
 
   return (
     <div style={{ position: "relative", display: "flex", gap: 14, alignItems: "center" }}>
+      <Link to="/lab" style={{ color: T.accentDim, fontSize: 13 }}>
+        Laboratório
+      </Link>
       <Link to="/creditos" style={{ color: T.textMuted, fontSize: 13 }}>
         Fontes e créditos
       </Link>
