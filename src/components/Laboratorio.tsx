@@ -1,7 +1,10 @@
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { T } from "../theme.ts";
 import { useCatalog } from "../hooks/useCatalog.ts";
 import { useCombo } from "../hooks/useCombo.ts";
+import { useAuth } from "../hooks/AuthContext.tsx";
+import { useEstoquePecas } from "../hooks/useEstoquePecas.ts";
 import SeletorPeca from "./SeletorPeca.tsx";
 import { ROTULO_SLOT, COR_TIPO } from "./rotulos.ts";
 import { slotsDe } from "../lib/engine/slots.ts";
@@ -10,6 +13,7 @@ import { agregar } from "../lib/engine/stats.ts";
 import { derivarContexto, normalizar } from "../lib/engine/normalization.ts";
 import { classificar } from "../lib/engine/archetype.ts";
 import { contribuicoes } from "../lib/engine/explain.ts";
+import { faltaNoInventario } from "../lib/engine/posse.ts";
 import { DESCONHECIDO } from "../lib/engine/types.ts";
 
 const ATRIBUTOS = [
@@ -28,6 +32,8 @@ const caixa = {
 export default function Laboratorio() {
   const { composicoes, pecas, loading, error } = useCatalog();
   const { combo, porSlot } = useCombo(pecas);
+  const { usuario } = useAuth();
+  const { porId: estoque } = useEstoquePecas();
 
   /**
    * O denominador vem do catálogo INTEIRO (spec §5.4), e os quartis de peso,
@@ -53,6 +59,7 @@ export default function Laboratorio() {
   const arquetipo = classificar(atributos, contexto, combo.anatomy);
   const parcelas = contribuicoes(combo);
   const max = contexto.maximos[combo.anatomy];
+  const semNoInventario = faltaNoInventario(combo, estoque);
 
   if (loading) return <p style={{ color: T.textMuted }}>Carregando catálogo…</p>;
   if (error) return <p style={{ color: T.danger }}>Erro ao ler o banco: {error}</p>;
@@ -132,6 +139,38 @@ export default function Laboratorio() {
               Faltam: {validade.faltando.map((s) => ROTULO_SLOT[s]).join(", ")}.
               Os números acima são parciais.
             </p>
+          )}
+
+          {/*
+            O laboratório serve para planejar o que comprar. O link vai para a
+            ficha da peça, que já tem "onde conseguir esta peça" — a busca
+            inversa da Onda 1, ordenada do mais fácil para o mais raro. Não há
+            tela nova a construir.
+          */}
+          {usuario && semNoInventario.length > 0 && (
+            <div style={{
+              background: `${T.warn}12`, border: `1px solid ${T.warn}40`,
+              borderRadius: 9, padding: "11px 13px",
+            }}>
+              <strong style={{ color: T.warn, fontSize: 13 }}>
+                {semNoInventario.length === 1
+                  ? "Você ainda não tem uma das peças"
+                  : `Você ainda não tem ${semNoInventario.length} das peças`}
+              </strong>
+              <ul style={{ margin: "6px 0 0", paddingLeft: 18, color: T.textSecondary,
+                           fontSize: 13, lineHeight: 1.7 }}>
+                {semNoInventario.map((slot) => (
+                  <li key={slot}>
+                    {ROTULO_SLOT[slot]}{" "}
+                    <strong>{combo.pecas[slot]!.name}</strong> —{" "}
+                    <Link to={`/peca/${combo.pecas[slot]!.id}`}
+                          style={{ color: T.accentDim }}>
+                      ver onde conseguir
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
 
           {parcelas.length > 0 && (

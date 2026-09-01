@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { T } from "../theme.ts";
-import { supabase } from "../lib/supabase.ts";
 import { useAuth } from "../hooks/AuthContext.tsx";
 import { useInventario } from "../hooks/InventarioContext.tsx";
+import { useEstoquePecas } from "../hooks/useEstoquePecas.ts";
 import { useCatalog } from "../hooks/useCatalog.ts";
 import { ROTULO_SLOT } from "./rotulos.ts";
 import ControleInventario from "./ControleInventario.tsx";
@@ -18,7 +18,7 @@ export default function Inventario() {
   const { usuario, carregando: carregandoAuth } = useAuth();
   const { itens, carregando } = useInventario();
   const { composicoes } = useCatalog();
-  const [estoque, setEstoque] = useState<PecaEmEstoque[]>([]);
+  const { linhas: estoqueBruto } = useEstoquePecas();
 
   // Índice bey -> composição, para exibir nome e peças sem consultar de novo.
   const porBey = useMemo(() => {
@@ -34,35 +34,15 @@ export default function Inventario() {
     return m;
   }, [composicoes]);
 
-  useEffect(() => {
-    if (!usuario || nomePorPeca.size === 0) return;
-    let cancelado = false;
-
-    // A view resolve equivalência Hasbro e soma as duplicatas (spec §4.9).
-    // É o mesmo estoque que o laboratório da onda 3 vai consumir — mostrá-lo
-    // aqui valida a view antes de algo mais complexo depender dela.
-    //
-    // SEM embedding de `parts`: o PostgREST recusa com "could not find a
-    // relationship", porque uma VIEW não declara chave estrangeira e ele
-    // deriva os relacionamentos das FKs. O nome de cada peça vem do catálogo,
-    // que já está carregado — e assim o estoque não custa consulta extra.
-    supabase
-      .from("user_parts")
-      .select("part_id, slot, quantity")
-      .then(({ data, error }) => {
-        if (cancelado || error) return;
-        setEstoque(
-          (data ?? []).flatMap((r) => {
-            if (!r.part_id || !r.slot) return [];
-            const nome = nomePorPeca.get(r.part_id);
-            if (!nome) return [];
-            return [{ part_id: r.part_id, slot: r.slot, quantity: r.quantity ?? 0, nome }];
-          }),
-        );
-      });
-
-    return () => { cancelado = true; };
-  }, [usuario, itens, nomePorPeca]);
+  // O estoque vem do hook; o NOME de cada peça vem do catálogo que esta página
+  // já carregou, e não de um embedding — a view não declara chave estrangeira.
+  const estoque: PecaEmEstoque[] = useMemo(
+    () => estoqueBruto.flatMap((r) => {
+      const nome = nomePorPeca.get(r.part_id);
+      return nome ? [{ ...r, nome }] : [];
+    }),
+    [estoqueBruto, nomePorPeca],
+  );
 
   if (carregandoAuth) return <p style={{ color: T.textMuted }}>Carregando…</p>;
   if (!usuario) return <Navigate to="/entrar" state={{ de: "/inventario" }} replace />;
