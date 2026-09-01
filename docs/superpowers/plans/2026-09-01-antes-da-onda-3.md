@@ -2,7 +2,7 @@
 
 Três itens combinados em 01/09/2026, para fazer **antes** do laboratório.
 
-**Estado em 02/09/2026:** itens 2 e 3 feitos. Item 1 pendente.
+**Estado em 02/09/2026: os tres itens feitos.** O escopo da Onda 3 esta em [2026-09-02-onda-3-escopo.md](2026-09-02-onda-3-escopo.md).
 
 ---
 
@@ -204,3 +204,36 @@ Uma segunda fila de chips, com os quatro degraus mais **"Difíceis de achar"**
 (qualquer não-comum). O atalho existe porque é o que a pergunta costuma ser, e
 respondê-la com os degraus exigiria quatro cliques. Vive na querystring, como
 os outros filtros, então o resultado é compartilhável por link.
+
+
+---
+
+# Execução — item 1 (02/09/2026)
+
+`Ratchet` virou **Catraca** e `Bit` virou **Ponta**. Os slots da Custom Line
+ficam em inglês até a onda da CX: traduzir nome de peça que ninguém consegue
+ver ainda seria decidir no escuro.
+
+O cuidado pedido — a busca continuar casando os termos em inglês — virou
+`BUSCA_SLOT`, um índice com as duas grafias por slot.
+
+## Dois defeitos que já existiam
+
+Escrever isso revelou que o problema era anterior à tradução:
+
+1. **A busca nunca indexou a classe da peça.** `bit Flat` falhava *antes* da
+   tradução também — ninguém tinha tentado.
+
+2. **A comparação era substring da frase inteira**, o que exigia que os termos
+   fossem vizinhos no índice. Como o nome da peça e a classe dela nunca ficam
+   colados, `ponta Low Flat` nunca casaria. Agora cada palavra precisa aparecer
+   em algum lugar, em qualquer ordem.
+
+Aproveitou-se para ignorar acento nos dois lados: quem digita `lamina` acha
+`Lâmina`.
+
+## Onde mora
+
+A busca saiu do componente para `src/lib/busca.ts`, com teste próprio. O
+motivo é o mesmo que levou `decidirOperacao` para fora do hook: a garantia dos
+dois idiomas foi um pedido explícito e **não se vê olhando a tela**.
