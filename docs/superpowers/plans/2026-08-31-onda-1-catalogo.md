@@ -1118,3 +1118,60 @@ não estão no catálogo — e todos por decisão registrada:
   `BX-22 DranSword 3-60F Entry Package`)
 
 Nenhuma lacuna não intencional em BX e UX.
+
+---
+
+## UX Expand Blade — a lâmina com ratchet integrado (01/09/2026)
+
+Trazido a pedido do usuário, que notou a ausência do UX-20 GloryValkyrie LF.
+Estava fora por decisão, junto com a CX; ele preferiu antecipar, e a razão é
+boa: a decisão de modelagem vai ser herdada pelo motor da Onda 3, então é
+melhor tomá-la antes de escrever o motor.
+
+### O que "Expand Blade" é
+
+Não é uma linha — é um **sub-sistema que atravessa as três**:
+
+| | o que expande | composição |
+|---|---|---|
+| BX Expand | mais metal no centro da lâmina | igual à basic: 3 peças |
+| **UX Expand** | **o ratchet vai embutido na lâmina** | **2 peças** |
+| CX Expand | Main Blade vira Metal Blade + Over Blade | 6 peças (`custom_expand`) |
+
+Por isso a anatomia se chama `unique_expand`, e não `integrated`: casa com o
+`custom_expand` que já existia e diz de onde vem. A BX Expand não ganha anatomia
+própria porque não muda a composição.
+
+### Por que um slot próprio, e não uma lâmina com uma marca
+
+`integrated_blade` é um slot novo, não um `blade` com um booleano
+"tem_ratchet". A peça ocupa fisicamente as posições de lâmina **e** de ratchet.
+Com slot próprio, `anatomy_slots` torna estruturalmente impossível o laboratório
+oferecer um ratchet para acompanhá-la — a regra vira o formato do dado, em vez
+de uma verificação que alguém precisa lembrar de escrever.
+
+### O que entrou
+
+Três produtos, todos Takara Tomy:
+
+| código | produto | lâmina |
+|---|---|---|
+| UX-19 | Bullet Griffon H | Bullet Griffon (45/45/40, 60,6 g) |
+| UX-20 | Glory Valkyrie LF | Glory Valkyrie (85/35/25, 43,3 g) |
+| UX-21 | Hells Nether Z | Hells Nether (50/50/30, sem peso publicado) |
+
+As outras quatro do sistema — Cutter Shinobi, Rampart Aegis, Seize Jaguar e
+Valor Bison — só têm código Hasbro e ficam para a onda da Hasbro.
+
+Catálogo: **159 beys, 171 peças**.
+
+### Dois valores por atributo não é dado divergente
+
+O Hells Nether tem `50/70`, `50/45` e `30/15` no infobox: dois modos de
+montagem. A tentação era marcar `data_disputed` para que a interface mostrasse
+uma ressalva — mas o texto desse aviso diz *"as fontes divergem sobre este
+registro"*, e isso seria falso: a fonte é uma só e ela é consistente.
+
+Ficou sem a marca, com a explicação no `notes`, que a tela de peça já exibe
+quando `data_disputed` é falso. O sinalizador continua significando exatamente
+uma coisa.

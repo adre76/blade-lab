@@ -444,7 +444,7 @@ export type Database = {
       }
     }
     Enums: {
-      anatomy: "basic" | "unique" | "custom" | "custom_expand"
+      anatomy: "basic" | "unique" | "unique_expand" | "custom" | "custom_expand"
       bey_type: "attack" | "defense" | "stamina" | "balance"
       brand: "takara_tomy" | "hasbro"
       inventory_status: "owned" | "wishlist"
@@ -455,6 +455,7 @@ export type Database = {
         | "over_blade"
         | "assist_blade"
         | "blade"
+        | "integrated_blade"
         | "ratchet"
         | "bit"
       product_line: "BX" | "UX" | "CX"
@@ -597,7 +598,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      anatomy: ["basic", "unique", "custom", "custom_expand"],
+      anatomy: ["basic", "unique", "unique_expand", "custom", "custom_expand"],
       bey_type: ["attack", "defense", "stamina", "balance"],
       brand: ["takara_tomy", "hasbro"],
       inventory_status: ["owned", "wishlist"],
@@ -608,6 +609,7 @@ export const Constants = {
         "over_blade",
         "assist_blade",
         "blade",
+        "integrated_blade",
         "ratchet",
         "bit",
       ],

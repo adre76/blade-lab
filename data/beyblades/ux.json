@@ -484,6 +484,52 @@
       }
     },
     {
+      "release_code": "UX-19",
+      "name": "Bullet Griffon H",
+      "line": "UX",
+      "anatomy": "unique_expand",
+      "release_type": "starter",
+      "release_date": "2026-04-25",
+      "rarity": "common",
+      "bey_type": "balance",
+      "source_url": "https://beyblade.fandom.com/wiki/BulletGriffon_H",
+      "parts": {
+        "integrated_blade": "Bullet Griffon",
+        "bit": "Hexa"
+      }
+    },
+    {
+      "release_code": "UX-20",
+      "name": "Glory Valkyrie LF",
+      "line": "UX",
+      "anatomy": "unique_expand",
+      "release_type": "starter",
+      "release_date": "2026-07-11",
+      "rarity": "common",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/GloryValkyrie_LF",
+      "parts": {
+        "integrated_blade": "Glory Valkyrie",
+        "bit": "Low Flat"
+      }
+    },
+    {
+      "release_code": "UX-21",
+      "name": "Hells Nether Z",
+      "line": "UX",
+      "anatomy": "unique_expand",
+      "release_type": "deck_set",
+      "release_date": "2026-08-08",
+      "rarity": "common",
+      "bey_type": "balance",
+      "source_url": "https://beyblade.fandom.com/wiki/HellsNether_Z",
+      "parts": {
+        "integrated_blade": "Hells Nether",
+        "bit": "Zap"
+      },
+      "notes": "Vem no UX-21 HellsNether Deck Set, junto com Silver Wolf 9-70R e Wyvern Hover 8-80B."
+    },
+    {
       "release_code": "UX-21",
       "name": "Silver Wolf 9-70R",
       "line": "UX",

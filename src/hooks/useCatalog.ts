@@ -31,7 +31,7 @@ export type Composicao = {
 /** Ordem de exibição das peças: da lâmina para a ponteira. */
 export const ORDEM_SLOT: PartSlot[] = [
   "lock_chip", "main_blade", "metal_blade", "over_blade",
-  "assist_blade", "blade", "ratchet", "bit",
+  "assist_blade", "blade", "integrated_blade", "ratchet", "bit",
 ];
 
 /** Ordem do enum `rarity` no banco — do mais comum ao mais raro (spec §4.2). */

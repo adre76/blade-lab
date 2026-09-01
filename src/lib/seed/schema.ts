@@ -3,7 +3,7 @@ import { slotsDaAnatomia } from "./anatomias.ts";
 
 export const SLOTS = [
   "lock_chip", "main_blade", "metal_blade", "over_blade",
-  "assist_blade", "blade", "ratchet", "bit",
+  "assist_blade", "blade", "integrated_blade", "ratchet", "bit",
 ] as const;
 
 /**
@@ -14,11 +14,23 @@ export const SLOTS = [
  * cadastrar um Metal Blade destro com um Over Blade canhoto no mesmo bey —
  * combinação fisicamente impossível que passaria por válida.
  */
-const LAMINAS_PRINCIPAIS: readonly string[] = ["blade", "main_blade", "metal_blade"];
+const LAMINAS_PRINCIPAIS: readonly string[] = [
+  "blade", "integrated_blade", "main_blade", "metal_blade",
+];
+
+/**
+ * Slots que têm altura e pontos de contato.
+ *
+ * `integrated_blade` entra porque ela É um ratchet, além de lâmina: o UX Expand
+ * Blade traz o ratchet embutido. A Beyblade Wiki ainda não publica altura nem
+ * pontos de contato para nenhuma das três, mas o dado é verdadeiro da peça —
+ * quando sair, entra sem mexer no schema.
+ */
+const COM_RATCHET: readonly string[] = ["ratchet", "integrated_blade"];
 
 const Slot = z.enum(SLOTS);
 const Linha = z.enum(["BX", "UX", "CX"]);
-const Anatomia = z.enum(["basic", "unique", "custom", "custom_expand"]);
+const Anatomia = z.enum(["basic", "unique", "unique_expand", "custom", "custom_expand"]);
 const Marca = z.enum(["takara_tomy", "hasbro"]);
 const Resistencia = z.enum(["very_low", "low", "medium", "high", "very_high"]);
 const Natureza = z.enum(["attack", "defense", "stamina", "balance"]);
@@ -71,11 +83,11 @@ export const PartSchema = z
     if (p.spin_direction != null && !LAMINAS_PRINCIPAIS.includes(p.slot)) {
       erro("spin_direction", "só é preenchida na lâmina principal (spec §4.4)");
     }
-    if (p.height_mm != null && p.slot !== "ratchet") {
-      erro("height_mm", "só existe em ratchet");
+    if (p.height_mm != null && !COM_RATCHET.includes(p.slot)) {
+      erro("height_mm", "só existe em ratchet ou lâmina com ratchet integrado");
     }
-    if (p.contact_points != null && p.slot !== "ratchet") {
-      erro("contact_points", "só existe em ratchet");
+    if (p.contact_points != null && !COM_RATCHET.includes(p.slot)) {
+      erro("contact_points", "só existe em ratchet ou lâmina com ratchet integrado");
     }
     if (p.dash_performance != null && p.slot !== "bit") {
       erro("dash_performance", "só existe em bit");

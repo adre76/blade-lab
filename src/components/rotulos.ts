@@ -40,6 +40,10 @@ export const ROTULO_RARIDADE: Record<Enums["rarity"], string> = {
 
 export const ROTULO_SLOT: Record<Enums["part_slot"], string> = {
   blade: "Lâmina",
+  // O nome longo é o que a peça é: uma lâmina com o ratchet embutido. Chamá-la
+  // só de "Lâmina" faria o card de um UX Expand Blade parecer um bey a que
+  // falta o ratchet.
+  integrated_blade: "Lâmina c/ ratchet",
   ratchet: "Ratchet",
   bit: "Bit",
   lock_chip: "Lock Chip",
