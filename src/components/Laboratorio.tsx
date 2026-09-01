@@ -1,18 +1,16 @@
-import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { T } from "../theme.ts";
-import { useCatalog, comboDoCatalogo } from "../hooks/useCatalog.ts";
+import { useCatalog } from "../hooks/useCatalog.ts";
+import { useAnalise } from "../hooks/useAnalise.ts";
 import { useCombo } from "../hooks/useCombo.ts";
 import { useAuth } from "../hooks/AuthContext.tsx";
 import { useEstoquePecas } from "../hooks/useEstoquePecas.ts";
 import SeletorPeca from "./SeletorPeca.tsx";
+import Confrontos from "./Confrontos.tsx";
 import { ROTULO_SLOT, COR_TIPO } from "./rotulos.ts";
 import { slotsDe } from "../lib/engine/slots.ts";
 import { validar } from "../lib/engine/compatibility.ts";
-import { agregar } from "../lib/engine/stats.ts";
-import { derivarContexto, normalizar } from "../lib/engine/normalization.ts";
-import { classificar } from "../lib/engine/archetype.ts";
-import { contribuicoes } from "../lib/engine/explain.ts";
+import { normalizar } from "../lib/engine/normalization.ts";
 import { faltaNoInventario } from "../lib/engine/posse.ts";
 import { DESCONHECIDO } from "../lib/engine/types.ts";
 
@@ -30,31 +28,13 @@ const caixa = {
 };
 
 export default function Laboratorio() {
-  const { composicoes, pecas, loading, error } = useCatalog();
+  const { pecas, loading, error } = useCatalog();
   const { combo, porSlot } = useCombo(pecas);
   const { usuario } = useAuth();
   const { porId: estoque } = useEstoquePecas();
 
-  /**
-   * O denominador vem do catálogo INTEIRO (spec §5.4), e os quartis de peso,
-   * dos beys de fábrica — a referência que o usuário tem na mão.
-   *
-   * A população é por COMPOSIÇÃO, e não por produto: BX-03 e BX-05 são o mesmo
-   * bey em caixas diferentes, e contá-lo duas vezes enviesaria a distribuição
-   * para as composições que saíram em mais embalagens.
-   */
-  const contexto = useMemo(() => {
-    const beys = composicoes.map((c) => {
-      const s = agregar(comboDoCatalogo(c.lancamentos[0]!.anatomy, c.pecas));
-      return { pesoTotal: s.weight_g, parcial: s.pesoParcial };
-    });
-    return derivarContexto(pecas, beys);
-  }, [pecas, composicoes]);
-
+  const { contexto, atributos, arquetipo, confronto, parcelas } = useAnalise(combo);
   const validade = validar(combo);
-  const atributos = agregar(combo);
-  const arquetipo = classificar(atributos, contexto, combo.anatomy);
-  const parcelas = contribuicoes(combo);
   const max = contexto.maximos[combo.anatomy];
   const semNoInventario = faltaNoInventario(combo, estoque);
 
@@ -169,6 +149,8 @@ export default function Laboratorio() {
               </ul>
             </div>
           )}
+
+          <Confrontos confronto={confronto} />
 
           {parcelas.length > 0 && (
             <div style={caixa}>

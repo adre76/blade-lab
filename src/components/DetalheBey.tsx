@@ -2,7 +2,8 @@ import { Link, useParams } from "react-router-dom";
 import { T } from "../theme.ts";
 import { useBey } from "../hooks/useBey.ts";
 import { comboDoCatalogo } from "../hooks/useCatalog.ts";
-import { agregar } from "../lib/engine/stats.ts";
+import { useAnalise } from "../hooks/useAnalise.ts";
+import Confrontos from "./Confrontos.tsx";
 import { urlImagem } from "../lib/imagens.ts";
 import AvisoDivergencia from "./AvisoDivergencia.tsx";
 import ControleInventario from "./ControleInventario.tsx";
@@ -15,6 +16,12 @@ export default function DetalheBey() {
   const { id } = useParams();
   const { bey, irmaos, error, loading } = useBey(id);
 
+  // O hook roda sempre, inclusive enquanto o bey carrega: as regras dos hooks
+  // não admitem chamada condicional. Combo vazio enquanto não houver bey.
+  const analise = useAnalise(
+    bey ? comboDoCatalogo(bey.anatomy, bey.pecas) : { anatomy: "basic", pecas: {} },
+  );
+
   if (loading) return <p style={{ color: T.textMuted }}>Carregando…</p>;
   if (error || !bey) {
     return (
@@ -25,7 +32,7 @@ export default function DetalheBey() {
     );
   }
 
-  const soma = agregar(comboDoCatalogo(bey.anatomy, bey.pecas));
+  const soma = analise.atributos;
   const cor = bey.bey_type ? COR_TIPO[bey.bey_type] : T.textMuted;
   const marca = MARCA[bey.brand];
   const imagem = urlImagem(bey.image_path);
@@ -221,6 +228,27 @@ export default function DetalheBey() {
               background: T.bgCard, border: `1px solid ${T.border}`,
               borderRadius: 9, padding: "11px 13px",
             }}>{bey.notes}</p>
+          )}
+
+          <Confrontos confronto={analise.confronto} />
+
+          {/*
+            O rótulo da caixa vem da LÂMINA; o arquétipo vem do conjunto. Quando
+            os dois discordam, quem manda é o conjunto — e dizer isso é o que um
+            catálogo mostra e uma embalagem não mostra.
+          */}
+          {bey.bey_type
+            && (analise.arquetipo.dominante ?? "balance") !== bey.bey_type
+            && bey.bey_type !== analise.arquetipo.ordem[0] && (
+            <p style={{
+              marginTop: 12, color: T.textSecondary, fontSize: 13, lineHeight: 1.6,
+              background: T.bgCard, border: `1px solid ${T.border}`,
+              borderRadius: 9, padding: "11px 13px",
+            }}>
+              A caixa chama este bey de <strong>{ROTULO_TIPO[bey.bey_type]}</strong>, que é o
+              tipo da lâmina. Somando as três peças, o conjunto fica{" "}
+              <strong>{analise.arquetipo.rotulo}</strong>.
+            </p>
           )}
 
           <p style={{ marginTop: 16, fontSize: 11.5, color: T.textMuted }}>

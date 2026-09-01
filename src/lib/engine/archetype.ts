@@ -34,6 +34,15 @@ export type Arquetipo = {
   rotulo: string;
   /** Preenchido só no arquétipo puro. */
   dominante: BeyType | null;
+  /**
+   * Os três atributos em ordem decrescente, já normalizados.
+   *
+   * Existe para quem precisa saber qual LIDERA mesmo sem haver dominante. A
+   * ficha do bey usa isso para não contradizer a embalagem à toa: uma caixa que
+   * diz "Defesa" num conjunto que ficou "Equilibrado — Defesa/Resistência" não
+   * está errada, só imprecisa, e não merece aviso.
+   */
+  ordem: AtributoMedido[];
   /** "frágil" | "resistente" | "pesado" | "leve" */
   qualificadores: string[];
 };
@@ -75,5 +84,10 @@ export function classificar(
     else if (atributos.weight_g < contexto.quartis.q1) qualificadores.push("leve");
   }
 
-  return { rotulo, dominante: puro ? primeiro!.atributo : null, qualificadores };
+  return {
+    rotulo,
+    dominante: puro ? primeiro!.atributo : null,
+    ordem: [...valores].sort((a, b) => b.valor - a.valor).map((v) => v.atributo),
+    qualificadores,
+  };
 }

@@ -23,6 +23,21 @@ const attrs = (extra: Partial<Atributos>): Atributos => ({
 });
 
 describe("arquétipo", () => {
+  /**
+   * A ordem existe para a ficha do bey não contradizer a embalagem à toa:
+   * caixa que diz "Defesa" num conjunto "Equilibrado — Defesa/Resistência" não
+   * está errada, e sem a ordem não haveria como saber disso.
+   */
+  it("expõe os três atributos em ordem decrescente", () => {
+    const r = classificar(attrs({ attack: 20, defense: 70, stamina: 45 }), CTX, "basic");
+    expect(r.ordem).toEqual(["defense", "stamina", "attack"]);
+  });
+
+  it("a ordem respeita o mesmo desempate do rótulo", () => {
+    const r = classificar(attrs({ attack: 50, defense: 50, stamina: 50 }), CTX, "basic");
+    expect(r.ordem).toEqual(["attack", "defense", "stamina"]);
+  });
+
   it("dominante com 15 pontos ou mais de folga é arquétipo puro", () => {
     const r = classificar(attrs({ attack: 70, defense: 40, stamina: 30 }), CTX, "basic");
     expect(r.rotulo).toBe("Ataque");
