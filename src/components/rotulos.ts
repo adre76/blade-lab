@@ -55,19 +55,48 @@ export const COR_RARIDADE: Record<Enums["rarity"], string> = {
   exclusive: T.danger,
 };
 
+/**
+ * Nome de cada classe de peça, em português.
+ *
+ * *Blade* já era *Lâmina*; deixar as outras duas em inglês fazia a ficha
+ * mostrar uma traduzida e duas não. *Catraca* é a tradução literal de ratchet,
+ * e *Ponta* é o que o bit é — a ponta que toca o estádio.
+ *
+ * Os slots da Custom Line ficam em inglês até a onda da CX: traduzir nome de
+ * peça que ninguém consegue ver ainda seria decidir no escuro.
+ */
 export const ROTULO_SLOT: Record<Enums["part_slot"], string> = {
   blade: "Lâmina",
-  // O nome longo é o que a peça é: uma lâmina com o ratchet embutido. Chamá-la
+  // O nome longo é o que a peça é: uma lâmina com a catraca embutida. Chamá-la
   // só de "Lâmina" faria o card de um UX Expand Blade parecer um bey a que
-  // falta o ratchet.
-  integrated_blade: "Lâmina c/ ratchet",
-  ratchet: "Ratchet",
-  bit: "Bit",
+  // falta a catraca.
+  integrated_blade: "Lâmina c/ catraca",
+  ratchet: "Catraca",
+  bit: "Ponta",
   lock_chip: "Lock Chip",
   main_blade: "Main Blade",
   metal_blade: "Metal Blade",
   over_blade: "Over Blade",
   assist_blade: "Assist Blade",
+};
+
+/**
+ * Como cada slot pode ser procurado na busca.
+ *
+ * A comunidade, as listas de produto e as lojas dizem "ratchet" e "bit". Se a
+ * tradução tirasse esses termos da busca, ela pioraria o catálogo em vez de
+ * melhorar: quem procura `bit Flat` tem de achar. Os dois idiomas indexam.
+ */
+export const BUSCA_SLOT: Record<Enums["part_slot"], string[]> = {
+  blade: ["lâmina", "blade"],
+  integrated_blade: ["lâmina com catraca", "ratchet-integrated blade", "integrated blade"],
+  ratchet: ["catraca", "ratchet"],
+  bit: ["ponta", "bit"],
+  lock_chip: ["lock chip"],
+  main_blade: ["main blade"],
+  metal_blade: ["metal blade"],
+  over_blade: ["over blade"],
+  assist_blade: ["assist blade"],
 };
 
 export const ROTULO_LANCAMENTO: Record<Enums["release_type"], string> = {

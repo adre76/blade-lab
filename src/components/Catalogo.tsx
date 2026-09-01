@@ -3,7 +3,10 @@ import { useSearchParams } from "react-router-dom";
 import { T } from "../theme.ts";
 import { useCatalog, somaBruta } from "../hooks/useCatalog.ts";
 import BeyCard from "./BeyCard.tsx";
-import { COR_TIPO, ROTULO_TIPO, ROTULO_RARIDADE, COR_RARIDADE, MARCA } from "./rotulos.ts";
+import {
+  COR_TIPO, ROTULO_TIPO, ROTULO_RARIDADE, COR_RARIDADE, BUSCA_SLOT, MARCA,
+} from "./rotulos.ts";
+import { casaTermos, termosDaBusca } from "../lib/busca.ts";
 import type { Database } from "../types/database.ts";
 
 type BeyType = Database["public"]["Enums"]["bey_type"];
@@ -70,7 +73,7 @@ export default function Catalogo() {
   }, [composicoes]);
 
   const filtradas = useMemo(() => {
-    const termo = busca.trim().toLowerCase();
+    const termos = termosDaBusca(busca);
     return composicoes.filter((c) => {
       if (tipo !== "todos" && c.lancamentos[0]?.bey_type !== tipo) return false;
       // c.raridade é a MENOR entre os produtos de mesma composição: a pergunta
@@ -78,14 +81,16 @@ export default function Catalogo() {
       // mais fácil que existe para ela.
       if (raridade === "dificil" && c.raridade === "common") return false;
       if (raridade !== "todas" && raridade !== "dificil" && c.raridade !== raridade) return false;
-      if (!termo) return true;
-      const alvo = [
+      const indice = [
         c.nome,
         ...c.lancamentos.map((l) => l.release_code),
         ...c.pecas.map((p) => p.part.name),
+        // A classe de cada peça entra nos DOIS idiomas: quem procura "catraca"
+        // e quem procura "ratchet" precisam achar a mesma coisa.
+        ...c.pecas.flatMap((p) => BUSCA_SLOT[p.slot]),
         MARCA[c.lancamentos[0]!.brand].rotulo,
       ].join(" ");
-      return alvo.toLowerCase().includes(termo);
+      return casaTermos(indice, termos);
     });
   }, [composicoes, busca, tipo, raridade]);
 
