@@ -1,0 +1,85 @@
+{
+  "_nota": "Conteudo do FAQ. NAO vai para o banco: e importado direto pelo app, como anatomies.json. O campo `origem` diz de onde veio cada resposta -- `dados` sai do nosso proprio catalogo, `wiki` tem fonte obrigatoria, `jogador` e conhecimento de quem joga. Nenhuma resposta existe sem dizer de onde veio, pela mesma razao que todo registro do catalogo tem source_url. O leitor e uma crianca que ja joga, lendo sozinha no celular: frase curta, nenhum jargao usado antes de explicado.",
+  "perguntas": [
+    {
+      "id": "quantas-pecas",
+      "grupo": "as-pecas",
+      "pergunta": "De quantas peças é feito um Beyblade X?",
+      "resposta": "De três, quase sempre: a Lâmina, a Catraca e a Ponta.\n\nA Lâmina é o disco grande de cima. É ela que dá o nome ao bey.\n\nA Catraca fica no meio e escolhe a altura do bey.\n\nA Ponta é a peça de baixo, a única que encosta no estádio.\n\nTem uma exceção. Em alguns beys da linha UX a catraca já vem grudada na lâmina, e aí são só duas peças — o Glory Valkyrie LF é um desses.",
+      "origem": "dados",
+      "fonte": null,
+      "cita_pecas": [],
+      "cita_beys": ["UX-20"]
+    },
+    {
+      "id": "o-que-cada-parte-muda",
+      "grupo": "as-pecas",
+      "pergunta": "O que cada peça muda no jeito do bey girar?",
+      "resposta": "Cada uma faz um trabalho diferente.\n\nA Lâmina é quem bate. As bordas dela são de metal, e são elas que encostam no bey do adversário. Lâmina de ataque tem bordas afiadas e pontudas; lâmina de defesa tem bordas grossas e arredondadas.\n\nA Catraca escolhe a altura — o número dela diz isso. Uma 3-60 deixa o bey mais baixo que uma 9-80. E tem uma coisa que quase ninguém sabe: é o jeito que a catraca rosqueia na lâmina que decide o quanto o seu bey aguenta antes de se desmontar.\n\nA Ponta é a única peça que toca o chão, e por isso ela manda no movimento. Ponta plana faz o bey correr atrás do adversário. Ponta afiada faz ele ficar girando parado, gastando pouco. Ponta de borracha agarra o chão e acelera. E tem ponta com disco por fora, que ajuda o bey a segurar o giro por mais tempo.",
+      "origem": "wiki",
+      "fonte": "https://beyblade.fandom.com/wiki/Basic_Line",
+      "cita_pecas": ["Flat", "Needle", "Rubber Accel", "Disk Ball"],
+      "cita_beys": []
+    },
+    {
+      "id": "por-que-ataque-ou-defesa",
+      "grupo": "as-pecas",
+      "pergunta": "Por que um bey é de Ataque e outro é de Defesa? O que muda nele?",
+      "resposta": "Muda o formato. Não é uma etiqueta que colaram: é como a peça foi desenhada.\n\nUm bey de Ataque tem bordas afiadas e cheias de saliências, para bater forte. O formato costuma ser de três asas ou triangular, e a ponta é plana, para ele correr pelo estádio.\n\nUm bey de Defesa é pesado, com bordas grossas e redondas — assim a batida escorrega em vez de empurrar. A ponta é afiada, para ele se firmar no lugar e não sair rolando.\n\nUm bey de Resistência é redondo e liso, sem nada que segure a batida. A ponta toca o chão de leve, para ele perder o mínimo de força e girar até o outro parar.\n\nE um de Equilíbrio junta pedaço de mais de um tipo.\n\nTem uma regra que se repete: Defesa costuma dar conta de Ataque, Ataque costuma dar conta de Resistência, e Resistência costuma dar conta de Defesa. É pedra, papel e tesoura.",
+      "origem": "wiki",
+      "fonte": "https://beyblade.fandom.com/wiki/Attack",
+      "cita_pecas": [],
+      "cita_beys": []
+    },
+    {
+      "id": "regras-da-batalha",
+      "grupo": "o-jogo",
+      "pergunta": "Quais são as regras de uma batalha?",
+      "resposta": "Os dois lançam ao mesmo tempo no estádio, e cada jeito de vencer vale um tanto de pontos. Ganha quem chegar a 4 pontos primeiro.\n\nXtreme Finish vale 3 pontos, e é a jogada que mais vale. É quando você joga o bey do adversário para fora pela Xtreme Zone.\n\nOver Finish vale 2 pontos. É quando o bey do outro sai por uma Over Zone.\n\nBurst Finish vale 2 pontos. É quando a batida é tão forte que o bey do adversário se desmonta e as peças se separam.\n\nSpin Finish vale 1 ponto. É o mais comum: ninguém saiu do estádio e ninguém se desmontou, e aí ganha o ponto quem ainda estiver girando quando o outro parar.\n\nDuas coisas importantes. No estádio comum, a saída do meio é a Xtreme Zone e as dos cantos são as Over Zones — mas no Wide Xtreme Stadium é o contrário, os cantos é que valem 3. E em torneio grande a final costuma ir até 7 pontos em vez de 4.",
+      "origem": "wiki",
+      "fonte": "https://beyblade.fandom.com/wiki/Xtreme_Stadium",
+      "cita_pecas": [],
+      "cita_beys": []
+    },
+    {
+      "id": "o-que-e-xtreme-dash",
+      "grupo": "o-jogo",
+      "pergunta": "O que é o Xtreme Dash?",
+      "resposta": "É o truque do estádio oficial, e explica por que alguns beys aceleram de repente no meio da batalha.\n\nNuma das laterais do estádio tem uma trilha com engrenagens, chamada Xtreme Line. Quase toda Ponta tem uma engrenagem de 12 dentes embaixo.\n\nQuando a ponta do seu bey passa por essa trilha, as engrenagens se encaixam e o bey ganha velocidade. Isso é o Xtreme Dash.\n\nAlgumas pontas têm dentes maiores, feitos para agarrar a trilha com mais facilidade — são as que têm Gear no nome.",
+      "origem": "wiki",
+      "fonte": "https://beyblade.fandom.com/wiki/Xtreme_Dash",
+      "cita_pecas": ["Gear Flat", "Gear Ball", "Gear Point"],
+      "cita_beys": []
+    },
+    {
+      "id": "starter-booster-random",
+      "grupo": "comprar",
+      "pergunta": "O que é um Starter? E um Booster? E um Random Booster?",
+      "resposta": "São jeitos diferentes de vender o mesmo tipo de brinquedo.\n\nO Starter vem com o bey e o lançador junto. É o que você compra quando ainda não tem lançador nenhum.\n\nO Booster vem só com o bey, sem lançador. Custa menos, e serve para quem já tem.\n\nO Random Booster é uma caixa fechada: você não sabe qual bey está lá dentro. Costumam ser seis opções, e elas não têm a mesma chance de sair — numa caixa grande de 24, tem bey que aparece 3 vezes e tem bey que aparece 8.\n\nO Deck Set traz três beys de uma vez, para você já ter com o que trocar entre uma batalha e outra.",
+      "origem": "dados",
+      "fonte": null,
+      "cita_pecas": [],
+      "cita_beys": ["BX-01", "BX-14"]
+    },
+    {
+      "id": "o-que-e-raro",
+      "grupo": "comprar",
+      "pergunta": "O que faz um beyblade ser raro?",
+      "resposta": "O quanto ele é difícil de conseguir — só isso.\n\nSe você entra na loja, compra a caixa e sabe o que vem dentro, ele é comum. A maioria é assim.\n\nSe ele vem num Random Booster, depende de quantos aparecem. Um bey que sai 3 vezes numa caixa de 24 é muito raro. Outro, da mesma caixa, que sai 8 vezes, é só incomum.\n\nE tem os exclusivos, que nunca estiveram numa prateleira: prêmio de torneio, encomenda pelo correio, versão de uma loja só.\n\nCada bey difícil no catálogo explica na própria ficha por que é difícil, com o número.",
+      "origem": "dados",
+      "fonte": null,
+      "cita_pecas": [],
+      "cita_beys": ["BX-14"]
+    },
+    {
+      "id": "o-que-esperar-de-cada-tipo",
+      "grupo": "montar",
+      "pergunta": "O que esperar de um bey de Ataque, Defesa, Resistência ou Equilíbrio?",
+      "resposta": "Ataque é rápido e bate forte, mas cansa cedo. Ele quer acabar a batalha logo, jogando o outro para fora. Se não conseguir, ele mesmo para antes.\n\nDefesa é difícil de tirar do lugar e agarra bem no chão. Dificilmente derruba alguém, mas aguenta.\n\nResistência gira muito tempo e gasta pouco. Perde feio para um ataque bem dado, porque escorrega fácil, mas costuma sobreviver a um bey de defesa.\n\nEquilíbrio junta um pouco de cada. Serve quando você não sabe o que o adversário vai trazer.",
+      "origem": "wiki",
+      "fonte": "https://beyblade.fandom.com/wiki/Attack",
+      "cita_pecas": [],
+      "cita_beys": []
+    }
+  ]
+}
