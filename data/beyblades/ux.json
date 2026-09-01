@@ -1,16 +1,145 @@
 {
-  "_fonte": "https://beyblade.wiki/beyblade-x-list/",
-  "_nota": "Composicao extraida do nome do produto ('Dran Sword 3-60F' = blade + ratchet + bit) e conferida contra a lista de pecas. release_date nula onde nao houve confirmacao — data errada e pior que ausente. bey_type herdado do tipo da lamina.",
+  "_fonte": "https://beyblade.fandom.com/wiki/",
+  "_nota": "Composicao e codigo extraidos das paginas de produto da Beyblade Wiki (campo ProductCode do infobox), filtrando os exclusivos Hasbro. release_date nula onde a pagina nao informava. bey_type herdado da lamina.",
   "beyblades": [
     {
-      "release_code": "UX-01",
-      "name": "Dran Buster 1-60A",
+      "release_code": "UX-00",
+      "name": "Aero Pegasus 3-70A",
       "line": "UX",
       "anatomy": "unique",
       "release_type": "booster",
       "release_date": null,
       "rarity": "common",
       "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/AeroPegasus_3-70A",
+      "parts": {
+        "blade": "Aero Pegasus",
+        "ratchet": "3-70",
+        "bit": "Accel"
+      }
+    },
+    {
+      "release_code": "UX-00",
+      "name": "Clock Mirage 4-55S",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "stamina",
+      "source_url": "https://beyblade.fandom.com/wiki/ClockMirage_4-55S",
+      "parts": {
+        "blade": "Clock Mirage",
+        "ratchet": "4-55",
+        "bit": "Spike"
+      }
+    },
+    {
+      "release_code": "UX-00",
+      "name": "Dran Buster 3-70N",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "starter",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/DranBuster_3-70N",
+      "parts": {
+        "blade": "Dran Buster",
+        "ratchet": "3-70",
+        "bit": "Needle"
+      }
+    },
+    {
+      "release_code": "UX-00",
+      "name": "Dran Dagger 9-60LF",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "starter",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/DranDagger_9-60LF",
+      "parts": {
+        "blade": "Dran Dagger",
+        "ratchet": "9-60",
+        "bit": "Low Flat"
+      }
+    },
+    {
+      "release_code": "UX-00",
+      "name": "Dran Sword 4-80DB",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "starter",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/DranSword_4-80DB",
+      "parts": {
+        "blade": "Dran Sword",
+        "ratchet": "4-80",
+        "bit": "Disk Ball"
+      }
+    },
+    {
+      "release_code": "UX-00",
+      "name": "Orochi Cluster 6-60LF",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/OrochiCluster_6-60LF",
+      "parts": {
+        "blade": "Orochi Cluster",
+        "ratchet": "6-60",
+        "bit": "Low Flat"
+      }
+    },
+    {
+      "release_code": "UX-00",
+      "name": "Samurai Saber 5-60K",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "starter",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/SamuraiSaber_5-60K",
+      "parts": {
+        "blade": "Samurai Saber",
+        "ratchet": "5-60",
+        "bit": "Kick"
+      }
+    },
+    {
+      "release_code": "UX-00",
+      "name": "Wyvern Hover 2-80GN",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "defense",
+      "source_url": "https://beyblade.fandom.com/wiki/WyvernHover_2-80GN",
+      "parts": {
+        "blade": "Wyvern Hover",
+        "ratchet": "2-80",
+        "bit": "Gear Needle"
+      }
+    },
+    {
+      "release_code": "UX-01",
+      "name": "Dran Buster 1-60A",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/DranBuster_1-60A",
       "parts": {
         "blade": "Dran Buster",
         "ratchet": "1-60",
@@ -22,10 +151,11 @@
       "name": "Hells Hammer 3-70H",
       "line": "UX",
       "anatomy": "unique",
-      "release_type": "booster",
+      "release_type": "starter",
       "release_date": null,
       "rarity": "common",
       "bey_type": "balance",
+      "source_url": "https://beyblade.fandom.com/wiki/HellsHammer_3-70H",
       "parts": {
         "blade": "Hells Hammer",
         "ratchet": "3-70",
@@ -37,14 +167,15 @@
       "name": "Wizard Rod 5-70DB",
       "line": "UX",
       "anatomy": "unique",
-      "release_type": "booster",
+      "release_type": "starter",
       "release_date": null,
       "rarity": "common",
       "bey_type": "stamina",
+      "source_url": "https://beyblade.fandom.com/wiki/WizardRod_5-70DB",
       "parts": {
         "blade": "Wizard Rod",
         "ratchet": "5-70",
-        "bit": "Disc Ball"
+        "bit": "Disk Ball"
       }
     },
     {
@@ -56,10 +187,43 @@
       "release_date": null,
       "rarity": "rare",
       "bey_type": "defense",
+      "source_url": "https://beyblade.fandom.com/wiki/ShinobiShadow_1-80MN",
       "parts": {
         "blade": "Shinobi Shadow",
         "ratchet": "1-80",
         "bit": "Metal Needle"
+      }
+    },
+    {
+      "release_code": "UX-05",
+      "name": "Shinobi Shadow 3-70GP",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "defense",
+      "source_url": "https://beyblade.fandom.com/wiki/ShinobiShadow_3-70GP",
+      "parts": {
+        "blade": "Shinobi Shadow",
+        "ratchet": "3-70",
+        "bit": "Gear Point"
+      }
+    },
+    {
+      "release_code": "UX-05",
+      "name": "Shinobi Shadow 9-60LF",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "defense",
+      "source_url": "https://beyblade.fandom.com/wiki/ShinobiShadow_9-60LF",
+      "parts": {
+        "blade": "Shinobi Shadow",
+        "ratchet": "9-60",
+        "bit": "Low Flat"
       }
     },
     {
@@ -71,6 +235,7 @@
       "release_date": null,
       "rarity": "common",
       "bey_type": "defense",
+      "source_url": "https://beyblade.fandom.com/wiki/LeonCrest_7-60GN",
       "parts": {
         "blade": "Leon Crest",
         "ratchet": "7-60",
@@ -86,6 +251,7 @@
       "release_date": null,
       "rarity": "common",
       "bey_type": "stamina",
+      "source_url": "https://beyblade.fandom.com/wiki/PhoenixRudder_9-70G",
       "parts": {
         "blade": "Phoenix Rudder",
         "ratchet": "9-70",
@@ -93,14 +259,47 @@
       }
     },
     {
+      "release_code": "UX-07",
+      "name": "Sphinx Cowl 1-80GF",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "deck_set",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "defense",
+      "source_url": "https://beyblade.fandom.com/wiki/SphinxCowl_1-80GF",
+      "parts": {
+        "blade": "Sphinx Cowl",
+        "ratchet": "1-80",
+        "bit": "Gear Flat"
+      }
+    },
+    {
+      "release_code": "UX-07",
+      "name": "Wyvern Gale 2-60S",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "deck_set",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "stamina",
+      "source_url": "https://beyblade.fandom.com/wiki/WyvernGale_2-60S",
+      "parts": {
+        "blade": "Wyvern Gale",
+        "ratchet": "2-60",
+        "bit": "Spike"
+      }
+    },
+    {
       "release_code": "UX-08",
       "name": "Silver Wolf 3-80FB",
       "line": "UX",
       "anatomy": "unique",
-      "release_type": "booster",
+      "release_type": "starter",
       "release_date": null,
       "rarity": "common",
       "bey_type": "stamina",
+      "source_url": "https://beyblade.fandom.com/wiki/SilverWolf_3-80FB",
       "parts": {
         "blade": "Silver Wolf",
         "ratchet": "3-80",
@@ -112,10 +311,11 @@
       "name": "Samurai Saber 2-70L",
       "line": "UX",
       "anatomy": "unique",
-      "release_type": "booster",
+      "release_type": "starter",
       "release_date": null,
       "rarity": "common",
       "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/SamuraiSaber_2-70L",
       "parts": {
         "blade": "Samurai Saber",
         "ratchet": "2-70",
@@ -128,10 +328,11 @@
       "name": "Knight Mail 3-85BS",
       "line": "UX",
       "anatomy": "unique",
-      "release_type": "custom_set",
+      "release_type": "booster",
       "release_date": null,
       "rarity": "common",
       "bey_type": "defense",
+      "source_url": "https://beyblade.fandom.com/wiki/KnightMail_3-85BS",
       "parts": {
         "blade": "Knight Mail",
         "ratchet": "3-85",
@@ -139,14 +340,47 @@
       }
     },
     {
-      "release_code": "UX-11",
-      "name": "Impact Drake 9-60LR",
+      "release_code": "UX-10",
+      "name": "Ptera Swing 7-70B",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "booster",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "stamina",
+      "source_url": "https://beyblade.fandom.com/wiki/PteraSwing_7-70B",
+      "parts": {
+        "blade": "Ptera Swing",
+        "ratchet": "7-70",
+        "bit": "Ball"
+      }
+    },
+    {
+      "release_code": "UX-10",
+      "name": "Tyranno Beat 1-60RA",
       "line": "UX",
       "anatomy": "unique",
       "release_type": "booster",
       "release_date": null,
       "rarity": "common",
       "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/TyrannoBeat_1-60RA",
+      "parts": {
+        "blade": "Tyranno Beat",
+        "ratchet": "1-60",
+        "bit": "Rubber Accel"
+      }
+    },
+    {
+      "release_code": "UX-11",
+      "name": "Impact Drake 9-60LR",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "starter",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/ImpactDrake_9-60LR",
       "parts": {
         "blade": "Impact Drake",
         "ratchet": "9-60",
@@ -162,6 +396,7 @@
       "release_date": null,
       "rarity": "rare",
       "bey_type": "stamina",
+      "source_url": "https://beyblade.fandom.com/wiki/GhostCircle_0-80GB",
       "parts": {
         "blade": "Ghost Circle",
         "ratchet": "0-80",
@@ -169,14 +404,95 @@
       }
     },
     {
+      "release_code": "UX-12",
+      "name": "Ghost Circle 4-60H",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "stamina",
+      "source_url": "https://beyblade.fandom.com/wiki/GhostCircle_4-60H",
+      "parts": {
+        "blade": "Ghost Circle",
+        "ratchet": "4-60",
+        "bit": "Hexa"
+      }
+    },
+    {
+      "release_code": "UX-12",
+      "name": "Leon Claw 0-80E",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "balance",
+      "source_url": "https://beyblade.fandom.com/wiki/LeonClaw_0-80E",
+      "parts": {
+        "blade": "Leon Claw",
+        "ratchet": "0-80",
+        "bit": "Elevate"
+      }
+    },
+    {
+      "release_code": "UX-12",
+      "name": "Phoenix Feather 2-60N",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/PhoenixFeather_2-60N",
+      "parts": {
+        "blade": "Phoenix Feather",
+        "ratchet": "2-60",
+        "bit": "Needle"
+      }
+    },
+    {
+      "release_code": "UX-12",
+      "name": "Shinobi Shadow 3-80F",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "defense",
+      "source_url": "https://beyblade.fandom.com/wiki/ShinobiShadow_3-80F",
+      "parts": {
+        "blade": "Shinobi Shadow",
+        "ratchet": "3-80",
+        "bit": "Flat"
+      }
+    },
+    {
+      "release_code": "UX-12",
+      "name": "Wyvern Gale 0-80C",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "stamina",
+      "source_url": "https://beyblade.fandom.com/wiki/WyvernGale_0-80C",
+      "parts": {
+        "blade": "Wyvern Gale",
+        "ratchet": "0-80",
+        "bit": "Cyclone"
+      }
+    },
+    {
       "release_code": "UX-13",
       "name": "Golem Rock 1-60UN",
       "line": "UX",
       "anatomy": "unique",
-      "release_type": "booster",
+      "release_type": "starter",
       "release_date": null,
       "rarity": "common",
       "bey_type": "defense",
+      "source_url": "https://beyblade.fandom.com/wiki/GolemRock_1-60UN",
       "parts": {
         "blade": "Golem Rock",
         "ratchet": "1-60",
@@ -188,10 +504,11 @@
       "name": "Scorpio Spear 0-70Z",
       "line": "UX",
       "anatomy": "unique",
-      "release_type": "booster",
+      "release_type": "starter",
       "release_date": null,
       "rarity": "common",
       "bey_type": "balance",
+      "source_url": "https://beyblade.fandom.com/wiki/ScorpioSpear_0-70Z",
       "parts": {
         "blade": "Scorpio Spear",
         "ratchet": "0-70",
@@ -207,6 +524,7 @@
       "release_date": null,
       "rarity": "common",
       "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/SharkScale_4-50UF",
       "parts": {
         "blade": "Shark Scale",
         "ratchet": "4-50",
@@ -214,18 +532,83 @@
       }
     },
     {
+      "release_code": "UX-15",
+      "name": "Tyranno Roar 1-70L",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "deck_set",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/TyrannoRoar_1-70L",
+      "parts": {
+        "blade": "Tyranno Roar",
+        "ratchet": "1-70",
+        "bit": "Level"
+      }
+    },
+    {
+      "release_code": "UX-16",
+      "name": "Clock Mirage 9-65B",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "stamina",
+      "source_url": "https://beyblade.fandom.com/wiki/ClockMirage_9-65B",
+      "parts": {
+        "blade": "Clock Mirage",
+        "ratchet": "9-65",
+        "bit": "Ball"
+      }
+    },
+    {
       "release_code": "UX-17",
       "name": "Meteor Dragoon 3-70J",
       "line": "UX",
       "anatomy": "unique",
-      "release_type": "booster",
+      "release_type": "starter",
       "release_date": null,
       "rarity": "common",
       "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/MeteorDragoon_3-70J",
       "parts": {
         "blade": "Meteor Dragoon",
         "ratchet": "3-70",
         "bit": "Jolt"
+      }
+    },
+    {
+      "release_code": "UX-18",
+      "name": "Dran Dagger 7-55G",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/DranDagger_7-55G",
+      "parts": {
+        "blade": "Dran Dagger",
+        "ratchet": "7-55",
+        "bit": "Glide"
+      }
+    },
+    {
+      "release_code": "UX-18",
+      "name": "Mummy Curse 4-60C",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "defense",
+      "source_url": "https://beyblade.fandom.com/wiki/MummyCurse_4-60C",
+      "parts": {
+        "blade": "Mummy Curse",
+        "ratchet": "4-60",
+        "bit": "Cyclone"
       }
     },
     {
@@ -237,10 +620,59 @@
       "release_date": null,
       "rarity": "rare",
       "bey_type": "defense",
+      "source_url": "https://beyblade.fandom.com/wiki/MummyCurse_7-55W",
       "parts": {
         "blade": "Mummy Curse",
         "ratchet": "7-55",
         "bit": "Wedge"
+      }
+    },
+    {
+      "release_code": "UX-18",
+      "name": "Weiss Tiger 4-80LR",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "random_booster",
+      "release_date": null,
+      "rarity": "rare",
+      "bey_type": "balance",
+      "source_url": "https://beyblade.fandom.com/wiki/WeissTiger_4-80LR",
+      "parts": {
+        "blade": "Weiss Tiger",
+        "ratchet": "4-80",
+        "bit": "Low Rush"
+      }
+    },
+    {
+      "release_code": "UX-21",
+      "name": "Silver Wolf 9-70R",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "deck_set",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "stamina",
+      "source_url": "https://beyblade.fandom.com/wiki/SilverWolf_9-70R",
+      "parts": {
+        "blade": "Silver Wolf",
+        "ratchet": "9-70",
+        "bit": "Rush"
+      }
+    },
+    {
+      "release_code": "UX-21",
+      "name": "Wyvern Hover 8-80B",
+      "line": "UX",
+      "anatomy": "unique",
+      "release_type": "starter",
+      "release_date": null,
+      "rarity": "common",
+      "bey_type": "defense",
+      "source_url": "https://beyblade.fandom.com/wiki/WyvernHover_8-80B",
+      "parts": {
+        "blade": "Wyvern Hover",
+        "ratchet": "8-80",
+        "bit": "Ball"
       }
     }
   ]

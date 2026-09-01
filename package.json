@@ -12,7 +12,8 @@
     "seed": "tsx --env-file-if-exists=.env.seed scripts/seed.ts",
     "seed:images": "tsx --env-file-if-exists=.env.seed scripts/seed-images.ts",
     "sync:anatomies": "tsx --env-file-if-exists=.env.seed scripts/sync-anatomies.ts",
-    "usuario-teste": "tsx --env-file-if-exists=.env.seed scripts/usuario-teste.ts"
+    "usuario-teste": "tsx --env-file-if-exists=.env.seed scripts/usuario-teste.ts",
+    "obsoletos": "tsx --env-file-if-exists=.env.seed scripts/obsoletos.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.3",

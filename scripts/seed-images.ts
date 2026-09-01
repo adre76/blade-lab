@@ -58,6 +58,20 @@ function tituloBey(nome: string): string {
   return m[1]!.replace(/\s+/g, "") + " " + m[2]!;
 }
 
+/**
+ * Título exato da página, quando o registro guarda a URL de onde veio.
+ *
+ * Vale mais que qualquer reconstrução a partir do nome: as repinturas de
+ * colaboração têm página com outro nome ("Ptera Swing 4-55D" mora em
+ * "Quetzalcoatlus 4-55D"), e aí o palpite erra e a imagem some sem aviso.
+ */
+function tituloDaFonte(url: string | null | undefined): string | null {
+  if (!url) return null;
+  const m = url.match(/^https:\/\/beyblade\.fandom\.com\/wiki\/(.+)$/);
+  if (!m) return null;
+  return decodeURIComponent(m[1]!).replace(/_/g, " ");
+}
+
 function tituloPeca(slot: string, nome: string): string {
   const prefixo: Record<string, string> = {
     blade: "Blade", ratchet: "Ratchet", bit: "Bit",
@@ -121,18 +135,21 @@ const slug = (s: string) =>
 // ─── Beyblades ───────────────────────────────────────────────────────────────
 const { data: beys, error: errBeys } = await db
   .from("beyblades")
-  .select("id, name, release_code, image_path")
+  .select("id, name, release_code, image_path, source_url")
   .order("release_code");
 if (errBeys) throw errBeys;
 
 const beysPendentes = (beys ?? []).filter((b) => FORCE || !b.image_path);
 console.log(`beyblades: ${beysPendentes.length} pendente(s) de ${beys?.length ?? 0}`);
 
-const mapaBeys = await buscarImagens(beysPendentes.map((b) => tituloBey(b.name)));
+const tituloDoBey = (b: { name: string; source_url?: string | null }) =>
+  tituloDaFonte(b.source_url) ?? tituloBey(b.name);
+
+const mapaBeys = await buscarImagens(beysPendentes.map(tituloDoBey));
 
 let okBeys = 0;
 for (const bey of beysPendentes) {
-  const fonte = mapaBeys.get(tituloBey(bey.name));
+  const fonte = mapaBeys.get(tituloDoBey(bey));
   if (!fonte) {
     console.warn(`  sem imagem na wiki: ${bey.release_code} ${bey.name}`);
     continue;
@@ -152,20 +169,21 @@ for (const bey of beysPendentes) {
 // ─── Peças ───────────────────────────────────────────────────────────────────
 const { data: pecas, error: errPecas } = await db
   .from("parts")
-  .select("id, slot, name, image_path")
+  .select("id, slot, name, image_path, source_url")
   .order("slot");
 if (errPecas) throw errPecas;
 
 const pecasPendentes = (pecas ?? []).filter((p) => FORCE || !p.image_path);
 console.log(`peças: ${pecasPendentes.length} pendente(s) de ${pecas?.length ?? 0}`);
 
-const mapaPecas = await buscarImagens(
-  pecasPendentes.map((p) => tituloPeca(p.slot, p.name)),
-);
+const tituloDaPeca = (p: { slot: string; name: string; source_url?: string | null }) =>
+  tituloDaFonte(p.source_url) ?? tituloPeca(p.slot, p.name);
+
+const mapaPecas = await buscarImagens(pecasPendentes.map(tituloDaPeca));
 
 let okPecas = 0;
 for (const peca of pecasPendentes) {
-  const fonte = mapaPecas.get(tituloPeca(peca.slot, peca.name));
+  const fonte = mapaPecas.get(tituloDaPeca(peca));
   if (!fonte) continue; // silencioso: muita peça não tem página própria
   const destino = `parts/${peca.slot}-${slug(peca.name)}.webp`;
   const caminho = await processar(fonte, destino);

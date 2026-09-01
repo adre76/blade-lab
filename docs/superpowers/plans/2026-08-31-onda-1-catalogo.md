@@ -996,3 +996,85 @@ Isto **não substitui** a ressalva geral do catálogo: *todo* atributo é mediç
 comunidade, e isso está em `/creditos`. `data_disputed` diz algo mais específico
 — as fontes não concordam entre si sobre este registro.
 
+
+---
+
+## Completude do catálogo (01/09/2026)
+
+O catálogo entrou em produção com 37 beys e **estava incompleto**. Os testes de
+integridade não pegaram isso porque verificavam só um sentido: que toda peça
+referenciada por um bey existe. O inverso — que toda lâmina foi referenciada —
+não era verificado, e é uma regra verdadeira do domínio: nenhuma lâmina foi
+vendida solta, toda uma veio dentro de algum produto. Uma lâmina órfã é, sem
+ambiguidade, um bey faltando.
+
+O teste que faltava está em `src/lib/seed/integridade.test.ts`. Ele é o critério
+de parada desta tarefa: enquanto houver órfã, falta produto.
+
+### Números
+
+| | antes | depois |
+|---|---|---|
+| beys | 37 | **156** (114 BX, 42 UX) |
+| lâminas | 59 | **80** |
+| ratchets | 35 | **36** |
+| bits | 52 | 52 |
+| beys com imagem | 37 | **156 de 156** |
+
+### O problema de nome, que custou três erros
+
+A Beyblade Wiki grafa o nome Takara Tomy **sem espaço** (`GoatTackle`) e o Hasbro
+**com espaço e com as palavras invertidas** (`Tackle Goat`). O que engana é que a
+wiki não é consistente sobre qual dos dois vira título da página: normalmente o
+título é o nome TT e o Hasbro vai em `AKA=... (Hasbro)`, mas em várias páginas é
+o contrário — título Hasbro e `AKA=... (Takara Tomy)`.
+
+Validar "existe a página `Blade - X`?" portanto **não decide nada**. Foi essa
+validação que me levou a renomear `Goat Tackle`, `Mammoth Tusk` e `Wyvern Hover`
+para a grafia Hasbro, num catálogo que é Takara Tomy.
+
+O que decide é o **rótulo de marca do próprio campo**, nunca a posição. Com esse
+critério aplicado às 102 páginas de lâmina, as 56 grafias do catálogo passaram
+sem uma correção sequer.
+
+### O que define se uma lâmina entra
+
+Uma lâmina entra se, e só se, **algum produto Takara Tomy a contém** — o código
+`BX-`/`UX-` no infobox do produto. É o que separa:
+
+- `Clamp Crab`, `Gill Shark`, `Yell Kong`, `Gust Bat`, `Shatter Horus`,
+  `Stun Medusa`, `Suppress Superion`, `Hack Viking` e os colabs
+  Marvel/Star Wars/Transformers: **só código G**, exclusivos Hasbro. Ficam para
+  a onda da Hasbro.
+- `Mosasaurus`, `T. Rex`, `Spinosaurus`, `Quetzalcoatlus`: código `BX-00`,
+  lançamento japonês de verdade. Mas as páginas de lâmina **redirecionam** para
+  `TriceraSpiky`, `TyrannoBeat`, `Roar Tyranno` e `Talon Ptera` — são repinturas
+  Jurassic World de lâminas que já tínhamos, não lâminas novas.
+
+Essa segunda descoberta virou o mapa de apelidos que o coletor usa: sem ele,
+quatro produtos Takara Tomy eram descartados por "lâmina inexistente".
+
+### Ficaram de fora, conscientemente
+
+- **Linha CX** — onda própria, decisão registrada acima.
+- **Ratchet-Integrated Blades** (`GloryValkyrie`, `BulletGriffon`, `HellsNether Z`,
+  `Rampart Aegis`, `Valor Bison`, `Seize Jaguar`, `Cutter Shinobi`) — anatomia
+  diferente: a lâmina traz o ratchet embutido, e o laboratório precisaria de um
+  slot a menos. Vão junto com a CX.
+- **`Lightning L-Drago 1-60F` (Rapid-Hit e Upper)** — são Takara Tomy (BX-00, 25º
+  aniversário), mas a wiki ainda não publicou os atributos, e o laboratório
+  precisa deles. Entram quando o dado sair.
+- **Peso e resistência a burst do ratchet `8-80`** — estreou no UX-21 em
+  08/08/2026; ninguém pesou ainda. Cadastrado com os atributos que existem.
+
+### Sobras do seed anterior
+
+`npm run seed` é upsert puro: acrescenta e atualiza, **nunca apaga**. É o que o
+torna seguro de rodar a qualquer hora, mas deixa para trás o que sai do catálogo.
+`scripts/obsoletos.ts` lista essas linhas e as remove com `--apagar`, avisando
+antes se algum inventário aponta para elas.
+
+```
+npm run obsoletos              # lista
+npm run obsoletos -- --apagar  # remove
+```

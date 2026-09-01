@@ -50,7 +50,7 @@
     },
     {
       "slot": "bit",
-      "name": "Disc Ball",
+      "name": "Disk Ball",
       "code": "DB",
       "line": "BX",
       "attack": 15,

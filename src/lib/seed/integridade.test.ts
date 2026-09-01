@@ -97,6 +97,30 @@ describe("integridade do catálogo", () => {
     expect(erradas).toEqual([]);
   });
 
+  /**
+   * O teste que faltava, e que teria acusado o catálogo incompleto sozinho.
+   *
+   * Os outros verificam que toda peça REFERENCIADA existe. Este verifica o
+   * inverso: que toda lâmina é referenciada. É uma regra verdadeira do
+   * domínio — nenhuma lâmina foi vendida solta, toda uma veio dentro de algum
+   * produto. Uma lâmina órfã significa, sem ambiguidade, um bey faltando no
+   * catálogo.
+   *
+   * Vale só para lâminas. Ratchets e bits circulam entre produtos e podem
+   * legitimamente aparecer apenas em algo que ainda não catalogamos.
+   */
+  it("nenhuma lâmina fica órfã — cada uma veio em algum bey", () => {
+    const usadas = new Set(
+      beys.flatMap((b) => Object.values(b.parts).map((nome) => `${b.brand}|${nome}`)),
+    );
+    const orfas = partes
+      .filter((p) => p.slot === "blade")
+      .filter((p) => !usadas.has(`${p.brand}|${p.name}`))
+      .map((p) => `${p.name} (${p.line})`);
+
+    expect(orfas).toEqual([]);
+  });
+
   it("atributos das peças estão numa faixa plausível", () => {
     const fora = partes
       .filter((p) => p.attack + p.defense + p.stamina === 0)

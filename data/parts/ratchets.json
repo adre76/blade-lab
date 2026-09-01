@@ -290,19 +290,6 @@
     },
     {
       "slot": "ratchet",
-      "name": "M-85",
-      "code": "M-85",
-      "line": "BX",
-      "attack": 8,
-      "defense": 19,
-      "stamina": 13,
-      "weight_g": 10.73,
-      "height_mm": 85,
-      "burst_resistance": "very_low",
-      "notes": "Prefixo 'M' nao e numerico: contact_points fica nulo."
-    },
-    {
-      "slot": "ratchet",
       "name": "6-60",
       "code": "6-60",
       "line": "BX",
@@ -407,6 +394,21 @@
     },
     {
       "slot": "ratchet",
+      "name": "8-80",
+      "code": "8-80",
+      "line": "UX",
+      "attack": 8,
+      "defense": 9,
+      "stamina": 13,
+      "weight_g": null,
+      "height_mm": 80,
+      "burst_resistance": null,
+      "contact_points": 8,
+      "source_url": "https://beyblade.fandom.com/wiki/Ratchet_-_8-80",
+      "notes": "Estreia no UX-21 HellsNether Deck Set (08/08/2026). Peso e resistencia a burst ainda sem medicao publicada."
+    },
+    {
+      "slot": "ratchet",
       "name": "9-60",
       "code": "9-60",
       "line": "BX",
@@ -456,6 +458,19 @@
       "height_mm": 80,
       "burst_resistance": "medium",
       "contact_points": 9
+    },
+    {
+      "slot": "ratchet",
+      "name": "M-85",
+      "code": "M-85",
+      "line": "BX",
+      "attack": 8,
+      "defense": 19,
+      "stamina": 13,
+      "weight_g": 10.73,
+      "height_mm": 85,
+      "burst_resistance": "very_low",
+      "notes": "Prefixo 'M' nao e numerico: contact_points fica nulo."
     }
   ]
 }
