@@ -65,6 +65,18 @@ export default function DetalhePeca() {
             borderRadius: 999, padding: "3px 11px", fontSize: 12.5,
           }}>{ROTULO_LINHA[peca.line]}</span>
         </div>
+
+        {/*
+          Metade das lâminas tem nome diferente na Hasbro, e é comum a pessoa
+          conhecer a peça só por esse. Dizer isso aqui evita que ela ache que
+          está na ficha errada.
+        */}
+        {peca.aka && peca.aka.length > 0 && (
+          <p style={{ color: T.textMuted, fontSize: 12.5, margin: "9px 0 0" }}>
+            Também conhecida como{" "}
+            <span style={{ color: T.textSecondary }}>{peca.aka.join(", ")}</span>
+          </p>
+        )}
       </header>
 
       <section style={{ marginBottom: 22 }}>

@@ -74,4 +74,25 @@ describe("busca do catálogo", () => {
   it("exige TODOS os termos, não qualquer um", () => {
     expect(acha("Dran Wizard")).toBe(false);
   });
+
+  /**
+   * A wiki, as caixas e as listas de produto grafam o nome Takara Tomy sem
+   * espaço. Quem copia de lá digita "DranSword", não "Dran Sword".
+   */
+  it("acha com o nome colado, como a wiki grafa", () => {
+    expect(acha("DranSword")).toBe(true);
+    expect(acha("dransword")).toBe(true);
+  });
+
+  /**
+   * O caso que o usuário trouxe: metade das lâminas tem nome Hasbro diferente,
+   * e era o único nome que ele conhecia. "Keel Shark" é a Shark Edge.
+   */
+  it("acha pelo nome alternativo da peça", () => {
+    const indice = ["Shark Edge 3-60LF", "BX-14", "Shark Edge", "Keel Shark", "3-60", "Low Flat"]
+      .join(" ");
+    expect(casaTermos(indice, termosDaBusca("Keel Shark"))).toBe(true);
+    expect(casaTermos(indice, termosDaBusca("keel"))).toBe(true);
+    expect(casaTermos(indice, termosDaBusca("Shark Edge"))).toBe(true);
+  });
 });

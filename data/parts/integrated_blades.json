@@ -1,6 +1,6 @@
 {
   "_fonte": "https://beyblade.fandom.com/wiki/",
-  "_nota": "Ratchet-Integrated Blades: a lamina traz o ratchet embutido, entao o bey tem duas pecas em vez de tres (anatomia unique_expand). Sao o UX Expand Blade — 'Expand Blade' e um sub-sistema que atravessa as tres linhas: na CX divide a Main Blade em Metal + Over Blade, na UX integra o ratchet, na BX so poe mais metal no centro sem mudar a composicao. Sao tres na Takara Tomy; as outras quatro do sistema (Cutter Shinobi, Rampart Aegis, Seize Jaguar, Valor Bison) so tem codigo Hasbro e ficam para a onda da Hasbro. Altura e pontos de contato nao foram publicados para nenhuma delas. O HellsNether NAO leva data_disputed apesar de ter dois valores por atributo: nao ha fonte discordando de outra, e uma peca com dois modos de montagem, e a nota do registro explica isso ao leitor.",
+  "_nota": "Ratchet-Integrated Blades: a lamina traz o ratchet embutido, entao o bey tem duas pecas em vez de tres (anatomia unique_expand). Sao o UX Expand Blade — 'Expand Blade' e um sub-sistema que atravessa as tres linhas: na CX divide a Main Blade em Metal + Over Blade, na UX integra o ratchet, na BX so poe mais metal no centro sem mudar a composicao. Sao tres na Takara Tomy; as outras quatro do sistema (Cutter Shinobi, Rampart Aegis, Seize Jaguar, Valor Bison) so tem codigo Hasbro e ficam para a onda da Hasbro. Altura e pontos de contato nao foram publicados para nenhuma delas. O HellsNether NAO leva data_disputed apesar de ter dois valores por atributo: nao ha fonte discordando de outra, e uma peca com dois modos de montagem, e a nota do registro explica isso ao leitor. O campo `aka` traz os outros nomes da MESMA peca — o Hasbro e, quando houver, o da repintura de colaboracao. Sao 52 laminas; ratchets e bits usam os mesmos nomes nas duas marcas. Nao confundir com equivalent_name, que liga DUAS pecas distintas.",
   "parts": [
     {
       "slot": "integrated_blade",
@@ -14,7 +14,11 @@
       "spin_direction": "right",
       "part_type": "balance",
       "source_url": "https://beyblade.fandom.com/wiki/Ratchet-Integrated_Blade_-_BulletGriffon",
-      "notes": "Monta-se em duas partes: Bullet em cima (32,4 g) e Griffon embaixo (28,2 g); os 60,6 g são o conjunto. Grafia alternativa oficial BulletGryphon; na Hasbro, Rocket Griffon."
+      "notes": "Monta-se em duas partes: Bullet em cima (32,4 g) e Griffon embaixo (28,2 g); os 60,6 g são o conjunto. Grafia alternativa oficial BulletGryphon; na Hasbro, Rocket Griffon.",
+      "aka": [
+        "BulletGryphon",
+        "Rocket Griffon"
+      ]
     },
     {
       "slot": "integrated_blade",
@@ -28,7 +32,10 @@
       "spin_direction": "right",
       "part_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/Ratchet-Integrated_Blade_-_GloryValkyrie",
-      "notes": "Na Hasbro, Glory Valkerion."
+      "notes": "Na Hasbro, Glory Valkerion.",
+      "aka": [
+        "Glory Valkerion"
+      ]
     },
     {
       "slot": "integrated_blade",
@@ -42,7 +49,10 @@
       "spin_direction": "right",
       "part_type": "balance",
       "source_url": "https://beyblade.fandom.com/wiki/Ratchet-Integrated_Blade_-_HellsNether",
-      "notes": "A fonte publica dois conjuntos de atributos para esta peça, 50/50/30 e 70/45/15, o que indica dois modos de montagem; o exibido aqui é o primeiro. A wiki ainda não redigiu a descrição, então não dá para dizer o que separa os modos nem qual é o padrão. O peso também não foi publicado. Na Hasbro, Nether Incendio."
+      "notes": "A fonte publica dois conjuntos de atributos para esta peça, 50/50/30 e 70/45/15, o que indica dois modos de montagem; o exibido aqui é o primeiro. A wiki ainda não redigiu a descrição, então não dá para dizer o que separa os modos nem qual é o padrão. O peso também não foi publicado. Na Hasbro, Nether Incendio.",
+      "aka": [
+        "Nether Incendio"
+      ]
     }
   ]
 }

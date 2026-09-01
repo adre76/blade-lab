@@ -85,6 +85,10 @@ export default function Catalogo() {
         c.nome,
         ...c.lancamentos.map((l) => l.release_code),
         ...c.pecas.map((p) => p.part.name),
+        // Metade das lâminas tem nome Hasbro diferente do Takara Tomy: quem
+        // procura "Keel Shark" está procurando a Shark Edge. Sem isto a busca
+        // não devolvia nada, e era o nome que a pessoa conhecia.
+        ...c.pecas.flatMap((p) => p.part.aka ?? []),
         // A classe de cada peça entra nos DOIS idiomas: quem procura "catraca"
         // e quem procura "ratchet" precisam achar a mesma coisa.
         ...c.pecas.flatMap((p) => BUSCA_SLOT[p.slot]),

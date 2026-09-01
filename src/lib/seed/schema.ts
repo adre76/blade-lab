@@ -63,6 +63,15 @@ export const PartSchema = z
     dash_performance: Resistencia.nullish(),
     spin_direction: Giro.nullish(),
     part_type: Natureza.nullish(),
+    /**
+     * Outros nomes da MESMA peça: o Hasbro e, quando houver, o da repintura de
+     * colaboração. "Keel Shark" é a Shark Edge; "Mosasaurus" é a Tricera Spiky.
+     *
+     * Não confundir com `equivalent_name` logo abaixo, que liga DUAS peças
+     * distintas — uma Hasbro e sua correspondente Takara Tomy. Aqui é uma peça
+     * só, com mais de um nome.
+     */
+    aka: z.array(z.string().min(1)).nonempty().nullish(),
     /** Nome da peça Takara Tomy equivalente. Resolvido para id durante o seed. */
     equivalent_name: z.string().nullish(),
     image_path: z.string().nullish(),

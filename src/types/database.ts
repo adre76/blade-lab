@@ -283,6 +283,7 @@ export type Database = {
       }
       parts: {
         Row: {
+          aka: string[] | null
           attack: number
           brand: Database["public"]["Enums"]["brand"]
           burst_resistance: Database["public"]["Enums"]["resistance"] | null
@@ -309,6 +310,7 @@ export type Database = {
           weight_g: number | null
         }
         Insert: {
+          aka?: string[] | null
           attack?: number
           brand?: Database["public"]["Enums"]["brand"]
           burst_resistance?: Database["public"]["Enums"]["resistance"] | null
@@ -335,6 +337,7 @@ export type Database = {
           weight_g?: number | null
         }
         Update: {
+          aka?: string[] | null
           attack?: number
           brand?: Database["public"]["Enums"]["brand"]
           burst_resistance?: Database["public"]["Enums"]["resistance"] | null

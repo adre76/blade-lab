@@ -30,5 +30,10 @@ export const termosDaBusca = (texto: string): string[] =>
 export function casaTermos(indice: string, termos: string[]): boolean {
   if (!termos.length) return true;
   const alvo = semAcento(indice);
-  return termos.every((t) => alvo.includes(t));
+  // A wiki grafa o nome Takara Tomy sem espaço — "CrocoCrunch", "DranSword" —,
+  // e é assim que ele aparece em caixa e em lista de produto. Comparar também
+  // contra o índice sem espaço faz as duas grafias acharem, sem precisar
+  // guardar a segunda em lugar nenhum.
+  const colado = alvo.replace(/\s+/g, "");
+  return termos.every((t) => alvo.includes(t) || colado.includes(t));
 }
