@@ -146,14 +146,14 @@ export default function DetalheBey() {
                     </div>
                     <div style={{ fontWeight: 600, fontSize: 14.5 }}>{part.name}</div>
                     {/*
-                      Os outros nomes da peça acompanham o nome em toda tela
-                      que a mostra — card, ficha do bey e ficha da peça. Ficar
-                      só no card obrigaria a voltar para descobrir que a
-                      Ptera Swing é a Talon Ptera.
+                      Com o rótulo, e não só o nome solto: "Talon Ptera"
+                      embaixo de "Ptera Swing" pode ser lido como um código ou
+                      uma variante. A linha precisa dizer o que é.
                     */}
                     {part.aka?.length ? (
-                      <div style={{ color: T.textMuted, fontSize: 11.5, marginTop: 2 }}>
-                        {part.aka.join(" · ")}
+                      <div style={{ color: T.textMuted, fontSize: 11.5, marginTop: 3 }}>
+                        também conhecida como{" "}
+                        <span style={{ color: T.textSecondary }}>{part.aka.join(", ")}</span>
                       </div>
                     ) : null}
                   </div>
