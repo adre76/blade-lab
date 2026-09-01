@@ -16,7 +16,8 @@
         "blade": "Wizard Rod",
         "ratchet": "1-60",
         "bit": "Rush"
-      }
+      },
+      "rarity_reason": "Saem 4 a cada caixa de 24 do BX-35 Random Booster Vol. 4, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-50",
@@ -32,7 +33,8 @@
         "blade": "Ghost Circle",
         "ratchet": "M-85",
         "bit": "Disk Spike"
-      }
+      },
+      "rarity_reason": "Uma de 6 opções do BX-50 Random Booster Vol. 11; a proporção por caixa ainda não foi publicada."
     },
     {
       "release_code": "BX-50",
@@ -48,7 +50,8 @@
         "blade": "Impact Drake",
         "ratchet": "7-55",
         "bit": "Free Ball"
-      }
+      },
+      "rarity_reason": "Uma de 6 opções do BX-50 Random Booster Vol. 11; a proporção por caixa ainda não foi publicada."
     },
     {
       "release_code": "UX-00",
@@ -57,14 +60,15 @@
       "anatomy": "unique",
       "release_type": "booster",
       "release_date": null,
-      "rarity": "common",
+      "rarity": "exclusive",
       "bey_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/AeroPegasus_3-70A",
       "parts": {
         "blade": "Aero Pegasus",
         "ratchet": "3-70",
         "bit": "Accel"
-      }
+      },
+      "rarity_reason": "Prêmio de torneio: nunca foi vendido em loja."
     },
     {
       "release_code": "UX-00",
@@ -135,9 +139,9 @@
       "name": "Dran Buster 1-60A",
       "line": "UX",
       "anatomy": "unique",
-      "release_type": "random_booster",
+      "release_type": "starter",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "common",
       "bey_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/DranBuster_1-60A",
       "parts": {
@@ -167,7 +171,7 @@
       "name": "Wizard Rod 5-70DB",
       "line": "UX",
       "anatomy": "unique",
-      "release_type": "starter",
+      "release_type": "booster",
       "release_date": null,
       "rarity": "common",
       "bey_type": "stamina",
@@ -185,14 +189,15 @@
       "anatomy": "unique",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/ShinobiShadow_1-80MN",
       "parts": {
         "blade": "Shinobi Shadow",
         "ratchet": "1-80",
         "bit": "Metal Needle"
-      }
+      },
+      "rarity_reason": "Saem 8 a cada caixa de 24 do UX-05 Random Booster ShinobiShadow Select."
     },
     {
       "release_code": "UX-05",
@@ -201,14 +206,15 @@
       "anatomy": "unique",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/ShinobiShadow_3-70GP",
       "parts": {
         "blade": "Shinobi Shadow",
         "ratchet": "3-70",
         "bit": "Gear Point"
-      }
+      },
+      "rarity_reason": "Saem 8 a cada caixa de 24 do UX-05 Random Booster ShinobiShadow Select."
     },
     {
       "release_code": "UX-05",
@@ -217,14 +223,15 @@
       "anatomy": "unique",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/ShinobiShadow_9-60LF",
       "parts": {
         "blade": "Shinobi Shadow",
         "ratchet": "9-60",
         "bit": "Low Flat"
-      }
+      },
+      "rarity_reason": "Saem 8 a cada caixa de 24 do UX-05 Random Booster ShinobiShadow Select."
     },
     {
       "release_code": "UX-06",
@@ -330,14 +337,15 @@
       "anatomy": "unique",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "very_rare",
       "bey_type": "stamina",
       "source_url": "https://beyblade.fandom.com/wiki/GhostCircle_0-80GB",
       "parts": {
         "blade": "Ghost Circle",
         "ratchet": "0-80",
         "bit": "Gear Ball"
-      }
+      },
+      "rarity_reason": "Saem 3 a cada caixa de 24 do UX-12 Random Booster Vol. 5, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "UX-12",
@@ -346,14 +354,15 @@
       "anatomy": "unique",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "very_rare",
       "bey_type": "stamina",
       "source_url": "https://beyblade.fandom.com/wiki/GhostCircle_4-60H",
       "parts": {
         "blade": "Ghost Circle",
         "ratchet": "4-60",
         "bit": "Hexa"
-      }
+      },
+      "rarity_reason": "Saem 3 a cada caixa de 24 do UX-12 Random Booster Vol. 5, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "UX-12",
@@ -369,14 +378,15 @@
         "blade": "Shinobi Shadow",
         "ratchet": "3-80",
         "bit": "Flat"
-      }
+      },
+      "rarity_reason": "Saem 4 a cada caixa de 24 do UX-12 Random Booster Vol. 5, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "UX-13",
       "name": "Golem Rock 1-60UN",
       "line": "UX",
       "anatomy": "unique",
-      "release_type": "starter",
+      "release_type": "booster",
       "release_date": null,
       "rarity": "common",
       "bey_type": "defense",
@@ -433,7 +443,8 @@
         "blade": "Clock Mirage",
         "ratchet": "9-65",
         "bit": "Ball"
-      }
+      },
+      "rarity_reason": "Uma de 3 opções do UX-16 Random Booster ClockMirage Select; a proporção por caixa ainda não foi publicada."
     },
     {
       "release_code": "UX-17",
@@ -465,7 +476,8 @@
         "blade": "Mummy Curse",
         "ratchet": "4-60",
         "bit": "Cyclone"
-      }
+      },
+      "rarity_reason": "Saem 4 a cada caixa de 24 do UX-18 Random Booster Vol. 8, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "UX-18",
@@ -474,14 +486,15 @@
       "anatomy": "unique",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "very_rare",
       "bey_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/MummyCurse_7-55W",
       "parts": {
         "blade": "Mummy Curse",
         "ratchet": "7-55",
         "bit": "Wedge"
-      }
+      },
+      "rarity_reason": "Saem 3 a cada caixa de 24 do UX-18 Random Booster Vol. 8, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "UX-19",

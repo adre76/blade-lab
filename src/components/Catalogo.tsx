@@ -3,12 +3,31 @@ import { useSearchParams } from "react-router-dom";
 import { T } from "../theme.ts";
 import { useCatalog, somaBruta } from "../hooks/useCatalog.ts";
 import BeyCard from "./BeyCard.tsx";
-import { COR_TIPO, ROTULO_TIPO, MARCA } from "./rotulos.ts";
+import { COR_TIPO, ROTULO_TIPO, ROTULO_RARIDADE, COR_RARIDADE, MARCA } from "./rotulos.ts";
 import type { Database } from "../types/database.ts";
 
 type BeyType = Database["public"]["Enums"]["bey_type"];
 
 const TIPOS = Object.keys(ROTULO_TIPO) as BeyType[];
+
+/**
+ * Filtros de raridade.
+ *
+ * `dificil` existe além dos degraus porque é o que a pergunta costuma ser —
+ * "o que aqui não se compra na prateleira" —, e responder isso exigiria clicar
+ * nos quatro degraus um a um. Os degraus continuam disponíveis para quem quer
+ * isolar um deles.
+ */
+const RARIDADES = ["dificil", "uncommon", "rare", "very_rare", "exclusive"] as const;
+type FiltroRaridade = (typeof RARIDADES)[number];
+
+const ROTULO_FILTRO_RARIDADE: Record<FiltroRaridade, string> = {
+  dificil: "Difíceis de achar",
+  uncommon: ROTULO_RARIDADE.uncommon,
+  rare: ROTULO_RARIDADE.rare,
+  very_rare: ROTULO_RARIDADE.very_rare,
+  exclusive: ROTULO_RARIDADE.exclusive,
+};
 
 export default function Catalogo() {
   const { composicoes, totalProdutos, error, loading } = useCatalog();
@@ -22,15 +41,22 @@ export default function Catalogo() {
   const tipo: BeyType | "todos" =
     tipoParam && TIPOS.includes(tipoParam as BeyType) ? (tipoParam as BeyType) : "todos";
 
-  const atualizar = (chave: "q" | "tipo", valor: string) => {
+  const rarParam = params.get("raridade");
+  const raridade: FiltroRaridade | "todas" =
+    rarParam && (RARIDADES as readonly string[]).includes(rarParam)
+      ? (rarParam as FiltroRaridade)
+      : "todas";
+
+  const atualizar = (chave: "q" | "tipo" | "raridade", valor: string) => {
     const novo = new URLSearchParams(params);
-    if (valor && valor !== "todos") novo.set(chave, valor);
+    if (valor && valor !== "todos" && valor !== "todas") novo.set(chave, valor);
     else novo.delete(chave);
     setParams(novo, { replace: true });
   };
 
   const setBusca = (v: string) => atualizar("q", v);
   const setTipo = (v: BeyType | "todos") => atualizar("tipo", v);
+  const setRaridade = (v: FiltroRaridade | "todas") => atualizar("raridade", v);
 
   // Escala das barras: a maior soma entre as composições carregadas.
   // Provisória de propósito — o denominador definitivo (§5.4) é o máximo
@@ -47,6 +73,11 @@ export default function Catalogo() {
     const termo = busca.trim().toLowerCase();
     return composicoes.filter((c) => {
       if (tipo !== "todos" && c.lancamentos[0]?.bey_type !== tipo) return false;
+      // c.raridade é a MENOR entre os produtos de mesma composição: a pergunta
+      // é "quão difícil é chegar nesta composição", e a resposta é o caminho
+      // mais fácil que existe para ela.
+      if (raridade === "dificil" && c.raridade === "common") return false;
+      if (raridade !== "todas" && raridade !== "dificil" && c.raridade !== raridade) return false;
       if (!termo) return true;
       const alvo = [
         c.nome,
@@ -56,7 +87,7 @@ export default function Catalogo() {
       ].join(" ");
       return alvo.toLowerCase().includes(termo);
     });
-  }, [composicoes, busca, tipo]);
+  }, [composicoes, busca, tipo, raridade]);
 
   const estiloFiltro = (ativo: boolean, cor: string) => ({
     background: ativo ? `${cor}22` : T.bgCard,
@@ -89,6 +120,22 @@ export default function Catalogo() {
         {TIPOS.map((t) => (
           <button key={t} onClick={() => setTipo(t)} style={estiloFiltro(tipo === t, COR_TIPO[t])}>
             {ROTULO_TIPO[t]}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 7, alignItems: "center",
+                    marginBottom: 16 }}>
+        <span style={{ color: T.textMuted, fontSize: 12.5, marginRight: 2 }}>Raridade</span>
+        <button onClick={() => setRaridade("todas")}
+                style={estiloFiltro(raridade === "todas", T.accent)}>
+          Todas
+        </button>
+        {RARIDADES.map((r) => (
+          <button key={r} onClick={() => setRaridade(r)}
+                  style={estiloFiltro(raridade === r,
+                                      r === "dificil" ? T.warn : COR_RARIDADE[r])}>
+            {ROTULO_FILTRO_RARIDADE[r]}
           </button>
         ))}
       </div>

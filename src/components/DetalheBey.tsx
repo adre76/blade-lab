@@ -7,7 +7,7 @@ import AvisoDivergencia from "./AvisoDivergencia.tsx";
 import ControleInventario from "./ControleInventario.tsx";
 import {
   COR_TIPO, ROTULO_TIPO, MARCA, ROTULO_SLOT,
-  ROTULO_RARIDADE, ROTULO_LANCAMENTO,
+  ROTULO_RARIDADE, COR_RARIDADE, ROTULO_LANCAMENTO,
 } from "./rotulos.ts";
 
 export default function DetalheBey() {
@@ -53,7 +53,7 @@ export default function DetalheBey() {
             padding: "3px 11px", fontSize: 12.5,
           }}>{marca.rotulo}</span>
           <span style={{
-            color: bey.rarity === "common" ? T.textMuted : T.accentWarm,
+            color: COR_RARIDADE[bey.rarity],
             border: `1px solid ${T.border}`, borderRadius: 999,
             padding: "3px 11px", fontSize: 12.5,
           }}>{ROTULO_RARIDADE[bey.rarity]}</span>
@@ -180,6 +180,23 @@ export default function DetalheBey() {
               </div>
               <p style={{ color: T.textMuted, fontSize: 11.5, marginTop: 7 }}>
                 Mesma composição, embalagem diferente.
+              </p>
+            </div>
+          )}
+
+          {bey.rarity_reason && (
+            <div style={{
+              marginTop: 16,
+              background: `${COR_RARIDADE[bey.rarity]}10`,
+              border: `1px solid ${COR_RARIDADE[bey.rarity]}40`,
+              borderRadius: 9, padding: "11px 13px",
+            }}>
+              <strong style={{ color: COR_RARIDADE[bey.rarity], fontSize: 13 }}>
+                Por que é {ROTULO_RARIDADE[bey.rarity].toLowerCase()}
+              </strong>
+              <p style={{ margin: "5px 0 0", color: T.textSecondary,
+                          fontSize: 13, lineHeight: 1.6 }}>
+                {bey.rarity_reason}
               </p>
             </div>
           )}

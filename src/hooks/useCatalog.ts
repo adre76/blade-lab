@@ -26,6 +26,13 @@ export type Composicao = {
   lancamentos: BeyCompleto[];
   /** A mais fácil de achar entre os produtos que vendem esta composição. */
   raridade: Rarity;
+  /**
+   * Por que essa raridade — do MESMO produto que a define, não de outro da
+   * composição. Se o BX-14 é Random Booster e o BX-01 é Starter, a composição
+   * é comum pelo BX-01, e explicar a raridade pelo BX-14 mentiria sobre o
+   * caminho mais fácil.
+   */
+  motivoRaridade: string | null;
 };
 
 /** Ordem de exibição das peças: da lâmina para a ponteira. */
@@ -75,6 +82,7 @@ function agrupar(beys: BeyCompleto[]): Composicao[] {
       existente.lancamentos.push(bey);
       if (ORDEM_RARIDADE.indexOf(bey.rarity) < ORDEM_RARIDADE.indexOf(existente.raridade)) {
         existente.raridade = bey.rarity;
+        existente.motivoRaridade = bey.rarity_reason;
       }
     } else {
       grupos.set(chave, {
@@ -83,6 +91,7 @@ function agrupar(beys: BeyCompleto[]): Composicao[] {
         pecas: bey.pecas,
         lancamentos: [bey],
         raridade: bey.rarity,
+        motivoRaridade: bey.rarity_reason,
       });
     }
   }

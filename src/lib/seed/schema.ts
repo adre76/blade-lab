@@ -105,6 +105,15 @@ export const BeybladeSchema = z
     /** Nula quando não houve confirmação. Data errada é pior que ausente. */
     release_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullish(),
     rarity: Raridade,
+    /**
+     * Por que este bey é difícil de conseguir, numa frase para o leitor.
+     *
+     * Nula em bey de compra garantida — quem compra um Starter sabe o que vem,
+     * e não há o que explicar. O `superRefine` abaixo cobra a recíproca: bey
+     * não-comum sem motivo é etiqueta sem conteúdo, que foi exatamente o
+     * problema que essa coluna veio resolver.
+     */
+    rarity_reason: z.string().min(1).nullish(),
     bey_type: Natureza.nullish(),
     /** Código do bey Takara Tomy equivalente. Resolvido para id durante o seed. */
     equivalent_code: z.string().nullish(),
@@ -138,6 +147,23 @@ export const BeybladeSchema = z
         message:
           `slots não batem com a anatomia '${b.anatomy}': ` +
           `esperado [${esperados.join(", ")}], recebido [${informados.join(", ")}]`,
+      });
+    }
+
+    // Etiqueta de raridade sem motivo é o problema que a coluna veio resolver:
+    // dizer "raro" sem dizer por quê não informa nada a quem lê.
+    if (b.rarity !== "common" && !b.rarity_reason) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["rarity_reason"],
+        message: `rarity '${b.rarity}' exige rarity_reason`,
+      });
+    }
+    if (b.rarity === "common" && b.rarity_reason) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["rarity_reason"],
+        message: "bey comum não tem raridade a explicar",
       });
     }
   });

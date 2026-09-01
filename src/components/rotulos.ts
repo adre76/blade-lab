@@ -42,6 +42,19 @@ export const ROTULO_RARIDADE: Record<Enums["rarity"], string> = {
   exclusive: "Exclusivo",
 };
 
+/**
+ * Uma escala só, do apagado ao quente, para a raridade ser lida sem depender de
+ * ler a palavra. Comum fica em cinza de propósito: é a maior parte do catálogo,
+ * e colorir tudo faria o destaque perder o sentido.
+ */
+export const COR_RARIDADE: Record<Enums["rarity"], string> = {
+  common: T.textMuted,
+  uncommon: T.accentDim,
+  rare: T.warn,
+  very_rare: T.accentWarm,
+  exclusive: T.danger,
+};
+
 export const ROTULO_SLOT: Record<Enums["part_slot"], string> = {
   blade: "Lâmina",
   // O nome longo é o que a peça é: uma lâmina com o ratchet embutido. Chamá-la

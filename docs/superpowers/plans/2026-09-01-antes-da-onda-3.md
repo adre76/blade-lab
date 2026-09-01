@@ -2,6 +2,8 @@
 
 Três itens combinados em 01/09/2026, para fazer **antes** do laboratório.
 
+**Estado em 02/09/2026:** itens 2 e 3 feitos. Item 1 pendente.
+
 ---
 
 ## 1. Traduzir "Ratchet" e "Bit"
@@ -127,3 +129,78 @@ ser exibido em lugar próprio e filtrado precisa ser dado próprio.
 **2 → 3 → 1.** O item 2 é pré-requisito do 3, e os dois mexem em dado e
 migration. O item 1 é só de interface e não bloqueia nada — pode entrar a
 qualquer momento, inclusive junto com a Onda 3.
+
+
+---
+
+# Execução — itens 2 e 3 (02/09/2026)
+
+## O que se confirmou
+
+A suspeita registrada acima estava certa, e o defeito era maior do que o
+pedido: **`release_type` também estava errado**. Ele saía de um regex sobre o
+texto da página do bey, e marcou o `UX-01 Dran Buster 1-60A` como Random
+Booster porque uma nota de Trivia menciona um Random Booster ao falar de um
+atraso de lançamento. Como `rarity` derivava de `release_type`, o erro
+propagava.
+
+Os dois passaram a sair de fonte estrutural, cada uma respondendo só o que
+sabe:
+
+| fonte | responde |
+|---|---|
+| `==Assortment==` de cada Random Booster | quem está dentro |
+| `==Breakdown==` do mesmo | quantos de cada por caixa de 24 |
+| *List of Beyblade X products* | rótulo do produto e como foi distribuído |
+
+Separar pertinência de proporção é o que permite dizer *"é de Random Booster,
+mas a proporção não foi publicada"* em vez de perder o bey.
+
+## Números
+
+`release_type` corrigido em **8 beys**. Os 59 Random Boosters agora são todos
+confirmados por pertencer ao Assortment de algum produto — nenhum sobrou por
+casamento de texto.
+
+As proporções caem em exatamente quatro valores, e a caixa é sempre de 24:
+
+| por caixa | | vira |
+|---|---|---|
+| 8 de 24 | 33,3% | Incomum |
+| 5 de 24 | 20,8% | Incomum |
+| 4 de 24 | 16,7% | Raro |
+| 3 de 24 | 12,5% | Muito raro |
+
+Os "Select" têm 3 beys (8 cada, iguais entre si); os "Vol." têm 6, com
+proporções diferentes — é aí que existe um bey mais difícil que o vizinho.
+
+Raridade final, agora usando os cinco degraus: **96 comum, 24 incomum, 24
+raro, 11 muito raro, 4 exclusivo**. Antes eram dois valores, 99 e 60.
+
+## Sobre os códigos -00
+
+A ideia de tratar todo `BX-00`/`UX-00` como exclusivo foi descartada: são 48
+beys, e o código só significa "sem número oficial". O índice anota a
+distribuição de verdade — *Mail Order Exclusive*, *Tournament Prize*, *Takara
+Tomy Mall*, *Retailer Exclusive* —, e é a anotação que vale como evidência.
+Quatro beys se qualificam; os outros são produtos sem número, vendidos
+normalmente.
+
+## `rarity_reason`
+
+Coluna própria (migration `0015`), como previsto. O schema cobra a recíproca
+nos dois sentidos: bey não-comum **exige** motivo, e bey comum **não pode**
+ter — etiqueta sem conteúdo era o problema que a coluna veio resolver.
+
+Na ficha o motivo aparece em bloco próprio, com a cor do degrau; no card, como
+tooltip da etiqueta. A composição carrega o motivo **do produto que define sua
+raridade**, não de outro: se o BX-14 é Random Booster e o BX-01 é Starter, a
+composição é comum pelo BX-01, e explicar pelo BX-14 mentiria sobre o caminho
+mais fácil.
+
+## Filtro
+
+Uma segunda fila de chips, com os quatro degraus mais **"Difíceis de achar"**
+(qualquer não-comum). O atalho existe porque é o que a pergunta costuma ser, e
+respondê-la com os degraus exigiria quatro cliques. Vive na querystring, como
+os outros filtros, então o resultado é compartilhável por link.

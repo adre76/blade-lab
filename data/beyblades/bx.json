@@ -41,14 +41,15 @@
       "anatomy": "basic",
       "release_type": "booster",
       "release_date": null,
-      "rarity": "common",
+      "rarity": "exclusive",
       "bey_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/CrocoCrunch_2-60Q",
       "parts": {
         "blade": "Croco Crunch",
         "ratchet": "2-60",
         "bit": "Quake"
-      }
+      },
+      "rarity_reason": "Só por encomenda direta, fora do varejo."
     },
     {
       "release_code": "BX-00",
@@ -71,7 +72,7 @@
       "name": "Draciel Shield 7-60D",
       "line": "BX",
       "anatomy": "basic",
-      "release_type": "starter",
+      "release_type": "booster",
       "release_date": null,
       "rarity": "common",
       "bey_type": "defense",
@@ -135,23 +136,24 @@
       "name": "Dranzer Spiral 3-80T",
       "line": "BX",
       "anatomy": "basic",
-      "release_type": "starter",
+      "release_type": "booster",
       "release_date": null,
-      "rarity": "common",
+      "rarity": "exclusive",
       "bey_type": "balance",
       "source_url": "https://beyblade.fandom.com/wiki/DranzerSpiral_3-80T",
       "parts": {
         "blade": "Dranzer Spiral",
         "ratchet": "3-80",
         "bit": "Taper"
-      }
+      },
+      "rarity_reason": "Exclusivo de uma rede de lojas."
     },
     {
       "release_code": "BX-00",
       "name": "Driger Slash 4-80P",
       "line": "BX",
       "anatomy": "basic",
-      "release_type": "starter",
+      "release_type": "booster",
       "release_date": null,
       "rarity": "common",
       "bey_type": "balance",
@@ -377,14 +379,15 @@
       "anatomy": "basic",
       "release_type": "booster",
       "release_date": null,
-      "rarity": "common",
+      "rarity": "exclusive",
       "bey_type": "balance",
       "source_url": "https://beyblade.fandom.com/wiki/SamuraiSteel_5-70GF",
       "parts": {
         "blade": "Samurai Steel",
         "ratchet": "5-70",
         "bit": "Gear Flat"
-      }
+      },
+      "rarity_reason": "Só por encomenda direta, fora do varejo."
     },
     {
       "release_code": "BX-00",
@@ -791,7 +794,7 @@
       "name": "Knight Lance 4-80HN",
       "line": "BX",
       "anatomy": "basic",
-      "release_type": "starter",
+      "release_type": "booster",
       "release_date": null,
       "rarity": "common",
       "bey_type": "defense",
@@ -816,7 +819,8 @@
         "blade": "Dran Sword",
         "ratchet": "3-80",
         "bit": "Ball"
-      }
+      },
+      "rarity_reason": "Saem 4 a cada caixa de 24 do BX-14 Random Booster Vol. 1, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-14",
@@ -825,14 +829,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "balance",
       "source_url": "https://beyblade.fandom.com/wiki/HellsScythe_4-80LF",
       "parts": {
         "blade": "Hells Scythe",
         "ratchet": "4-80",
         "bit": "Low Flat"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do BX-14 Random Booster Vol. 1."
     },
     {
       "release_code": "BX-14",
@@ -841,14 +846,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/KnightShield_4-60LF",
       "parts": {
         "blade": "Knight Shield",
         "ratchet": "4-60",
         "bit": "Low Flat"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do BX-14 Random Booster Vol. 1."
     },
     {
       "release_code": "BX-14",
@@ -857,7 +863,7 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": "2023-09-09",
-      "rarity": "rare",
+      "rarity": "very_rare",
       "bey_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/SharkEdge_3-60LF",
       "parts": {
@@ -865,7 +871,8 @@
         "ratchet": "3-60",
         "bit": "Low Flat"
       },
-      "notes": "Prêmio raro do Random Booster Vol. 1."
+      "notes": "Prêmio raro do Random Booster Vol. 1.",
+      "rarity_reason": "Saem 3 a cada caixa de 24 do BX-14 Random Booster Vol. 1, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-14",
@@ -874,14 +881,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "very_rare",
       "bey_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/SharkEdge_4-80N",
       "parts": {
         "blade": "Shark Edge",
         "ratchet": "4-80",
         "bit": "Needle"
-      }
+      },
+      "rarity_reason": "Saem 3 a cada caixa de 24 do BX-14 Random Booster Vol. 1, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-14",
@@ -897,7 +905,8 @@
         "blade": "Wizard Arrow",
         "ratchet": "3-60",
         "bit": "Taper"
-      }
+      },
+      "rarity_reason": "Saem 4 a cada caixa de 24 do BX-14 Random Booster Vol. 1, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-15",
@@ -922,14 +931,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "stamina",
       "source_url": "https://beyblade.fandom.com/wiki/ViperTail_3-80HN",
       "parts": {
         "blade": "Viper Tail",
         "ratchet": "3-80",
         "bit": "High Needle"
-      }
+      },
+      "rarity_reason": "Saem 8 a cada caixa de 24 do BX-16 Random Booster ViperTail Select."
     },
     {
       "release_code": "BX-16",
@@ -938,14 +948,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "stamina",
       "source_url": "https://beyblade.fandom.com/wiki/ViperTail_4-60F",
       "parts": {
         "blade": "Viper Tail",
         "ratchet": "4-60",
         "bit": "Flat"
-      }
+      },
+      "rarity_reason": "Saem 8 a cada caixa de 24 do BX-16 Random Booster ViperTail Select."
     },
     {
       "release_code": "BX-16",
@@ -954,7 +965,7 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": "2023-10-07",
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "stamina",
       "source_url": "https://beyblade.fandom.com/wiki/ViperTail_5-80O",
       "parts": {
@@ -962,7 +973,8 @@
         "ratchet": "5-80",
         "bit": "Orb"
       },
-      "notes": "Prêmio do Random Booster Viper Tail Select."
+      "notes": "Prêmio do Random Booster Viper Tail Select.",
+      "rarity_reason": "Saem 8 a cada caixa de 24 do BX-16 Random Booster ViperTail Select."
     },
     {
       "release_code": "BX-19",
@@ -1099,14 +1111,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/KnightLance_4-60GB",
       "parts": {
         "blade": "Knight Lance",
         "ratchet": "4-60",
         "bit": "Gear Ball"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do BX-24 Random Booster Vol. 2."
     },
     {
       "release_code": "BX-24",
@@ -1122,7 +1135,8 @@
         "blade": "Leon Claw",
         "ratchet": "3-80",
         "bit": "High Needle"
-      }
+      },
+      "rarity_reason": "Saem 4 a cada caixa de 24 do BX-24 Random Booster Vol. 2, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-24",
@@ -1138,7 +1152,8 @@
         "blade": "Viper Tail",
         "ratchet": "5-60",
         "bit": "Flat"
-      }
+      },
+      "rarity_reason": "Saem 4 a cada caixa de 24 do BX-24 Random Booster Vol. 2, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-24",
@@ -1147,14 +1162,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "stamina",
       "source_url": "https://beyblade.fandom.com/wiki/WizardArrow_4-80GB",
       "parts": {
         "blade": "Wizard Arrow",
         "ratchet": "4-80",
         "bit": "Gear Ball"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do BX-24 Random Booster Vol. 2."
     },
     {
       "release_code": "BX-24",
@@ -1163,14 +1179,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "very_rare",
       "bey_type": "stamina",
       "source_url": "https://beyblade.fandom.com/wiki/WyvernGale_3-60T",
       "parts": {
         "blade": "Wyvern Gale",
         "ratchet": "3-60",
         "bit": "Taper"
-      }
+      },
+      "rarity_reason": "Saem 3 a cada caixa de 24 do BX-24 Random Booster Vol. 2, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-24",
@@ -1179,14 +1196,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "very_rare",
       "bey_type": "stamina",
       "source_url": "https://beyblade.fandom.com/wiki/WyvernGale_5-80GB",
       "parts": {
         "blade": "Wyvern Gale",
         "ratchet": "5-80",
         "bit": "Gear Ball"
-      }
+      },
+      "rarity_reason": "Saem 3 a cada caixa de 24 do BX-24 Random Booster Vol. 2, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-26",
@@ -1211,14 +1229,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/SphinxCowl_4-80HT",
       "parts": {
         "blade": "Sphinx Cowl",
         "ratchet": "4-80",
         "bit": "High Taper"
-      }
+      },
+      "rarity_reason": "Saem 8 a cada caixa de 24 do BX-27 Random Booster SphinxCowl Select."
     },
     {
       "release_code": "BX-27",
@@ -1227,14 +1246,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/SphinxCowl_5-60O",
       "parts": {
         "blade": "Sphinx Cowl",
         "ratchet": "5-60",
         "bit": "Orb"
-      }
+      },
+      "rarity_reason": "Saem 8 a cada caixa de 24 do BX-27 Random Booster SphinxCowl Select."
     },
     {
       "release_code": "BX-27",
@@ -1243,14 +1263,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/SphinxCowl_9-80GN",
       "parts": {
         "blade": "Sphinx Cowl",
         "ratchet": "9-80",
         "bit": "Gear Needle"
-      }
+      },
+      "rarity_reason": "Saem 8 a cada caixa de 24 do BX-27 Random Booster SphinxCowl Select."
     },
     {
       "release_code": "BX-31",
@@ -1266,7 +1287,8 @@
         "blade": "Dran Dagger",
         "ratchet": "4-70",
         "bit": "Point"
-      }
+      },
+      "rarity_reason": "Saem 4 a cada caixa de 24 do BX-31 Random Booster Vol. 3, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-31",
@@ -1282,7 +1304,8 @@
         "blade": "Hells Chain",
         "ratchet": "9-80",
         "bit": "Orb"
-      }
+      },
+      "rarity_reason": "Saem 4 a cada caixa de 24 do BX-31 Random Booster Vol. 3, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-31",
@@ -1291,14 +1314,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/RhinoHorn_5-80Q",
       "parts": {
         "blade": "Rhino Horn",
         "ratchet": "5-80",
         "bit": "Quake"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do BX-31 Random Booster Vol. 3."
     },
     {
       "release_code": "BX-31",
@@ -1307,14 +1331,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/SharkEdge_1-60Q",
       "parts": {
         "blade": "Shark Edge",
         "ratchet": "1-60",
         "bit": "Quake"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do BX-31 Random Booster Vol. 3."
     },
     {
       "release_code": "BX-31",
@@ -1323,14 +1348,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "very_rare",
       "bey_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/TyrannoBeat_3-60S",
       "parts": {
         "blade": "Tyranno Beat",
         "ratchet": "3-60",
         "bit": "Spike"
-      }
+      },
+      "rarity_reason": "Saem 3 a cada caixa de 24 do BX-31 Random Booster Vol. 3, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-31",
@@ -1339,14 +1365,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "very_rare",
       "bey_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/TyrannoBeat_4-70Q",
       "parts": {
         "blade": "Tyranno Beat",
         "ratchet": "4-70",
         "bit": "Quake"
-      }
+      },
+      "rarity_reason": "Saem 3 a cada caixa de 24 do BX-31 Random Booster Vol. 3, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-33",
@@ -1387,14 +1414,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "very_rare",
       "bey_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/BlackShell_4-60D",
       "parts": {
         "blade": "Black Shell",
         "ratchet": "4-60",
         "bit": "Dot"
-      }
+      },
+      "rarity_reason": "Saem 3 a cada caixa de 24 do BX-35 Random Booster Vol. 4, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-35",
@@ -1403,14 +1431,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "very_rare",
       "bey_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/BlackShell_9-80B",
       "parts": {
         "blade": "Black Shell",
         "ratchet": "9-80",
         "bit": "Ball"
-      }
+      },
+      "rarity_reason": "Saem 3 a cada caixa de 24 do BX-35 Random Booster Vol. 4, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-35",
@@ -1426,7 +1455,8 @@
         "blade": "Phoenix Wing",
         "ratchet": "5-80",
         "bit": "Hexa"
-      }
+      },
+      "rarity_reason": "Saem 4 a cada caixa de 24 do BX-35 Random Booster Vol. 4, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-35",
@@ -1435,14 +1465,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "balance",
       "source_url": "https://beyblade.fandom.com/wiki/UnicornSting_3-70D",
       "parts": {
         "blade": "Unicorn Sting",
         "ratchet": "3-70",
         "bit": "Dot"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do BX-35 Random Booster Vol. 4."
     },
     {
       "release_code": "BX-35",
@@ -1451,14 +1482,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "stamina",
       "source_url": "https://beyblade.fandom.com/wiki/ViperTail_5-70D",
       "parts": {
         "blade": "Viper Tail",
         "ratchet": "5-70",
         "bit": "Dot"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do BX-35 Random Booster Vol. 4."
     },
     {
       "release_code": "BX-36",
@@ -1474,7 +1506,8 @@
         "blade": "Whale Wave",
         "ratchet": "3-80",
         "bit": "Gear Ball"
-      }
+      },
+      "rarity_reason": "Uma de 3 opções do BX-36 Random Booster WhaleWave Select; a proporção por caixa ainda não foi publicada."
     },
     {
       "release_code": "BX-36",
@@ -1490,7 +1523,8 @@
         "blade": "Whale Wave",
         "ratchet": "4-70",
         "bit": "High Needle"
-      }
+      },
+      "rarity_reason": "Uma de 3 opções do BX-36 Random Booster WhaleWave Select; a proporção por caixa ainda não foi publicada."
     },
     {
       "release_code": "BX-36",
@@ -1506,7 +1540,8 @@
         "blade": "Whale Wave",
         "ratchet": "5-80",
         "bit": "Elevate"
-      }
+      },
+      "rarity_reason": "Uma de 3 opções do BX-36 Random Booster WhaleWave Select; a proporção por caixa ainda não foi publicada."
     },
     {
       "release_code": "BX-37",
@@ -1529,7 +1564,7 @@
       "name": "Crimson Garuda 4-70TP",
       "line": "BX",
       "anatomy": "basic",
-      "release_type": "starter",
+      "release_type": "booster",
       "release_date": null,
       "rarity": "common",
       "bey_type": "balance",
@@ -1554,7 +1589,8 @@
         "blade": "Shelter Drake",
         "ratchet": "3-60",
         "bit": "Dot"
-      }
+      },
+      "rarity_reason": "Uma de 3 opções do BX-39 Random Booster ShelterDrake Select; a proporção por caixa ainda não foi publicada."
     },
     {
       "release_code": "BX-39",
@@ -1570,7 +1606,8 @@
         "blade": "Shelter Drake",
         "ratchet": "5-70",
         "bit": "Orb"
-      }
+      },
+      "rarity_reason": "Uma de 3 opções do BX-39 Random Booster ShelterDrake Select; a proporção por caixa ainda não foi publicada."
     },
     {
       "release_code": "BX-39",
@@ -1586,7 +1623,8 @@
         "blade": "Shelter Drake",
         "ratchet": "7-80",
         "bit": "Gear Point"
-      }
+      },
+      "rarity_reason": "Uma de 3 opções do BX-39 Random Booster ShelterDrake Select; a proporção por caixa ainda não foi publicada."
     },
     {
       "release_code": "BX-44",
@@ -1659,14 +1697,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/CobaltDragoon_9-80F",
       "parts": {
         "blade": "Cobalt Dragoon",
         "ratchet": "9-80",
         "bit": "Flat"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do BX-48 Random Booster Vol. 9."
     },
     {
       "release_code": "BX-48",
@@ -1675,14 +1714,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/DranBuster_2-80Q",
       "parts": {
         "blade": "Dran Buster",
         "ratchet": "2-80",
         "bit": "Quake"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do BX-48 Random Booster Vol. 9."
     },
     {
       "release_code": "BX-48",
@@ -1691,14 +1731,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "balance",
       "source_url": "https://beyblade.fandom.com/wiki/HellsScythe_3-85GB",
       "parts": {
         "blade": "Hells Scythe",
         "ratchet": "3-85",
         "bit": "Gear Ball"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do BX-48 Random Booster Vol. 9."
     },
     {
       "release_code": "BX-48",
@@ -1714,7 +1755,8 @@
         "blade": "Mammoth Tusk",
         "ratchet": "7-60",
         "bit": "Spike"
-      }
+      },
+      "rarity_reason": "Saem 4 a cada caixa de 24 do BX-48 Random Booster Vol. 9, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "BX-48",
@@ -1723,14 +1765,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/SharkEdge_4-70E",
       "parts": {
         "blade": "Shark Edge",
         "ratchet": "4-70",
         "bit": "Elevate"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do BX-48 Random Booster Vol. 9."
     },
     {
       "release_code": "BX-49",
@@ -1762,7 +1805,8 @@
         "blade": "Heavens Ring",
         "ratchet": "0-80",
         "bit": "Disk Spike"
-      }
+      },
+      "rarity_reason": "Uma de 6 opções do BX-50 Random Booster Vol. 11; a proporção por caixa ainda não foi publicada."
     },
     {
       "release_code": "BX-50",
@@ -1778,7 +1822,8 @@
         "blade": "Heavens Ring",
         "ratchet": "6-60",
         "bit": "Trans Point"
-      }
+      },
+      "rarity_reason": "Uma de 6 opções do BX-50 Random Booster Vol. 11; a proporção por caixa ainda não foi publicada."
     },
     {
       "release_code": "UX-00",
@@ -1899,14 +1944,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "balance",
       "source_url": "https://beyblade.fandom.com/wiki/LeonClaw_0-80E",
       "parts": {
         "blade": "Leon Claw",
         "ratchet": "0-80",
         "bit": "Elevate"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do UX-12 Random Booster Vol. 5."
     },
     {
       "release_code": "UX-12",
@@ -1922,7 +1968,8 @@
         "blade": "Phoenix Feather",
         "ratchet": "2-60",
         "bit": "Needle"
-      }
+      },
+      "rarity_reason": "Saem 4 a cada caixa de 24 do UX-12 Random Booster Vol. 5, contra 5 do mais comum da mesma caixa."
     },
     {
       "release_code": "UX-12",
@@ -1931,14 +1978,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "stamina",
       "source_url": "https://beyblade.fandom.com/wiki/WyvernGale_0-80C",
       "parts": {
         "blade": "Wyvern Gale",
         "ratchet": "0-80",
         "bit": "Cyclone"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do UX-12 Random Booster Vol. 5."
     },
     {
       "release_code": "UX-15",
@@ -1963,14 +2011,15 @@
       "anatomy": "basic",
       "release_type": "random_booster",
       "release_date": null,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "bey_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/DranDagger_7-55G",
       "parts": {
         "blade": "Dran Dagger",
         "ratchet": "7-55",
         "bit": "Glide"
-      }
+      },
+      "rarity_reason": "Saem 5 a cada caixa de 24 do UX-18 Random Booster Vol. 8."
     },
     {
       "release_code": "UX-18",
@@ -1986,7 +2035,8 @@
         "blade": "Weiss Tiger",
         "ratchet": "4-80",
         "bit": "Low Rush"
-      }
+      },
+      "rarity_reason": "Saem 4 a cada caixa de 24 do UX-18 Random Booster Vol. 8, contra 5 do mais comum da mesma caixa."
     }
   ]
 }

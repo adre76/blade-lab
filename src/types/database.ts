@@ -77,6 +77,7 @@ export type Database = {
           name: string
           notes: string | null
           rarity: Database["public"]["Enums"]["rarity"]
+          rarity_reason: string | null
           release_code: string
           release_date: string | null
           release_type: Database["public"]["Enums"]["release_type"]
@@ -97,6 +98,7 @@ export type Database = {
           name: string
           notes?: string | null
           rarity?: Database["public"]["Enums"]["rarity"]
+          rarity_reason?: string | null
           release_code: string
           release_date?: string | null
           release_type: Database["public"]["Enums"]["release_type"]
@@ -117,6 +119,7 @@ export type Database = {
           name?: string
           notes?: string | null
           rarity?: Database["public"]["Enums"]["rarity"]
+          rarity_reason?: string | null
           release_code?: string
           release_date?: string | null
           release_type?: Database["public"]["Enums"]["release_type"]

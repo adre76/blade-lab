@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 import {
   COR_TIPO, ROTULO_TIPO, MARCA, ROTULO_SLOT,
-  ROTULO_RARIDADE, ROTULO_LANCAMENTO,
+  ROTULO_RARIDADE, COR_RARIDADE, ROTULO_LANCAMENTO,
 } from "./rotulos.ts";
 
 function Etiqueta({ texto, cor, forte = false }: { texto: string; cor: string; forte?: boolean }) {
@@ -205,7 +205,11 @@ export default function BeyCard({ comp, maxAtributo }: {
           <span style={{ whiteSpace: "nowrap" }}>
             {soma.weight_g.toFixed(1)} g{soma.pesoParcial && "*"}
             {" · "}
-            <span style={{ color: comp.raridade === "common" ? T.textMuted : T.accentWarm }}>
+            <span
+              title={comp.motivoRaridade ?? undefined}
+              style={{ color: COR_RARIDADE[comp.raridade],
+                       cursor: comp.motivoRaridade ? "help" : undefined }}
+            >
               {ROTULO_RARIDADE[comp.raridade]}
             </span>
           </span>
