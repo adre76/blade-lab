@@ -27,29 +27,42 @@ export default function Inventario() {
     return m;
   }, [composicoes]);
 
+  // Índice part_id -> nome, montado do catálogo que a página já carregou.
+  const nomePorPeca = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const c of composicoes) for (const p of c.pecas) m.set(p.part.id, p.part.name);
+    return m;
+  }, [composicoes]);
+
   useEffect(() => {
-    if (!usuario) return;
+    if (!usuario || nomePorPeca.size === 0) return;
     let cancelado = false;
 
     // A view resolve equivalência Hasbro e soma as duplicatas (spec §4.9).
     // É o mesmo estoque que o laboratório da onda 3 vai consumir — mostrá-lo
     // aqui valida a view antes de algo mais complexo depender dela.
+    //
+    // SEM embedding de `parts`: o PostgREST recusa com "could not find a
+    // relationship", porque uma VIEW não declara chave estrangeira e ele
+    // deriva os relacionamentos das FKs. O nome de cada peça vem do catálogo,
+    // que já está carregado — e assim o estoque não custa consulta extra.
     supabase
       .from("user_parts")
-      .select("part_id, slot, quantity, parts(name)")
+      .select("part_id, slot, quantity")
       .then(({ data, error }) => {
         if (cancelado || error) return;
         setEstoque(
           (data ?? []).flatMap((r) => {
-            const nome = (r as { parts?: { name?: string } }).parts?.name;
-            if (!r.part_id || !r.slot || !nome) return [];
+            if (!r.part_id || !r.slot) return [];
+            const nome = nomePorPeca.get(r.part_id);
+            if (!nome) return [];
             return [{ part_id: r.part_id, slot: r.slot, quantity: r.quantity ?? 0, nome }];
           }),
         );
       });
 
     return () => { cancelado = true; };
-  }, [usuario, itens]);
+  }, [usuario, itens, nomePorPeca]);
 
   if (carregandoAuth) return <p style={{ color: T.textMuted }}>Carregando…</p>;
   if (!usuario) return <Navigate to="/entrar" state={{ de: "/inventario" }} replace />;

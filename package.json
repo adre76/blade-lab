@@ -11,7 +11,8 @@
     "test:watch": "vitest",
     "seed": "tsx --env-file-if-exists=.env.seed scripts/seed.ts",
     "seed:images": "tsx --env-file-if-exists=.env.seed scripts/seed-images.ts",
-    "sync:anatomies": "tsx --env-file-if-exists=.env.seed scripts/sync-anatomies.ts"
+    "sync:anatomies": "tsx --env-file-if-exists=.env.seed scripts/sync-anatomies.ts",
+    "usuario-teste": "tsx --env-file-if-exists=.env.seed scripts/usuario-teste.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.3",

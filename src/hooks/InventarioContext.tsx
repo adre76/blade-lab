@@ -39,9 +39,15 @@ export function InventarioProvider({ children }: { children: ReactNode }) {
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
+  // Depende do ID, e não do objeto `usuario`: a referência do objeto muda a
+  // cada render do provedor de auth, e usá-la aqui reexecutaria o efeito em
+  // laço — o estado de carregamento nunca sairia de `true`.
+  const usuarioId = usuario?.id ?? null;
+
   useEffect(() => {
-    if (!usuario) {
+    if (!usuarioId) {
       setItens([]);
+      setCarregando(false);
       return;
     }
     let cancelado = false;
@@ -50,7 +56,7 @@ export function InventarioProvider({ children }: { children: ReactNode }) {
     supabase
       .from("inventory_items")
       .select("*")
-      .eq("profile_id", usuario.id)
+      .eq("profile_id", usuarioId)
       .then(({ data, error }) => {
         if (cancelado) return;
         if (error) setErro(error.message);
@@ -59,7 +65,7 @@ export function InventarioProvider({ children }: { children: ReactNode }) {
       });
 
     return () => { cancelado = true; };
-  }, [usuario]);
+  }, [usuarioId]);
 
   const buscar = useCallback(
     (beybladeId: string) => itens.find((i) => i.beyblade_id === beybladeId),
