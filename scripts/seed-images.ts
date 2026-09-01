@@ -82,40 +82,107 @@ function tituloPeca(slot: string, nome: string): string {
 }
 
 /**
- * Consulta a API em lotes: 50 títulos por requisição em vez de 50 requisições.
+ * Nome do arquivo que a wiki marca como imagem de PRODUTO, lido do infobox.
+ *
+ * Não uso `prop=pageimages`: ele devolve a imagem que o MediaWiki elege como
+ * principal da página, que não é a do infobox. Isso trouxe um quadro de mangá
+ * para o HellsNether Z e vistas alternativas para outros — arte que não é o
+ * produto, num catálogo de produtos.
+ *
+ * Duas formas no infobox, as duas com rótulo:
+ *   |Image1=HellsNether Z.png
+ *   |Image1Label=Product
+ * e a galeria, quando a página tem mais de uma vista:
+ *   |Image=<gallery>
+ *   PteraSwing 7-70B (Side View).jpeg|Product
+ *   Beyblade X - PteraSwing 7-70B.png|Anime
+ *   </gallery>
+ *
+ * Quando nada estiver marcado como Product, fica o primeiro campo de imagem —
+ * é o que a página mostra no topo.
+ */
+function arquivoDeProduto(wikitexto: string): string | null {
+  const galeria = wikitexto.match(/<gallery>([\s\S]*?)<\/gallery>/i);
+  if (galeria) {
+    for (const linha of galeria[1]!.split("\n")) {
+      const [arquivo, rotulo] = linha.split("|");
+      if (arquivo?.trim() && /product/i.test(rotulo ?? "")) return arquivo.trim();
+    }
+  }
+  const rotulado = wikitexto.match(/\|\s*Image(\d?)\s*=\s*([^\n|<]+)[\s\S]{0,80}?Image\1Label\s*=\s*Product/i);
+  if (rotulado?.[2]?.trim()) return rotulado[2].trim();
+
+  const primeiro = wikitexto.match(/\|\s*Image\d?\s*=\s*([^\n|<]+)/i);
+  return primeiro?.[1]?.trim() || null;
+}
+
+/**
+ * URL da imagem de produto de cada página, em lotes.
  *
  * `redirects=1` é obrigatório e não é detalhe: metade das lâminas tem página
  * sob o nome Hasbro, e a grafia Takara Tomy é só um redirect. `Blade -
  * PteraSwing` aponta para `Blade - Talon Ptera`, e sem seguir o redirect a
- * consulta devolvia a página de redirecionamento, que não tem imagem — a peça
- * ficava sem arte e ninguém percebia, porque o placeholder é bonito.
+ * consulta caía na página de redirecionamento, que não tem imagem.
  *
- * Seguir o redirect muda o título devolvido, então o mapa é reindexado de volta
- * para o título PEDIDO: quem chamou não sabe do redirect e procura pelo que
- * pediu.
+ * São duas idas: a primeira lê o wikitexto para saber QUAL arquivo, a segunda
+ * resolve o arquivo em URL. Continua em lotes de 50, então são 4 requisições
+ * por 100 páginas em vez de 100.
  */
 async function buscarImagens(titulos: string[]): Promise<Map<string, string>> {
-  const encontradas = new Map<string, string>();
+  const arquivoPorTitulo = new Map<string, string>();
+
   for (let i = 0; i < titulos.length; i += 50) {
     const lote = titulos.slice(i, i + 50);
     const resp = await fetch(
-      `${WIKI}?action=query&prop=pageimages&piprop=original&redirects=1&format=json&titles=` +
-        encodeURIComponent(lote.join("|")),
+      `${WIKI}?action=query&prop=revisions&rvprop=content&rvslots=main&redirects=1` +
+        `&format=json&titles=` + encodeURIComponent(lote.join("|")),
     );
     const json = (await resp.json()) as {
       query?: {
-        pages?: Record<string, { title?: string; original?: { source?: string } }>;
+        pages?: Record<string, {
+          title?: string;
+          revisions?: { slots?: { main?: { "*"?: string } } }[];
+        }>;
         redirects?: { from: string; to: string }[];
       };
     };
+    // Seguir o redirect muda o título devolvido; o mapa é reindexado de volta
+    // para o título PEDIDO, porque quem chamou não sabe do redirect.
     const pedidoDe = new Map((json.query?.redirects ?? []).map((r) => [r.to, r.from]));
     for (const p of Object.values(json.query?.pages ?? {})) {
-      if (!p.title || !p.original?.source) continue;
-      encontradas.set(p.title, p.original.source);
+      const texto = p.revisions?.[0]?.slots?.main?.["*"];
+      if (!p.title || !texto) continue;
+      const arquivo = arquivoDeProduto(texto);
+      if (!arquivo) continue;
+      arquivoPorTitulo.set(p.title, arquivo);
       const pedido = pedidoDe.get(p.title);
-      if (pedido) encontradas.set(pedido, p.original.source);
+      if (pedido) arquivoPorTitulo.set(pedido, arquivo);
     }
     await pausar(PAUSA_MS);
+  }
+
+  const arquivos = [...new Set(arquivoPorTitulo.values())];
+  const urlPorArquivo = new Map<string, string>();
+  for (let i = 0; i < arquivos.length; i += 50) {
+    const lote = arquivos.slice(i, i + 50).map((a) => `File:${a}`);
+    const resp = await fetch(
+      `${WIKI}?action=query&prop=imageinfo&iiprop=url&format=json&titles=` +
+        encodeURIComponent(lote.join("|")),
+    );
+    const json = (await resp.json()) as {
+      query?: { pages?: Record<string, { title?: string; imageinfo?: { url?: string }[] }> };
+    };
+    for (const p of Object.values(json.query?.pages ?? {})) {
+      const url = p.imageinfo?.[0]?.url;
+      if (p.title && url) urlPorArquivo.set(p.title.replace(/^File:/, ""), url);
+    }
+    await pausar(PAUSA_MS);
+  }
+
+  const encontradas = new Map<string, string>();
+  for (const [titulo, arquivo] of arquivoPorTitulo) {
+    const url = urlPorArquivo.get(arquivo);
+    if (url) encontradas.set(titulo, url);
   }
   return encontradas;
 }
