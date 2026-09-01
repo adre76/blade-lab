@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { slotsDaAnatomia } from "./anatomias.ts";
+import { slotsDaAnatomia } from "../anatomias.ts";
 
 export const SLOTS = [
   "lock_chip", "main_blade", "metal_blade", "over_blade",

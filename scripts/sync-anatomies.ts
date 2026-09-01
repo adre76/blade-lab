@@ -11,7 +11,7 @@
  *   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... npm run sync:anatomies
  */
 import { createClient } from "@supabase/supabase-js";
-import { ANATOMIAS } from "../src/lib/seed/anatomias.ts";
+import { ANATOMIAS } from "../src/lib/anatomias.ts";
 
 const url = process.env["SUPABASE_URL"];
 const serviceKey = process.env["SUPABASE_SERVICE_ROLE_KEY"];

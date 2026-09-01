@@ -683,10 +683,16 @@ aplicação** com testes automatizados (os dados de seed também são testados �
 
 ```
 basic          : blade, ratchet, bit
-unique         : blade, assist_blade, ratchet, bit
+unique         : blade, ratchet, bit
+unique_expand  : integrated_blade, bit
 custom         : lock_chip, main_blade, assist_blade, ratchet, bit
 custom_expand  : lock_chip, metal_blade, over_blade, assist_blade, ratchet, bit
 ```
+
+> **Corrigido em 02/09/2026.** A tabela original dava quatro slots à `unique`,
+> incluindo `assist_blade` — o Assist Blade é exclusivo da Custom Line, e a Unique Line
+> usa três peças, igual à Basic. `unique_expand` nasceu na Onda 1: é o UX Expand Blade,
+> em que a catraca vem embutida na lâmina, deixando o bey com duas peças.
 
 Gerado do mesmo arquivo de dados que popula `anatomy_slots` (§4.3), de modo que banco e
 motor não podem divergir. Cada slot comporta **exatamente uma peça** (§4.1).

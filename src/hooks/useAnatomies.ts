@@ -7,8 +7,14 @@ type PartSlot = Database["public"]["Enums"]["part_slot"];
 
 export type AnatomySlots = Partial<Record<Anatomy, PartSlot[]>>;
 
-/** Ordem canônica de exibição: da composição mais simples para a mais completa. */
-const ORDEM: Anatomy[] = ["basic", "unique", "custom", "custom_expand"];
+/**
+ * Ordem canônica de exibição: da composição mais simples para a mais completa.
+ *
+ * A lista também FILTRA: anatomia fora dela some do resultado sem aviso. Foi o
+ * que aconteceu com `unique_expand`, criada na Onda 1 e esquecida aqui — o
+ * defeito ficou latente porque nada consumia o hook ainda.
+ */
+const ORDEM: Anatomy[] = ["unique_expand", "basic", "unique", "custom", "custom_expand"];
 
 export function useAnatomies() {
   const [anatomies, setAnatomies] = useState<AnatomySlots>({});

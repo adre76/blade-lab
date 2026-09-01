@@ -7,7 +7,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { carregarPartes, carregarBeyblades } from "./carregar.ts";
-import { ANATOMIAS } from "./anatomias.ts";
+import { ANATOMIAS } from "../anatomias.ts";
 
 const RAIZ = new URL("../../../data/", import.meta.url);
 

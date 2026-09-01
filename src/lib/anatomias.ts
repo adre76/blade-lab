@@ -1,4 +1,4 @@
-import bruto from "../../../data/anatomies.json";
+import bruto from "../../data/anatomies.json";
 
 /**
  * Composição de cada anatomia, lida de `data/anatomies.json`.
