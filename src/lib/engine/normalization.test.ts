@@ -16,8 +16,12 @@ const CATALOGO: Peca[] = [
 describe("normalização", () => {
   it("o denominador é o máximo teórico da anatomia: melhor peça de cada slot", () => {
     const ctx = derivarContexto(CATALOGO, []);
-    // basic = blade + ratchet + bit; ataque: 60 + 15 + 45
-    expect(ctx.maximos.basic).toEqual({ attack: 120, defense: 99, stamina: 71 });
+    // basic = blade + ratchet + bit, tomando a MELHOR de cada slot em cada
+    // atributo — e não a melhor peça no geral:
+    //   ataque   60 + 15 + 45 = 120
+    //   defesa   65 + 14 + 20 =  99   (a lâmina de defesa, não a de ataque)
+    //   stamina  25 + 13 + 40 =  78
+    expect(ctx.maximos.basic).toEqual({ attack: 120, defense: 99, stamina: 78 });
   });
 
   it("cada anatomia tem seu próprio denominador", () => {
@@ -26,9 +30,22 @@ describe("normalização", () => {
     expect(ctx.maximos.unique_expand).toEqual({ attack: 130, defense: 55, stamina: 65 });
   });
 
-  it("anatomia sem peça para nenhum slot tem denominador zero", () => {
+  /**
+   * Anatomia parcialmente coberta pelo catálogo é o caso REAL de hoje: a
+   * Custom Line não tem lock_chip, main_blade nem assist_blade cadastrados,
+   * mas usa a mesma catraca e a mesma ponta das outras. Os slots sem peça
+   * simplesmente não somam — não zeram o denominador inteiro.
+   */
+  it("slot sem peça no catálogo não contribui, e não zera a anatomia", () => {
     const ctx = derivarContexto(CATALOGO, []);
-    expect(ctx.maximos.custom).toEqual({ attack: 0, defense: 0, stamina: 0 });
+    // custom = lock_chip + main_blade + assist_blade + ratchet + bit;
+    // só catraca e ponta existem no catálogo de teste
+    expect(ctx.maximos.custom).toEqual({ attack: 60, defense: 34, stamina: 53 });
+  });
+
+  it("anatomia sem NENHUMA peça no catálogo tem denominador zero", () => {
+    const soLamina = derivarContexto([peca("blade", 60, 25, 15)], []);
+    expect(soLamina.maximos.unique_expand).toEqual({ attack: 0, defense: 0, stamina: 0 });
   });
 
   it("catálogo vazio não estoura", () => {
