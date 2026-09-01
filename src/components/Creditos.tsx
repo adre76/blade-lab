@@ -12,7 +12,7 @@ const caixa = {
 export default function Creditos() {
   return (
     <article style={{ maxWidth: 720 }}>
-      <Link to="/" style={{ color: T.textMuted, fontSize: 13 }}>← catálogo</Link>
+      <Link to="/catalogo" style={{ color: T.textMuted, fontSize: 13 }}>← catálogo</Link>
 
       <h2 style={{ margin: "14px 0 6px", fontSize: 26 }}>Fontes e créditos</h2>
       <p style={{ color: T.textSecondary, fontSize: 14, margin: "0 0 20px", lineHeight: 1.6 }}>

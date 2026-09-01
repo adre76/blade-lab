@@ -35,7 +35,7 @@ export default function Perfil() {
 
   return (
     <div style={{ maxWidth: 460 }}>
-      <Link to="/" style={{ color: T.textMuted, fontSize: 13 }}>← catálogo</Link>
+      <Link to="/catalogo" style={{ color: T.textMuted, fontSize: 13 }}>← catálogo</Link>
       <h2 style={{ margin: "14px 0 6px", fontSize: 24 }}>Seu perfil</h2>
       <p style={{ color: T.textSecondary, fontSize: 14, margin: "0 0 18px", lineHeight: 1.6 }}>
         O nome veio da sua conta Google. Você pode trocá-lo — é o que aparece

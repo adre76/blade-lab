@@ -20,14 +20,24 @@
 - **Rótulos em pt-BR** conforme `src/components/rotulos.ts`: Lâmina, Catraca, Ponta; Ataque, Defesa, Resistência, Equilíbrio.
 - **`npm test` e `npx tsc --noEmit` passam ao fim de cada tarefa.**
 
-## O que este plano NÃO entrega
+## Revisão de 01/09, depois da pesquisa
 
-As duas perguntas de estratégia da spec §6.3 — *o que cada parte muda no giro* e *por que um bey é de ataque ou de defesa*. Elas dependem de texto do usuário e **não entram até ele existir**. Nenhuma tarefa aqui as menciona como pendência na tela: elas simplesmente não estão no `faq.json`, e a página não mostra buraco.
+A spec §6.3 deixava duas perguntas esperando texto do usuário, e o plano
+deixava duas lacunas de regra por falta de fonte. **O usuário pediu que eu
+pesquisasse, e as quatro têm resposta com fonte.** Nada fica esperando.
 
-Ao terminar, o executor deve reportar ao usuário a lista de §6.3 mais estes dois itens que a Beyblade Wiki não publica e que a Task 5 deixou de fora por isso:
+| O que faltava | Onde foi achado |
+|---|---|
+| O que cada parte muda no giro | Wiki, *Basic Line* §Structure — descreve lâmina, catraca e ponta um a um |
+| Por que um bey é de ataque ou defesa | Wiki, páginas *Attack*, *Defense*, *Stamina*, *Balance* |
+| Quanto vale um Spin Finish | 1 ponto — regulamento oficial, confirmado por duas fontes |
+| Quantos pontos vencem | 4 numa partida comum; 7 em final de torneio |
 
-- quanto vale um **Spin Finish** (quando o adversário para de girar)
-- quantos pontos fecham uma partida
+As duas primeiras passam de `origem: jogador` para `origem: wiki`, com fonte —
+a spec previa que fossem conhecimento de quem joga, e a pesquisa mostrou que a
+própria wiki documenta.
+
+O FAQ passa de 6 para **8 perguntas**.
 
 ## Estrutura de arquivos
 

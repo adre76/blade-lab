@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App.tsx";
 import Catalogo from "./components/Catalogo.tsx";
+import Landing from "./components/Landing.tsx";
 import Laboratorio from "./components/Laboratorio.tsx";
 import DetalheBey from "./components/DetalheBey.tsx";
 import DetalhePeca from "./components/DetalhePeca.tsx";
@@ -25,7 +26,8 @@ createRoot(root).render(
           <Routes>
             {/* App é o layout: cabeçalho e moldura. As telas entram no Outlet. */}
             <Route element={<App />}>
-              <Route path="/" element={<Catalogo />} />
+              <Route path="/" element={<Landing />} />
+              <Route path="/catalogo" element={<Catalogo />} />
               <Route path="/bey/:id" element={<DetalheBey />} />
               <Route path="/peca/:id" element={<DetalhePeca />} />
               <Route path="/creditos" element={<Creditos />} />
@@ -33,7 +35,7 @@ createRoot(root).render(
               <Route path="/perfil" element={<Perfil />} />
               <Route path="/inventario" element={<Inventario />} />
               <Route path="/lab" element={<Laboratorio />} />
-              <Route path="*" element={<Catalogo />} />
+              <Route path="*" element={<Landing />} />
             </Route>
           </Routes>
         </BrowserRouter>

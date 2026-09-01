@@ -20,7 +20,7 @@ export default function DetalheBey() {
     return (
       <div>
         <p style={{ color: T.danger }}>{error ?? "Beyblade não encontrado"}</p>
-        <Link to="/" style={{ color: T.accent }}>← voltar ao catálogo</Link>
+        <Link to="/catalogo" style={{ color: T.accent }}>← voltar ao catálogo</Link>
       </div>
     );
   }
@@ -33,7 +33,7 @@ export default function DetalheBey() {
 
   return (
     <article>
-      <Link to="/" style={{ color: T.textMuted, fontSize: 13 }}>← catálogo</Link>
+      <Link to="/catalogo" style={{ color: T.textMuted, fontSize: 13 }}>← catálogo</Link>
 
       <header style={{ margin: "14px 0 20px" }}>
         <div style={{ color: T.textMuted, fontSize: 13, letterSpacing: 0.4 }}>

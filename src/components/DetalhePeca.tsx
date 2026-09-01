@@ -29,7 +29,7 @@ export default function DetalhePeca() {
     return (
       <div>
         <p style={{ color: T.danger }}>{error ?? "Peça não encontrada"}</p>
-        <Link to="/" style={{ color: T.accent }}>← voltar ao catálogo</Link>
+        <Link to="/catalogo" style={{ color: T.accent }}>← voltar ao catálogo</Link>
       </div>
     );
   }
@@ -40,7 +40,7 @@ export default function DetalhePeca() {
 
   return (
     <article>
-      <Link to="/" style={{ color: T.textMuted, fontSize: 13 }}>← catálogo</Link>
+      <Link to="/catalogo" style={{ color: T.textMuted, fontSize: 13 }}>← catálogo</Link>
 
       <header style={{ margin: "14px 0 20px" }}>
         <div style={{ color: T.textMuted, fontSize: 13 }}>

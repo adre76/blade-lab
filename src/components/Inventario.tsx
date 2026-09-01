@@ -99,7 +99,7 @@ export default function Inventario() {
 
   return (
     <div>
-      <Link to="/" style={{ color: T.textMuted, fontSize: 13 }}>← catálogo</Link>
+      <Link to="/catalogo" style={{ color: T.textMuted, fontSize: 13 }}>← catálogo</Link>
       <h2 style={{ margin: "14px 0 20px", fontSize: 24 }}>Meu inventário</h2>
 
       {carregando && <p style={{ color: T.textMuted }}>Carregando…</p>}
