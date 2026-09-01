@@ -145,6 +145,17 @@ export default function DetalheBey() {
                       {ROTULO_SLOT[slot] ?? slot}
                     </div>
                     <div style={{ fontWeight: 600, fontSize: 14.5 }}>{part.name}</div>
+                    {/*
+                      Os outros nomes da peça acompanham o nome em toda tela
+                      que a mostra — card, ficha do bey e ficha da peça. Ficar
+                      só no card obrigaria a voltar para descobrir que a
+                      Ptera Swing é a Talon Ptera.
+                    */}
+                    {part.aka?.length ? (
+                      <div style={{ color: T.textMuted, fontSize: 11.5, marginTop: 2 }}>
+                        {part.aka.join(" · ")}
+                      </div>
+                    ) : null}
                   </div>
                   <div style={{ color: T.textMuted, fontSize: 11.5, textAlign: "right" }}>
                     {part.weight_g != null && `${part.weight_g} g`}
