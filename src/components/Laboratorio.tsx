@@ -6,9 +6,10 @@ import { useCombo } from "../hooks/useCombo.ts";
 import { useAuth } from "../hooks/AuthContext.tsx";
 import { useEstoquePecas } from "../hooks/useEstoquePecas.ts";
 import SeletorPeca from "./SeletorPeca.tsx";
+import SeletorAnatomia from "./SeletorAnatomia.tsx";
 import Confrontos from "./Confrontos.tsx";
 import { ROTULO_SLOT, COR_TIPO } from "./rotulos.ts";
-import { slotsDe } from "../lib/engine/slots.ts";
+import { anatomiasMontaveis, slotsDe } from "../lib/engine/slots.ts";
 import { validar } from "../lib/engine/compatibility.ts";
 import { normalizar } from "../lib/engine/normalization.ts";
 import { faltaNoInventario } from "../lib/engine/posse.ts";
@@ -29,7 +30,7 @@ const caixa = {
 
 export default function Laboratorio() {
   const { pecas, loading, error } = useCatalog();
-  const { combo, porSlot } = useCombo(pecas);
+  const { combo, porSlot, trocarAnatomia } = useCombo(pecas);
   const { usuario } = useAuth();
   const { porId: estoque } = useEstoquePecas();
 
@@ -53,6 +54,11 @@ export default function Laboratorio() {
         gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
       }}>
         <div style={{ display: "grid", gap: 10, alignContent: "start" }}>
+          <SeletorAnatomia
+            opcoes={anatomiasMontaveis(pecas, combo.anatomy)}
+            atual={combo.anatomy}
+            aoTrocar={trocarAnatomia}
+          />
           {slotsDe(combo.anatomy).map((slot) => (
             <SeletorPeca
               key={slot}

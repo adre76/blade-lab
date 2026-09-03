@@ -99,6 +99,22 @@ export const BUSCA_SLOT: Record<Enums["part_slot"], string[]> = {
   assist_blade: ["assist blade"],
 };
 
+/**
+ * Nome de cada anatomia pela COMPOSIÇÃO, e não pela linha de produto.
+ *
+ * `basic` e `unique` exigem os mesmos três slots, então o laboratório mostra
+ * uma opção só para as duas — e o rótulo dessa opção não pode dizer "Basic
+ * Line", porque estaria nomeando a linha errada metade das vezes. Nomear pelo
+ * que a montagem É resolve isso e continua verdadeiro quando a CX chegar.
+ */
+export const ROTULO_ANATOMIA: Record<Enums["anatomy"], string> = {
+  basic: "Lâmina de uma peça",
+  unique: "Lâmina de uma peça",
+  unique_expand: "Lâmina com catraca integrada",
+  custom: "Custom Line",
+  custom_expand: "Custom Line — Expand",
+};
+
 export const ROTULO_LANCAMENTO: Record<Enums["release_type"], string> = {
   starter: "Starter",
   booster: "Booster",
