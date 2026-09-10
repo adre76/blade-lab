@@ -89,6 +89,32 @@ describe("PartSchema", () => {
       }),
     ).not.toThrow();
   });
+
+  // Fix 6: COM_RATCHET gatilhava height_mm E contact_points juntos, mas o
+  // Assist Blade publica altura sem ter ponto de contato (spec §4). As duas
+  // restrições viraram COM_ALTURA e COM_PONTOS_DE_CONTATO, testadas em
+  // separado.
+  it("aceita um assist blade com height_mm", () => {
+    expect(() =>
+      PartSchema.parse({
+        slot: "assist_blade", name: "Turn", line: "CX",
+        attack: 10, defense: 10, stamina: 20,
+        weight_g: 5.8, height_mm: 60,
+        source_url: "https://exemplo.com/fonte",
+      }),
+    ).not.toThrow();
+  });
+
+  it("recusa contact_points num assist blade", () => {
+    expect(() =>
+      PartSchema.parse({
+        slot: "assist_blade", name: "Turn", line: "CX",
+        attack: 10, defense: 10, stamina: 20,
+        weight_g: 5.8, contact_points: 2,
+        source_url: "https://exemplo.com/fonte",
+      }),
+    ).toThrow(/contact_points/);
+  });
 });
 
 const BEY_VALIDO = {

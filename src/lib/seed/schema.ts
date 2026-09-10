@@ -19,15 +19,29 @@ const LAMINAS_PRINCIPAIS: readonly string[] = [
 ];
 
 /**
- * Slots que têm altura e pontos de contato.
+ * Slots que têm altura publicada.
  *
  * `integrated_blade` e `integrated_bit` entram porque elas SÃO um ratchet,
  * além de lâmina e de ponta: a UX integrou a catraca na lâmina, a CX integrou
- * na ponta. O Assist Blade da CX também publica altura, mas não pontos de
- * contato — por isso não entra aqui; a altura dele é liberada pelo próprio
- * campo, que é opcional para toda peça.
+ * na ponta. O Assist Blade da CX também publica altura (spec §4, "Altura") —
+ * a wiki dá o `HeightStat` dele separado do da catraca, e o combo continua
+ * somando só a altura da catraca; a do Assist Blade é gravada na peça e
+ * aparece na ficha dela, sem entrar em soma nenhuma. Por isso ele entra
+ * NESTA lista mas não na de pontos de contato, logo abaixo — as duas
+ * restrições nunca foram a mesma regra, mesmo tendo compartilhado uma
+ * constante só.
  */
-const COM_RATCHET: readonly string[] = ["ratchet", "integrated_blade", "integrated_bit"];
+const COM_ALTURA: readonly string[] = [
+  "ratchet", "integrated_blade", "integrated_bit", "assist_blade",
+];
+
+/**
+ * Slots que têm pontos de contato — só quem é fisicamente uma catraca.
+ *
+ * O Assist Blade publica altura (acima) mas não tem ponto de contato algum;
+ * por isso fica de fora daqui, ao contrário de `COM_ALTURA`.
+ */
+const COM_PONTOS_DE_CONTATO: readonly string[] = ["ratchet", "integrated_blade", "integrated_bit"];
 
 const Slot = z.enum(SLOTS);
 const Linha = z.enum(["BX", "UX", "CX"]);
@@ -95,11 +109,11 @@ export const PartSchema = z
     if (p.spin_direction != null && !LAMINAS_PRINCIPAIS.includes(p.slot)) {
       erro("spin_direction", "só é preenchida na lâmina principal (spec §4.4)");
     }
-    if (p.height_mm != null && !COM_RATCHET.includes(p.slot)) {
-      erro("height_mm", "só existe em ratchet ou lâmina com ratchet integrado");
+    if (p.height_mm != null && !COM_ALTURA.includes(p.slot)) {
+      erro("height_mm", "só existe em ratchet, lâmina/ponta com ratchet integrado ou assist blade");
     }
-    if (p.contact_points != null && !COM_RATCHET.includes(p.slot)) {
-      erro("contact_points", "só existe em ratchet ou lâmina com ratchet integrado");
+    if (p.contact_points != null && !COM_PONTOS_DE_CONTATO.includes(p.slot)) {
+      erro("contact_points", "só existe em ratchet ou lâmina/ponta com ratchet integrado");
     }
     if (p.dash_performance != null && p.slot !== "bit") {
       erro("dash_performance", "só existe em bit");
