@@ -9,6 +9,11 @@ describe("anatomia a partir dos campos do infobox", () => {
       .toBe("basic");
   });
 
+  it("Blade + Ratchet + Bit também é basic", () => {
+    expect(anatomiaDe(box({ Blade: "DranSword", Ratchet: "3-60", Bit: "Flat" })))
+      .toBe("basic");
+  });
+
   it("RatchetBlade + Bit é unique_expand", () => {
     expect(anatomiaDe(box({ RatchetBlade: "GloryValkyrie", Bit: "Low Flat" })))
       .toBe("unique_expand");
@@ -61,5 +66,25 @@ describe("anatomia a partir dos campos do infobox", () => {
 
   it("LANÇA quando o infobox não declara peça nenhuma", () => {
     expect(() => anatomiaDe(box({ Type: "Attack" }))).toThrow(/nenhum campo de peça/);
+  });
+
+  /**
+   * `BladeX` e `Blade` mapeiam para o mesmo slot ("blade"). Se uma página
+   * declarar os dois com valores diferentes, sobrescrever em silêncio é
+   * exatamente a adivinhação que este módulo existe para evitar.
+   */
+  it("LANÇA quando dois campos do mesmo slot têm valores diferentes", () => {
+    expect(() => pecasDoInfobox(box({ BladeX: "DranSword", Blade: "GloryValkyrie" })))
+      .toThrow(/blade.*BladeX.*DranSword.*Blade.*GloryValkyrie/s);
+  });
+
+  /**
+   * Mesmo valor nos dois campos não é uma divergência de dado — é uma
+   * redundância inofensiva (ex.: página migrando de `Blade` para `BladeX`
+   * e mantendo os dois por um tempo). Não lançar aqui.
+   */
+  it("não lança quando dois campos do mesmo slot têm o mesmo valor", () => {
+    const p = pecasDoInfobox(box({ BladeX: "DranSword", Blade: "DranSword" }));
+    expect(p.get("blade")).toBe("DranSword");
   });
 });

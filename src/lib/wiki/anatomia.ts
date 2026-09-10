@@ -26,12 +26,35 @@ export const CAMPO_POR_SLOT: Record<string, PartSlot> = {
   Bit: "bit",
 };
 
-/** Slot → nome da peça, para os campos preenchidos. */
+/**
+ * Slot → nome da peça, para os campos preenchidos.
+ *
+ * Mais de um campo do infobox pode mapear para o mesmo slot (`BladeX` e
+ * `Blade`, ambos → "blade"). Se uma página declarar os dois com valores
+ * DIFERENTES, escolher um e descartar o outro em silêncio seria exatamente a
+ * adivinhação que este módulo existe para evitar — lança nomeando o slot, os
+ * dois campos e os dois valores. Mesmo valor nos dois campos não é uma
+ * divergência de dado (é redundância inofensiva, ex.: página em transição de
+ * um campo para o outro), então não lança nesse caso.
+ */
 export function pecasDoInfobox(box: Map<string, string>): Map<PartSlot, string> {
   const pecas = new Map<PartSlot, string>();
+  const origemPorSlot = new Map<PartSlot, string>();
   for (const [campo, slot] of Object.entries(CAMPO_POR_SLOT)) {
     const valor = box.get(campo)?.trim();
-    if (valor) pecas.set(slot, valor);
+    if (!valor) continue;
+
+    const valorExistente = pecas.get(slot);
+    if (valorExistente !== undefined) {
+      if (valorExistente === valor) continue;
+      const campoExistente = origemPorSlot.get(slot);
+      throw new Error(
+        `campos conflitantes para o slot "${slot}": `
+        + `${campoExistente}="${valorExistente}" e ${campo}="${valor}"`,
+      );
+    }
+    pecas.set(slot, valor);
+    origemPorSlot.set(slot, campo);
   }
   return pecas;
 }
