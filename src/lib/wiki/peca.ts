@@ -1,6 +1,6 @@
 import {
   GIRO, LINHA_POR_SISTEMA, TIPO,
-  gramas, lerInfobox, marcaDoCodigo, primeiroValor, statNumerico, temDoisModos,
+  gramas, lerInfobox, marcaDoCodigo, nomeEAkaDoInfobox, primeiroValor, statNumerico, temDoisModos,
 } from "./infobox.ts";
 import type { PartSlot } from "../engine/types.ts";
 
@@ -117,40 +117,14 @@ export function pecaDaPagina(titulo: string, wikitext: string): PecaColetada {
   }
 
   // O nome canônico deste catálogo é o da Takara Tomy — mas nem toda página
-  // está publicada sob esse nome. Duas formas reais, e o rótulo de marca do
-  // PRÓPRIO campo é quem decide, nunca o título da página:
-  //
-  //  - "Courage (Hasbro)": a página já está sob o nome Takara Tomy (`Name`),
-  //    e o AKA guarda só o nome Hasbro. Vira `aka`; `Name` fica como está.
-  //  - "Bucks (Takara Tomy)" na página "Stag": a wiki publicou esta página
-  //    sob o nome HASBRO, e é o AKA rotulado (Takara Tomy) que carrega o
-  //    nome canônico. Aqui os dois trocam de lugar — o AKA vira `name`, e o
-  //    `Name` da página vira uma entrada de `aka`.
-  //
-  // Não é hipotético: numa onda anterior essa mesma confusão inverteu o nome
-  // de três lâminas, porque o código confiava no título da página em vez de
-  // ler o rótulo de marca do campo. Entradas de AKA sem rótulo (~15 de 17,
-  // medido: siglas como "GR"/"GU"/"LO"/"Nr"/"TK" e romanizações como "Five
-  // Fifty") são descartadas — não viram nome de peça nenhum.
-  let name = box.get("Name") || titulo.replace(/^.*? - /, "");
-  const aka: string[] = [];
-  // Junto com o nome, guarda SE a promoção veio de um AKA (Takara Tomy) —
-  // `marcaDoCodigo` precisa saber, porque a marca segue o nome canônico
-  // quando isso acontece (ver comentário lá).
-  let nomeVeioDeAkaTakaraTomy = false;
-  for (const entrada of (box.get("AKA") ?? "").split(/<br\s*\/?>/i)) {
-    const hasbro = entrada.match(/^(.+?)\s*\(Hasbro\)\s*$/);
-    if (hasbro) {
-      aka.push(hasbro[1]!.trim());
-      continue;
-    }
-    const takaraTomy = entrada.match(/^(.+?)\s*\(Takara Tomy\)\s*$/);
-    if (takaraTomy) {
-      aka.push(name);
-      name = takaraTomy[1]!.trim();
-      nomeVeioDeAkaTakaraTomy = true;
-    }
-  }
+  // está publicada sob esse nome, e o rótulo de marca do PRÓPRIO campo AKA é
+  // quem decide, nunca o título da página. Regra completa e o porquê (não é
+  // hipotético: numa onda anterior essa mesma confusão inverteu o nome de
+  // três lâminas) em `nomeEAkaDoInfobox`, `infobox.ts` — compartilhada com
+  // `bey.ts`, que lê o mesmo campo com a mesma ambiguidade.
+  const nomeBase = box.get("Name") || titulo.replace(/^.*? - /, "");
+  const { name, aka, nomeVeioDeAkaTakaraTomy } =
+    nomeEAkaDoInfobox(nomeBase, box.get("AKA") ?? "");
 
   const codigo = box.get("ProductCode") ?? "";
 
@@ -168,7 +142,7 @@ export function pecaDaPagina(titulo: string, wikitext: string): PecaColetada {
       ? (GIRO[primeiroValor(box.get("SpinDirection") ?? "")] ?? null)
       : null,
     part_type: TIPO[box.get("Type") ?? ""] ?? null,
-    aka: aka.length ? aka : null,
+    aka,
     source_url: urlDoTitulo(titulo),
     notes: notas.length ? notas.join(" ") : null,
     data_disputed: semStats && !naoPontua,

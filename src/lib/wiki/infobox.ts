@@ -193,3 +193,58 @@ export function marcaDoCodigo(
     `${titulo}: não dá para determinar a marca a partir de ProductCode "${codigo}"`,
   );
 }
+
+/** Resultado de {@link nomeEAkaDoInfobox}: nome canônico, alternâncias e se a promoção aconteceu. */
+export type NomeEAka = {
+  name: string;
+  aka: string[] | null;
+  nomeVeioDeAkaTakaraTomy: boolean;
+};
+
+/**
+ * Resolve o nome canônico e as alternâncias (`aka`) a partir do campo `AKA`
+ * do infobox — mora aqui, e não só em `peca.ts`, pela mesma razão de
+ * `marcaDoCodigo` logo acima: `bey.ts` lê o MESMO campo com a MESMA
+ * ambiguidade de rótulo/nome canônico. A página real "Fort Hornet R 7-60T"
+ * (um bey) prova o porquê: a wiki publica a página sob o nome Hasbro, e o
+ * nome Takara Tomy ("HornetFort R7-60T") só existe dentro do AKA — o mesmo
+ * padrão do precedente "Stag"/"Bucks" que já existia em peça, agora do lado
+ * do bey. Não é hipotético: numa onda anterior essa mesma confusão inverteu
+ * o nome de três lâminas, porque o código confiava no título da página em
+ * vez de ler o rótulo de marca do campo.
+ *
+ * O rótulo aceita as duas grafias que a wiki usa para "Takara Tomy" e para
+ * "Hasbro": sem colchetes ("(Takara Tomy)", como as páginas de peça
+ * escrevem) e com colchetes de wikilink ("([[Takara Tomy]])", como a
+ * própria "Fort Hornet R 7-60T" escreve). Os colchetes são removidos ANTES
+ * do match, então as duas grafias caem no mesmo `if`.
+ *
+ * - Entrada rotulada "(Takara Tomy)": promove a canônico; o nome que estava
+ *   valendo até então (o parâmetro `nomeBase`, ou uma promoção anterior)
+ *   desce para `aka`.
+ * - Entrada rotulada "(Hasbro)": vira só uma entrada de `aka`; o nome não
+ *   muda.
+ * - Entrada sem rótulo (siglas como "GR"/"GU"/"LO"/"Nr"/"TK", romanizações
+ *   como "Five Fifty"): descartada — não é nome de peça nem de bey nenhum.
+ */
+export function nomeEAkaDoInfobox(nomeBase: string, akaBruto: string): NomeEAka {
+  let name = nomeBase;
+  const aka: string[] = [];
+  let nomeVeioDeAkaTakaraTomy = false;
+  for (const entradaBruta of akaBruto.split(/<br\s*\/?>/i)) {
+    const entrada = entradaBruta.replace(/\[\[|\]\]/g, "").trim();
+    if (!entrada) continue;
+    const hasbro = entrada.match(/^(.+?)\s*\(Hasbro\)\s*$/);
+    if (hasbro) {
+      aka.push(hasbro[1]!.trim());
+      continue;
+    }
+    const takaraTomy = entrada.match(/^(.+?)\s*\(Takara Tomy\)\s*$/);
+    if (takaraTomy) {
+      aka.push(name);
+      name = takaraTomy[1]!.trim();
+      nomeVeioDeAkaTakaraTomy = true;
+    }
+  }
+  return { name, aka: aka.length ? aka : null, nomeVeioDeAkaTakaraTomy };
+}

@@ -65,6 +65,38 @@ const SEM_PRODUCTCODE = `{{Beyblade Infobox
 |Bit=Vortex
 }}`;
 
+// A página real que a revisão ao vivo encontrou (achado do round 2): a wiki
+// publica "Fort Hornet R 7-60T" sob o nome HASBRO, com o ProductCode Hasbro
+// em primeiro lugar no <br> — e é o AKA rotulado "([[Takara Tomy]])", com
+// colchetes de wikilink, que carrega o nome canônico Takara Tomy.
+const FORT_HORNET = `{{Beyblade Infobox
+|AKA=Fort Hornet Round Seven Sixty Taper<br>HornetFort R7-60T ([[Takara Tomy]])
+|ProductCode=G1682 (Hasbro)<br>CX-00 (Takara Tomy)
+|Type=Attack
+|SpinDirection=Right-Spin
+|System=Custom Line
+|LockChip=Dran
+|MainBlade=Brave
+|AssistBlade=Slash
+|Ratchet=7-60
+|Bit=Taper
+}}`;
+
+// Mesma página, mas com o rótulo do AKA na grafia SEM colchetes — a que as
+// páginas de peça usam. Prova que as duas grafias caem no mesmo caminho.
+const FORT_HORNET_SEM_COLCHETES = `{{Beyblade Infobox
+|AKA=Fort Hornet Round Seven Sixty Taper<br>HornetFort R7-60T (Takara Tomy)
+|ProductCode=G1682 (Hasbro)<br>CX-00 (Takara Tomy)
+|Type=Attack
+|SpinDirection=Right-Spin
+|System=Custom Line
+|LockChip=Dran
+|MainBlade=Brave
+|AssistBlade=Slash
+|Ratchet=7-60
+|Bit=Taper
+}}`;
+
 describe("bey a partir da página", () => {
   it("lê código, nome, linha e anatomia", () => {
     const b = beyDaPagina("DranBrave S6-60V", CUSTOM);
@@ -137,6 +169,34 @@ describe("bey a partir da página", () => {
       .toThrow(/não é um produto lançado/i);
     expect(() => beyDaPagina("DranBrave S6-60V", SEM_PRODUCTCODE))
       .not.toThrow(/marca/i);
+  });
+
+  /**
+   * Achado da revisão ao vivo, round 2: página real publicada sob o nome
+   * Hasbro, com o ProductCode Hasbro em primeiro lugar no <br>. Nome e
+   * release_code têm que seguir a marca do registro (takara_tomy, porque a
+   * promoção do AKA vence), não o título da página nem a ordem em que os
+   * códigos aparecem.
+   */
+  it("bey publicado sob nome Hasbro com AKA (Takara Tomy): nome e release_code seguem a marca", () => {
+    const b = beyDaPagina("Fort Hornet R 7-60T", FORT_HORNET);
+    expect(b.name).toBe("HornetFort R7-60T");
+    expect(b.release_code).toBe("CX-00");
+    expect(b.brand).toBe("takara_tomy");
+    expect(b.aka).toEqual(["Fort Hornet R 7-60T"]);
+  });
+
+  it("reconhece o rótulo (Takara Tomy) sem colchetes de wikilink também", () => {
+    const b = beyDaPagina("Fort Hornet R 7-60T", FORT_HORNET_SEM_COLCHETES);
+    expect(b.name).toBe("HornetFort R7-60T");
+    expect(b.release_code).toBe("CX-00");
+  });
+
+  it("caso comum não muda: sem AKA (Takara Tomy), nome é o título e release_code é o único valor", () => {
+    const b = beyDaPagina("Lightning L-Drago 1-60F (Upper Type)", CANHOTO);
+    expect(b.name).toBe("Lightning L-Drago 1-60F (Upper Type)");
+    expect(b.release_code).toBe("BX-00");
+    expect(b.aka).toBeNull();
   });
 
   /**

@@ -1,5 +1,6 @@
 import {
-  GIRO, LINHA_POR_SISTEMA, TIPO, lerInfobox, marcaDoCodigo, primeiroValor,
+  GIRO, LINHA_POR_SISTEMA, TIPO,
+  lerInfobox, marcaDoCodigo, nomeEAkaDoInfobox, primeiroValor,
 } from "./infobox.ts";
 import { CAMPO_POR_SLOT, anatomiaDe, pecasDoInfobox } from "./anatomia.ts";
 import type { Anatomy, PartSlot } from "../engine/types.ts";
@@ -12,6 +13,12 @@ export type BeyColetado = {
   brand: "takara_tomy" | "hasbro";
   bey_type: "attack" | "defense" | "stamina" | "balance" | null;
   spin_direction: "right" | "left" | "dual" | null;
+  // Nome Hasbro perdido não é opção: a página "Fort Hornet R 7-60T" publica
+  // exatamente esse nome sob o AKA, e é o único lugar onde ele sobrevive
+  // depois que `name` promove o nome Takara Tomy. Mesmo campo, mesmo
+  // formato de `PecaColetada.aka` (peca.ts) — nenhum consumidor a jusante
+  // precisa saber se está lendo um registro de peça ou de bey.
+  aka: string[] | null;
   source_url: string;
   parts: { slot: PartSlot; name: string }[];
 };
@@ -50,11 +57,34 @@ export function beyDaPagina(titulo: string, wikitext: string): BeyColetado {
     );
   }
 
-  // Rótulo de marca só existe quando há mais de um código publicado
-  // (Takara Tomy e Hasbro lado a lado); um código solto sem parênteses não
-  // tem rótulo nenhum e a linha inteira é o código — o replace fica sem
-  // efeito nesse caso, o que é o comportamento certo.
-  const releaseCode = primeiroValor(codigo)
+  // Nome canônico e AKA — mesma regra de `peca.ts` (`nomeEAkaDoInfobox`,
+  // infobox.ts): quando o AKA carrega um rótulo "(Takara Tomy)" (ou
+  // "([[Takara Tomy]])", como a própria página abaixo escreve), aquele nome
+  // vira o `name` do registro, e o nome da página (que era o Hasbro) desce
+  // para `aka`. Página real que forçou isto: "Fort Hornet R 7-60T" — a wiki
+  // publica o bey sob o nome Hasbro, e o nome Takara Tomy ("HornetFort
+  // R7-60T") só existe dentro do AKA.
+  const { name, aka, nomeVeioDeAkaTakaraTomy } =
+    nomeEAkaDoInfobox(titulo, box.get("AKA") ?? "");
+
+  const brand = marcaDoCodigo(titulo, codigo, nomeVeioDeAkaTakaraTomy);
+
+  // O código de lançamento segue a MESMA marca do registro — não a ordem em
+  // que a wiki publica os valores. Quando `ProductCode` traz mais de um
+  // valor separado por `<br>`, cada um rotulado, escolhe-se o que casa com
+  // `brand` (já resolvida acima, inclusive quando veio de uma promoção de
+  // AKA e não do rótulo do próprio ProductCode). Um único valor, ou nenhum
+  // rótulo reconhecido entre os valores: comportamento de sempre — primeiro
+  // valor, rótulo removido se houver algum. "Fort Hornet R 7-60T" é o caso
+  // real que prova a necessidade: "G1682 (Hasbro)<br>CX-00 (Takara Tomy)"
+  // tem o código Hasbro em primeiro lugar; sem escolher pela marca, o
+  // `release_code` sairia "G1682" para um registro que é Takara Tomy.
+  const rotuloDaMarca = brand === "takara_tomy" ? "Takara Tomy" : "Hasbro";
+  const valoresDoCodigo = codigo.split(/<br\s*\/?>/i).map((v) => v.trim());
+  const valorDaMarca = valoresDoCodigo.find((v) =>
+    new RegExp(`\\(${rotuloDaMarca}\\)\\s*$`).test(v.replace(/\[\[|\]\]/g, "")));
+  const releaseCode = (valorDaMarca ?? primeiroValor(codigo))
+    .replace(/\[\[|\]\]/g, "")
     .replace(/\s*\((?:Takara Tomy|Hasbro)\)\s*$/, "")
     .trim();
 
@@ -62,14 +92,13 @@ export function beyDaPagina(titulo: string, wikitext: string): BeyColetado {
 
   return {
     release_code: releaseCode,
-    name: titulo,
+    name,
     line,
     anatomy: anatomiaDe(box),
-    // Beys não têm AKA a promover (só peças têm), então o argumento fica
-    // sempre `false` — quem decide a marca é o rótulo/formato do código.
-    brand: marcaDoCodigo(titulo, codigo, false),
+    brand,
     bey_type: TIPO[box.get("Type") ?? ""] ?? null,
     spin_direction: GIRO[primeiroValor(box.get("SpinDirection") ?? "")] ?? null,
+    aka,
     source_url: "https://beyblade.fandom.com/wiki/" + titulo.replace(/ /g, "_"),
     parts: [...pecas.entries()]
       .sort((a, b) => ORDEM_DOS_SLOTS.indexOf(a[0]) - ORDEM_DOS_SLOTS.indexOf(b[0]))
