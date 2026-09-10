@@ -27,6 +27,29 @@ export function beyDaPagina(titulo: string, wikitext: string): BeyColetado {
   if (!line) throw new Error(`${titulo}: System desconhecido "${sistema}"`);
 
   const codigo = box.get("ProductCode") ?? "";
+  // Página sem ProductCode nenhum não é um bey que chegou a ser vendido —
+  // é uma combinação que só existe no anime/mangá, e a tabela `beyblades`
+  // guarda o bey COMO SAIU DE FÁBRICA (spec §4.4). Os quatro casos reais da
+  // Custom Line que caem aqui (DranBrave H6-60V, HellsReaper TOp,
+  // WizardMight R4-55LO, WolfHunt F4-60T) não têm ProductCode, Price nem
+  // data de lançamento — nenhum dos três —, e a prosa de cada página
+  // confirma: aparecem só como combinação de anime/mangá; a WolfHunt
+  // F4-60T chega a dizer, no próprio texto, "it was not released". Por
+  // isso a checagem lança ANTES de chegar em `marcaDoCodigo`: um
+  // ProductCode ausente não é um código indecifrável — não há marca
+  // nenhuma para decifrar, porque não há produto. Se essa checagem
+  // morasse dentro de `marcaDoCodigo` (compartilhada com `peca.ts`, onde
+  // um código vazio genuinamente É um problema de marca), quem lê a lista
+  // de descarte seria mandado investigar uma marca quando o fato é que a
+  // página nunca foi um produto — diagnóstico errado, tempo perdido.
+  if (!codigo.trim()) {
+    throw new Error(
+      `${titulo}: não é um produto lançado — sem ProductCode, é uma combinação `
+      + `exclusiva de anime/mangá (sem Price nem data de lançamento). Não `
+      + `pertence ao catálogo de produtos.`,
+    );
+  }
+
   // Rótulo de marca só existe quando há mais de um código publicado
   // (Takara Tomy e Hasbro lado a lado); um código solto sem parênteses não
   // tem rótulo nenhum e a linha inteira é o código — o replace fica sem

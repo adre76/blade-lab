@@ -50,6 +50,21 @@ const CODIGO_INDECIFRAVEL = `{{Beyblade Infobox
 |Bit=Vortex
 }}`;
 
+// Igual à CUSTOM, mas sem ProductCode nenhum — o padrão real das quatro
+// combinações de anime/mangá que a coleta ao vivo encontrou na Custom Line
+// (DranBrave H6-60V, HellsReaper TOp, WizardMight R4-55LO, WolfHunt
+// F4-60T): System e peças presentes, ProductCode ausente.
+const SEM_PRODUCTCODE = `{{Beyblade Infobox
+|Type=Attack
+|SpinDirection=Right-Spin
+|System=Custom Line
+|LockChip=Dran
+|MainBlade=Brave
+|AssistBlade=Slash
+|Ratchet=6-60
+|Bit=Vortex
+}}`;
+
 describe("bey a partir da página", () => {
   it("lê código, nome, linha e anatomia", () => {
     const b = beyDaPagina("DranBrave S6-60V", CUSTOM);
@@ -106,6 +121,22 @@ describe("bey a partir da página", () => {
 
   it("bey com ProductCode indecifrável lança, em vez de assumir hasbro", () => {
     expect(() => beyDaPagina("DranBrave S6-60V", CODIGO_INDECIFRAVEL)).toThrow(/marca/i);
+  });
+
+  /**
+   * Página sem ProductCode nenhum: o padrão real das quatro combinações de
+   * anime/mangá (DranBrave H6-60V, HellsReaper TOp, WizardMight R4-55LO,
+   * WolfHunt F4-60T) que a coleta ao vivo encontrou. Tem que lançar com o
+   * motivo certo — "não é produto lançado" — e não com a mensagem de
+   * `marcaDoCodigo` ("não dá para determinar a marca"), que mandaria quem lê
+   * o descarte investigar uma marca em vez de perceber que a página nunca
+   * foi um produto.
+   */
+  it("bey sem ProductCode lança citando 'não é produto lançado', não marca", () => {
+    expect(() => beyDaPagina("DranBrave S6-60V", SEM_PRODUCTCODE))
+      .toThrow(/não é um produto lançado/i);
+    expect(() => beyDaPagina("DranBrave S6-60V", SEM_PRODUCTCODE))
+      .not.toThrow(/marca/i);
   });
 
   /**
