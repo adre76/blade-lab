@@ -1,0 +1,130 @@
+import { describe, expect, it } from "vitest";
+import { beyDaPagina, conferirGiro } from "./bey.ts";
+
+const CUSTOM = `{{Beyblade Infobox
+|AKA=DranBrave Slash Six Sixty Vortex<br>Courage Dran S 6-60V ([[Hasbro]])
+|ProductCode=CX-01 (Takara Tomy)<br>G1677 (Hasbro)
+|Type=Attack
+|SpinDirection=Right-Spin
+|System=Custom Line
+|LockChip=Dran
+|MainBlade=Brave
+|AssistBlade=Slash
+|Ratchet=6-60
+|Bit=Vortex
+}}`;
+
+const INTEGRADO = `{{Beyblade Infobox
+|ProductCode=CX-07 (Takara Tomy)<br>G2350 (Hasbro)
+|Type=Attack
+|SpinDirection=Right-Spin
+|System=Custom Line
+|LockChip=Pegasus
+|MainBlade=Blast
+|AssistBlade=Assault
+|RatchetBit=Turbo
+}}`;
+
+const CANHOTO = `{{Beyblade Infobox
+|ProductCode=BX-00
+|Type=Attack
+|SpinDirection=Left-Spin
+|System=Basic Line
+|System2=X-Over Project
+|BladeX=Lightning L-Drago (Upper Type)
+|Ratchet=1-60
+|Bit=Flat
+}}`;
+
+// Nenhuma peça real de CX publica um ProductCode assim — este fixture existe
+// só para exercitar o `throw` que substitui o antigo "sem rótulo = hasbro".
+const CODIGO_INDECIFRAVEL = `{{Beyblade Infobox
+|ProductCode=???
+|Type=Attack
+|SpinDirection=Right-Spin
+|System=Custom Line
+|LockChip=Dran
+|MainBlade=Brave
+|AssistBlade=Slash
+|Ratchet=6-60
+|Bit=Vortex
+}}`;
+
+describe("bey a partir da página", () => {
+  it("lê código, nome, linha e anatomia", () => {
+    const b = beyDaPagina("DranBrave S6-60V", CUSTOM);
+    expect(b.release_code).toBe("CX-01");
+    expect(b.name).toBe("DranBrave S6-60V");
+    expect(b.line).toBe("CX");
+    expect(b.anatomy).toBe("custom");
+  });
+
+  it("lista as peças com o slot de cada uma", () => {
+    expect(beyDaPagina("DranBrave S6-60V", CUSTOM).parts).toEqual([
+      { slot: "lock_chip", name: "Dran" },
+      { slot: "main_blade", name: "Brave" },
+      { slot: "assist_blade", name: "Slash" },
+      { slot: "ratchet", name: "6-60" },
+      { slot: "bit", name: "Vortex" },
+    ]);
+  });
+
+  it("reconhece a anatomia da ponta com catraca", () => {
+    const b = beyDaPagina("PegasusBlast ATr", INTEGRADO);
+    expect(b.anatomy).toBe("custom_integrated");
+    expect(b.parts.map((p) => p.slot)).not.toContain("ratchet");
+  });
+
+  /**
+   * System2 carrega "X-Over Project" além de "Expand Blade". Se a anatomia
+   * saísse da PRESENÇA do campo, este bey viraria custom_expand.
+   */
+  it("System2 de colaboração não muda a anatomia", () => {
+    expect(beyDaPagina("Lightning L-Drago 1-60F (Upper Type)", CANHOTO).anatomy)
+      .toBe("basic");
+  });
+
+  it("lê o sentido de giro do bey", () => {
+    expect(beyDaPagina("Lightning L-Drago 1-60F (Upper Type)", CANHOTO).spin_direction)
+      .toBe("left");
+  });
+
+  it("bey com ProductCode rotulado (Takara Tomy) é takara_tomy", () => {
+    expect(beyDaPagina("DranBrave S6-60V", CUSTOM).brand).toBe("takara_tomy");
+  });
+
+  /**
+   * A CANHOTO não tem rótulo nenhum no ProductCode ("BX-00" seco) — é o
+   * formato do código (BX- seguido de dígitos) que decide a marca, mesma
+   * regra endurecida de `peca.ts` (Task 5, 22/102 peças reais erradas na
+   * versão antiga "sem rótulo = hasbro").
+   */
+  it("bey sem rótulo de marca usa o formato do código", () => {
+    expect(beyDaPagina("Lightning L-Drago 1-60F (Upper Type)", CANHOTO).brand)
+      .toBe("takara_tomy");
+  });
+
+  it("bey com ProductCode indecifrável lança, em vez de assumir hasbro", () => {
+    expect(() => beyDaPagina("DranBrave S6-60V", CODIGO_INDECIFRAVEL)).toThrow(/marca/i);
+  });
+
+  /**
+   * A única conferência cruzada disponível para a regra de giro na CX: não há
+   * nenhuma peça CX canhota publicada, então o motor nunca foi exercitado
+   * contra um contraexemplo (spec §5.3).
+   */
+  it("conferirGiro aceita quando as peças concordam com o bey", () => {
+    expect(() => conferirGiro(beyDaPagina("DranBrave S6-60V", CUSTOM), "right"))
+      .not.toThrow();
+  });
+
+  it("conferirGiro LANÇA quando as peças discordam do bey", () => {
+    expect(() => conferirGiro(beyDaPagina("DranBrave S6-60V", CUSTOM), "left"))
+      .toThrow(/giro/i);
+  });
+
+  it("conferirGiro aceita quando as peças não declaram giro", () => {
+    expect(() => conferirGiro(beyDaPagina("DranBrave S6-60V", CUSTOM), null))
+      .not.toThrow();
+  });
+});

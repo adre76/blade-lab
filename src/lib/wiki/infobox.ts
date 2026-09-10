@@ -148,3 +148,48 @@ export const GIRO: Record<string, "right" | "left" | "dual"> = {
 export const TIPO: Record<string, "attack" | "defense" | "stamina" | "balance"> = {
   Attack: "attack", Defense: "defense", Stamina: "stamina", Balance: "balance",
 };
+
+/**
+ * Marca a partir do `ProductCode` — mora aqui, e não só em `peca.ts`, porque
+ * `bey.ts` (Task 6) lê o MESMO campo com a MESMA ambiguidade. Duplicar a regra
+ * lá convidaria as duas a divergirem no dia em que a wiki mudasse o formato.
+ *
+ * `nomeVeioDeAkaTakaraTomy` decide PRIMEIRO, antes de qualquer rótulo do
+ * `ProductCode`. Adotar um AKA rotulado "(Takara Tomy)" como o `name` do
+ * registro (`peca.ts`) já é uma afirmação de que a peça existe na linha
+ * Takara Tomy — sinal mais forte do que o rótulo de um código de produto.
+ * A página real que forçou esta ordem ("Lock Chip - Stag") prova o porquê:
+ * o próprio ProductCode se contradiz, escrevendo "G1684 (Hasbro)<br>CX-00
+ * (Hasbro)" — um código CX, formato Custom Line da Takara Tomy, rotulado
+ * Hasbro por erro de digitação da wiki. Enquanto isso, a seção de produtos
+ * da MESMA página é inequívoca e está ativa: "===Takara Tomy=== * CX-00
+ * [[BucksAntlers B2-60D]]". Confiar no rótulo do código, nesse caso, é
+ * confiar no erro de digitação; confiar na promoção do AKA é confiar na
+ * seção de produtos. Página de bey não promove nome a partir de AKA — quem
+ * chama (`bey.ts`) passa sempre `false`.
+ *
+ * Depois da promoção, a ordem de sempre continua intacta: rótulo explícito
+ * no código — "(Takara Tomy)" ou "(Hasbro)" — manda; sem rótulo, decide o
+ * FORMATO do código (`BX-`/`UX-`/`CX-` seguido de dígitos é Takara Tomy,
+ * `G` seguido de dígitos é Hasbro); nem rótulo nem formato reconhecível:
+ * lança, nomeando a página e o código, em vez de adivinhar.
+ *
+ * Medido nas 103 peças reais da Custom Line, o rótulo/formato resolve
+ * todas — nenhuma cai no `throw`. A leitura antiga ("sem rótulo Takara
+ * Tomy = hasbro") classificava errado 22 dessas 103: todo código `CX-NN`
+ * sem rótulo, que é exatamente o formato Takara Tomy sem rótulo.
+ */
+export function marcaDoCodigo(
+  titulo: string,
+  codigo: string,
+  nomeVeioDeAkaTakaraTomy: boolean,
+): "takara_tomy" | "hasbro" {
+  if (nomeVeioDeAkaTakaraTomy) return "takara_tomy";
+  if (/\(Takara Tomy\)/.test(codigo)) return "takara_tomy";
+  if (/\(Hasbro\)/.test(codigo)) return "hasbro";
+  if (/\b(?:BX|UX|CX)-\d/.test(codigo)) return "takara_tomy";
+  if (/\bG\d/.test(codigo)) return "hasbro";
+  throw new Error(
+    `${titulo}: não dá para determinar a marca a partir de ProductCode "${codigo}"`,
+  );
+}

@@ -1,6 +1,6 @@
 import {
   GIRO, LINHA_POR_SISTEMA, TIPO,
-  gramas, lerInfobox, primeiroValor, statNumerico, temDoisModos,
+  gramas, lerInfobox, marcaDoCodigo, primeiroValor, statNumerico, temDoisModos,
 } from "./infobox.ts";
 import type { PartSlot } from "../engine/types.ts";
 
@@ -53,48 +53,6 @@ export type PecaColetada = {
 
 const urlDoTitulo = (t: string) =>
   "https://beyblade.fandom.com/wiki/" + t.replace(/ /g, "_");
-
-/**
- * Marca da peça a partir do `ProductCode`.
- *
- * `nomeVeioDeAkaTakaraTomy` decide PRIMEIRO, antes de qualquer rótulo do
- * `ProductCode`. Adotar um AKA rotulado "(Takara Tomy)" como o `name` do
- * registro (ver Fix 2) já é uma afirmação de que a peça existe na linha
- * Takara Tomy — sinal mais forte do que o rótulo de um código de produto.
- * A página real que forçou esta ordem ("Lock Chip - Stag") prova o porquê:
- * o próprio ProductCode se contradiz, escrevendo "G1684 (Hasbro)<br>CX-00
- * (Hasbro)" — um código CX, formato Custom Line da Takara Tomy, rotulado
- * Hasbro por erro de digitação da wiki. Enquanto isso, a seção de produtos
- * da MESMA página é inequívoca e está ativa: "===Takara Tomy=== * CX-00
- * [[BucksAntlers B2-60D]]". Confiar no rótulo do código, nesse caso, é
- * confiar no erro de digitação; confiar na promoção do AKA é confiar na
- * seção de produtos.
- *
- * Depois da promoção, a ordem de sempre continua intacta: rótulo explícito
- * no código — "(Takara Tomy)" ou "(Hasbro)" — manda; sem rótulo, decide o
- * FORMATO do código (`BX-`/`UX-`/`CX-` seguido de dígitos é Takara Tomy,
- * `G` seguido de dígitos é Hasbro); nem rótulo nem formato reconhecível:
- * lança, nomeando a página e o código, em vez de adivinhar.
- *
- * Medido nas 103 peças reais da Custom Line, o rótulo/formato resolve
- * todas — nenhuma cai no `throw`. A leitura antiga ("sem rótulo Takara
- * Tomy = hasbro") classificava errado 22 dessas 103: todo código `CX-NN`
- * sem rótulo, que é exatamente o formato Takara Tomy sem rótulo.
- */
-function marcaDaPeca(
-  titulo: string,
-  codigo: string,
-  nomeVeioDeAkaTakaraTomy: boolean,
-): "takara_tomy" | "hasbro" {
-  if (nomeVeioDeAkaTakaraTomy) return "takara_tomy";
-  if (/\(Takara Tomy\)/.test(codigo)) return "takara_tomy";
-  if (/\(Hasbro\)/.test(codigo)) return "hasbro";
-  if (/\b(?:BX|UX|CX)-\d/.test(codigo)) return "takara_tomy";
-  if (/\bG\d/.test(codigo)) return "hasbro";
-  throw new Error(
-    `${titulo}: não dá para determinar a marca a partir de ProductCode "${codigo}"`,
-  );
-}
 
 /**
  * Os dois números de um stat com dois modos ("30 > 55" ou "20/50"), na ordem
@@ -177,7 +135,7 @@ export function pecaDaPagina(titulo: string, wikitext: string): PecaColetada {
   let name = box.get("Name") || titulo.replace(/^.*? - /, "");
   const aka: string[] = [];
   // Junto com o nome, guarda SE a promoção veio de um AKA (Takara Tomy) —
-  // `marcaDaPeca` precisa saber, porque a marca segue o nome canônico
+  // `marcaDoCodigo` precisa saber, porque a marca segue o nome canônico
   // quando isso acontece (ver comentário lá).
   let nomeVeioDeAkaTakaraTomy = false;
   for (const entrada of (box.get("AKA") ?? "").split(/<br\s*\/?>/i)) {
@@ -198,7 +156,7 @@ export function pecaDaPagina(titulo: string, wikitext: string): PecaColetada {
 
   return {
     slot,
-    brand: marcaDaPeca(titulo, codigo, nomeVeioDeAkaTakaraTomy),
+    brand: marcaDoCodigo(titulo, codigo, nomeVeioDeAkaTakaraTomy),
     name,
     line,
     attack: lido.attack ?? 0,
