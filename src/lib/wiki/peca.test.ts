@@ -126,6 +126,26 @@ const ANTLER_SEM_ROTULO = `{{Part Infobox
 |StaminaStat=20
 }}`;
 
+/**
+ * Round 3: a página real "Lock Chip - Stag" — a que expôs o defeito do
+ * round 2. Aqui o ProductCode TEM rótulo, mas os dois rótulos dizem Hasbro
+ * ("G1684 (Hasbro)<br>CX-00 (Hasbro)"), sendo que CX-00 é formato Custom
+ * Line da Takara Tomy — a própria wiki se contradiz. O AKA rotulado
+ * (Takara Tomy) é quem carrega o nome canônico.
+ */
+const STAG_ROTULO_CONTRADITORIO = `{{Part Infobox
+|Name=Stag
+|AKA=Bucks (Takara Tomy)
+|ProductCode=G1684 (Hasbro)<br>CX-00 (Hasbro)
+|Classification=Lock Chip
+|SpinDirection=Right-Spin
+|Weight=1.8 grams
+|System=Custom Line
+|AttackStat=
+|DefenseStat=
+|StaminaStat=
+}}`;
+
 const pecaComCodigo = (codigo: string) => `{{Part Infobox
 |Name=Teste
 |ProductCode=${codigo}
@@ -299,6 +319,17 @@ describe("peça a partir da página", () => {
     it("caso comum não muda: ProductCode sem rótulo em formato Hasbro, sem AKA (Takara Tomy), continua hasbro", () => {
       expect(pecaDaPagina("Bit - Teste", pecaComCodigo("G1684")).brand).toBe("hasbro");
     });
+  });
+
+  // Round 3: a promoção do AKA (Takara Tomy) precisa vencer até um rótulo
+  // (Hasbro) EXPLÍCITO no ProductCode, porque a própria página real cujo
+  // código contradiz sua seção de produtos ativa prova que o rótulo do
+  // código pode estar errado.
+  it("AKA (Takara Tomy) vence rótulo (Hasbro) explícito no ProductCode", () => {
+    const p = pecaDaPagina("Lock Chip - Stag", STAG_ROTULO_CONTRADITORIO);
+    expect(p.name).toBe("Bucks");
+    expect(p.aka).toEqual(["Stag"]);
+    expect(p.brand).toBe("takara_tomy");
   });
 
   it("monta a source_url a partir do título", () => {

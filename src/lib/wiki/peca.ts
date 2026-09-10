@@ -57,37 +57,38 @@ const urlDoTitulo = (t: string) =>
 /**
  * Marca da peça a partir do `ProductCode`.
  *
- * Rótulo explícito manda: "(Takara Tomy)" ou "(Hasbro)" escrito no próprio
- * código. Sem rótulo, decide o FORMATO do código — `BX-`, `UX-` ou `CX-`
- * seguido de dígitos é Takara Tomy; `G` seguido de dígitos é Hasbro. Nem
- * rótulo nem formato reconhecível: lança, nomeando a página e o código, em
- * vez de adivinhar.
+ * `nomeVeioDeAkaTakaraTomy` decide PRIMEIRO, antes de qualquer rótulo do
+ * `ProductCode`. Adotar um AKA rotulado "(Takara Tomy)" como o `name` do
+ * registro (ver Fix 2) já é uma afirmação de que a peça existe na linha
+ * Takara Tomy — sinal mais forte do que o rótulo de um código de produto.
+ * A página real que forçou esta ordem ("Lock Chip - Stag") prova o porquê:
+ * o próprio ProductCode se contradiz, escrevendo "G1684 (Hasbro)<br>CX-00
+ * (Hasbro)" — um código CX, formato Custom Line da Takara Tomy, rotulado
+ * Hasbro por erro de digitação da wiki. Enquanto isso, a seção de produtos
+ * da MESMA página é inequívoca e está ativa: "===Takara Tomy=== * CX-00
+ * [[BucksAntlers B2-60D]]". Confiar no rótulo do código, nesse caso, é
+ * confiar no erro de digitação; confiar na promoção do AKA é confiar na
+ * seção de produtos.
  *
- * Medido nas 103 peças reais da Custom Line, isso resolve todas — nenhuma
- * cai no `throw`. A leitura antiga ("sem rótulo Takara Tomy = hasbro")
- * classificava errado 22 dessas 103: todo código `CX-NN` sem rótulo, que é
- * exatamente o formato Takara Tomy sem rótulo.
+ * Depois da promoção, a ordem de sempre continua intacta: rótulo explícito
+ * no código — "(Takara Tomy)" ou "(Hasbro)" — manda; sem rótulo, decide o
+ * FORMATO do código (`BX-`/`UX-`/`CX-` seguido de dígitos é Takara Tomy,
+ * `G` seguido de dígitos é Hasbro); nem rótulo nem formato reconhecível:
+ * lança, nomeando a página e o código, em vez de adivinhar.
  *
- * `nomeVeioDeAkaTakaraTomy` cobre um caso que o formato sozinho erra: duas
- * páginas reais (nomes Hasbro "Stag"/"Antler", que viram "Bucks"/"Antlers"
- * pelo AKA (Takara Tomy) — ver Fix 2) têm ProductCode SEM rótulo e em
- * formato Hasbro (`G1684`). Sem este parâmetro, a peça saía com o nome
- * Takara Tomy e a marca Hasbro ao mesmo tempo — contraditório, porque o
- * nome só foi promovido a Takara Tomy PORQUE a peça existe na linha Takara
- * Tomy sob esse nome (o bey "BucksAntlers B2-60D", ProductCode=CX-00, cita
- * exatamente Bucks/Antlers). A marca segue o nome canônico, então esta
- * checagem entra DEPOIS do rótulo explícito (que continua mandando, se
- * houver) e ANTES do formato — o formato só decide quando nem rótulo nem
- * promoção de nome resolveram.
+ * Medido nas 103 peças reais da Custom Line, o rótulo/formato resolve
+ * todas — nenhuma cai no `throw`. A leitura antiga ("sem rótulo Takara
+ * Tomy = hasbro") classificava errado 22 dessas 103: todo código `CX-NN`
+ * sem rótulo, que é exatamente o formato Takara Tomy sem rótulo.
  */
 function marcaDaPeca(
   titulo: string,
   codigo: string,
   nomeVeioDeAkaTakaraTomy: boolean,
 ): "takara_tomy" | "hasbro" {
+  if (nomeVeioDeAkaTakaraTomy) return "takara_tomy";
   if (/\(Takara Tomy\)/.test(codigo)) return "takara_tomy";
   if (/\(Hasbro\)/.test(codigo)) return "hasbro";
-  if (nomeVeioDeAkaTakaraTomy) return "takara_tomy";
   if (/\b(?:BX|UX|CX)-\d/.test(codigo)) return "takara_tomy";
   if (/\bG\d/.test(codigo)) return "hasbro";
   throw new Error(
