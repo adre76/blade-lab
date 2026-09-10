@@ -67,10 +67,27 @@ const urlDoTitulo = (t: string) =>
  * cai no `throw`. A leitura antiga ("sem rótulo Takara Tomy = hasbro")
  * classificava errado 22 dessas 103: todo código `CX-NN` sem rótulo, que é
  * exatamente o formato Takara Tomy sem rótulo.
+ *
+ * `nomeVeioDeAkaTakaraTomy` cobre um caso que o formato sozinho erra: duas
+ * páginas reais (nomes Hasbro "Stag"/"Antler", que viram "Bucks"/"Antlers"
+ * pelo AKA (Takara Tomy) — ver Fix 2) têm ProductCode SEM rótulo e em
+ * formato Hasbro (`G1684`). Sem este parâmetro, a peça saía com o nome
+ * Takara Tomy e a marca Hasbro ao mesmo tempo — contraditório, porque o
+ * nome só foi promovido a Takara Tomy PORQUE a peça existe na linha Takara
+ * Tomy sob esse nome (o bey "BucksAntlers B2-60D", ProductCode=CX-00, cita
+ * exatamente Bucks/Antlers). A marca segue o nome canônico, então esta
+ * checagem entra DEPOIS do rótulo explícito (que continua mandando, se
+ * houver) e ANTES do formato — o formato só decide quando nem rótulo nem
+ * promoção de nome resolveram.
  */
-function marcaDaPeca(titulo: string, codigo: string): "takara_tomy" | "hasbro" {
+function marcaDaPeca(
+  titulo: string,
+  codigo: string,
+  nomeVeioDeAkaTakaraTomy: boolean,
+): "takara_tomy" | "hasbro" {
   if (/\(Takara Tomy\)/.test(codigo)) return "takara_tomy";
   if (/\(Hasbro\)/.test(codigo)) return "hasbro";
+  if (nomeVeioDeAkaTakaraTomy) return "takara_tomy";
   if (/\b(?:BX|UX|CX)-\d/.test(codigo)) return "takara_tomy";
   if (/\bG\d/.test(codigo)) return "hasbro";
   throw new Error(
@@ -158,6 +175,10 @@ export function pecaDaPagina(titulo: string, wikitext: string): PecaColetada {
   // Fifty") são descartadas — não viram nome de peça nenhum.
   let name = box.get("Name") || titulo.replace(/^.*? - /, "");
   const aka: string[] = [];
+  // Junto com o nome, guarda SE a promoção veio de um AKA (Takara Tomy) —
+  // `marcaDaPeca` precisa saber, porque a marca segue o nome canônico
+  // quando isso acontece (ver comentário lá).
+  let nomeVeioDeAkaTakaraTomy = false;
   for (const entrada of (box.get("AKA") ?? "").split(/<br\s*\/?>/i)) {
     const hasbro = entrada.match(/^(.+?)\s*\(Hasbro\)\s*$/);
     if (hasbro) {
@@ -168,6 +189,7 @@ export function pecaDaPagina(titulo: string, wikitext: string): PecaColetada {
     if (takaraTomy) {
       aka.push(name);
       name = takaraTomy[1]!.trim();
+      nomeVeioDeAkaTakaraTomy = true;
     }
   }
 
@@ -175,7 +197,7 @@ export function pecaDaPagina(titulo: string, wikitext: string): PecaColetada {
 
   return {
     slot,
-    brand: marcaDaPeca(titulo, codigo),
+    brand: marcaDaPeca(titulo, codigo, nomeVeioDeAkaTakaraTomy),
     name,
     line,
     attack: lido.attack ?? 0,

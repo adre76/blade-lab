@@ -90,6 +90,42 @@ const ANTLER = `{{Part Infobox
 |StaminaStat=20
 }}`;
 
+/**
+ * Round 2: as duas páginas reais que expuseram o defeito Fix1×Fix2. "Stag" e
+ * "Antler" são os nomes Hasbro sob os quais a wiki publica estas páginas; o
+ * ProductCode delas não carrega rótulo nenhum, só o formato Hasbro (G1684).
+ * O nome canônico Takara Tomy (Bucks/Antlers) vem do AKA rotulado — e é
+ * exatamente esse par de nomes que o bey Takara Tomy "BucksAntlers B2-60D"
+ * (ProductCode=CX-00, LockChip=Bucks, MainBlade=Antlers) cita, provando que
+ * a peça existe na linha Takara Tomy sob esse nome.
+ */
+const STAG_SEM_ROTULO = `{{Part Infobox
+|Name=Stag
+|AKA=Bucks (Takara Tomy)
+|ProductCode=G1684
+|Classification=Lock Chip
+|SpinDirection=Right-Spin
+|Weight=1.8 grams
+|System=Custom Line
+|AttackStat=
+|DefenseStat=
+|StaminaStat=
+}}`;
+
+const ANTLER_SEM_ROTULO = `{{Part Infobox
+|Name=Antler
+|AKA=Antlers (Takara Tomy)
+|ProductCode=G1684
+|Classification=Main Blade
+|Type=Balance
+|SpinDirection=Right-Spin
+|Weight=29.8 grams
+|System=Custom Line
+|AttackStat=20
+|DefenseStat=20
+|StaminaStat=20
+}}`;
+
 const pecaComCodigo = (codigo: string) => `{{Part Infobox
 |Name=Teste
 |ProductCode=${codigo}
@@ -239,6 +275,29 @@ describe("peça a partir da página", () => {
         .toThrow(/Bit - Teste/);
       expect(() => pecaDaPagina("Bit - Teste", pecaComCodigo("XYZ-99")))
         .toThrow(/XYZ-99/);
+    });
+  });
+
+  // Round 2: Fix 1 (marca pelo ProductCode) e Fix 2 (AKA (Takara Tomy) vira
+  // nome) discordavam quando combinados nas duas páginas reais que os
+  // precisam — o ProductCode delas não tem rótulo, só formato Hasbro, então
+  // Fix 1 carimbava hasbro sobre um nome que Fix 2 acabara de promover a
+  // Takara Tomy. A marca tem que seguir o nome canônico nesse caso.
+  describe("marca segue o nome canônico quando o AKA promove o nome Takara Tomy (round 2)", () => {
+    it("AKA (Takara Tomy) + ProductCode sem rótulo em formato Hasbro: brand vira takara_tomy", () => {
+      const stag = pecaDaPagina("Lock Chip - Stag", STAG_SEM_ROTULO);
+      expect(stag.name).toBe("Bucks");
+      expect(stag.brand).toBe("takara_tomy");
+      expect(stag.aka).toEqual(["Stag"]);
+
+      const antler = pecaDaPagina("Main Blade - Antler", ANTLER_SEM_ROTULO);
+      expect(antler.name).toBe("Antlers");
+      expect(antler.brand).toBe("takara_tomy");
+      expect(antler.aka).toEqual(["Antler"]);
+    });
+
+    it("caso comum não muda: ProductCode sem rótulo em formato Hasbro, sem AKA (Takara Tomy), continua hasbro", () => {
+      expect(pecaDaPagina("Bit - Teste", pecaComCodigo("G1684")).brand).toBe("hasbro");
     });
   });
 
