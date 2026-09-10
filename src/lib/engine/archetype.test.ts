@@ -13,6 +13,7 @@ const CTX: Contexto = {
     unique_expand: { attack: 100, defense: 100, stamina: 100 },
     custom: { attack: 100, defense: 100, stamina: 100 },
     custom_expand: { attack: 100, defense: 100, stamina: 100 },
+    custom_integrated: { attack: 100, defense: 100, stamina: 100 },
   },
   quartis: { q1: 40, q3: 46 },
 };

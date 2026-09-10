@@ -450,7 +450,7 @@ export type Database = {
       }
     }
     Enums: {
-      anatomy: "basic" | "unique" | "unique_expand" | "custom" | "custom_expand"
+      anatomy: "basic" | "unique" | "unique_expand" | "custom" | "custom_expand" | "custom_integrated"
       bey_type: "attack" | "defense" | "stamina" | "balance"
       brand: "takara_tomy" | "hasbro"
       inventory_status: "owned" | "wishlist"
@@ -464,6 +464,7 @@ export type Database = {
         | "integrated_blade"
         | "ratchet"
         | "bit"
+        | "integrated_bit"
       product_line: "BX" | "UX" | "CX"
       rarity: "common" | "uncommon" | "rare" | "very_rare" | "exclusive"
       release_type:
@@ -604,7 +605,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      anatomy: ["basic", "unique", "unique_expand", "custom", "custom_expand"],
+      anatomy: ["basic", "unique", "unique_expand", "custom", "custom_expand", "custom_integrated"],
       bey_type: ["attack", "defense", "stamina", "balance"],
       brand: ["takara_tomy", "hasbro"],
       inventory_status: ["owned", "wishlist"],
@@ -618,6 +619,7 @@ export const Constants = {
         "integrated_blade",
         "ratchet",
         "bit",
+        "integrated_bit",
       ],
       product_line: ["BX", "UX", "CX"],
       rarity: ["common", "uncommon", "rare", "very_rare", "exclusive"],

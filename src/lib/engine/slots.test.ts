@@ -15,9 +15,19 @@ describe("slots por anatomia", () => {
     }
   });
 
-  it("conhece as cinco anatomias do catálogo", () => {
+  it("conhece as seis anatomias do catálogo", () => {
     expect([...ANATOMIAS_CONHECIDAS].sort()).toEqual(
-      ["basic", "custom", "custom_expand", "unique", "unique_expand"],
+      ["basic", "custom", "custom_expand", "custom_integrated", "unique", "unique_expand"],
+    );
+  });
+
+  /**
+   * Quatro slots: a ponta-com-catraca ocupa as duas posições de baixo, então
+   * não há `ratchet` separado. Irmã da unique_expand pelo outro lado do bey.
+   */
+  it("custom_integrated tem quatro slots: a ponta traz a catraca", () => {
+    expect(slotsDe("custom_integrated")).toEqual(
+      ["lock_chip", "main_blade", "assist_blade", "integrated_bit"],
     );
   });
 

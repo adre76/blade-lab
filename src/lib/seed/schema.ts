@@ -3,7 +3,7 @@ import { slotsDaAnatomia } from "../anatomias.ts";
 
 export const SLOTS = [
   "lock_chip", "main_blade", "metal_blade", "over_blade",
-  "assist_blade", "blade", "integrated_blade", "ratchet", "bit",
+  "assist_blade", "blade", "integrated_blade", "ratchet", "bit", "integrated_bit",
 ] as const;
 
 /**
@@ -21,16 +21,19 @@ const LAMINAS_PRINCIPAIS: readonly string[] = [
 /**
  * Slots que têm altura e pontos de contato.
  *
- * `integrated_blade` entra porque ela É um ratchet, além de lâmina: o UX Expand
- * Blade traz o ratchet embutido. A Beyblade Wiki ainda não publica altura nem
- * pontos de contato para nenhuma das três, mas o dado é verdadeiro da peça —
- * quando sair, entra sem mexer no schema.
+ * `integrated_blade` e `integrated_bit` entram porque elas SÃO um ratchet,
+ * além de lâmina e de ponta: a UX integrou a catraca na lâmina, a CX integrou
+ * na ponta. O Assist Blade da CX também publica altura, mas não pontos de
+ * contato — por isso não entra aqui; a altura dele é liberada pelo próprio
+ * campo, que é opcional para toda peça.
  */
-const COM_RATCHET: readonly string[] = ["ratchet", "integrated_blade"];
+const COM_RATCHET: readonly string[] = ["ratchet", "integrated_blade", "integrated_bit"];
 
 const Slot = z.enum(SLOTS);
 const Linha = z.enum(["BX", "UX", "CX"]);
-const Anatomia = z.enum(["basic", "unique", "unique_expand", "custom", "custom_expand"]);
+const Anatomia = z.enum([
+  "basic", "unique", "unique_expand", "custom", "custom_expand", "custom_integrated",
+]);
 const Marca = z.enum(["takara_tomy", "hasbro"]);
 const Resistencia = z.enum(["very_low", "low", "medium", "high", "very_high"]);
 const Natureza = z.enum(["attack", "defense", "stamina", "balance"]);

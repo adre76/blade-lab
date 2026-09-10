@@ -30,5 +30,12 @@
     "ratchet",
     "bit"
   ],
+  "custom_integrated": [
+    "lock_chip",
+    "main_blade",
+    "assist_blade",
+    "integrated_bit"
+  ],
+  "_nota_custom_integrated_2026_09_03": "A CX com Ratchet-Integrated Bit: catraca e ponta numa peca so. Confirmado nos infoboxes de PegasusBlast ATr (CX-07) e EmperorMight HOp (CX-11), que declaram RatchetBit e NAO declaram Ratchet. O nome 'custom_integrated' e cunhagem nossa: a wiki nomeia o 'Expand Blade' e nao da nome a esta variante.",
   "_nota_unique_expand_2026_09_01": "unique_expand e o UX Expand Blade: a lamina traz o ratchet integrado, entao sao DUAS pecas. 'Expand Blade' atravessa as tres linhas — na CX divide a Main Blade (custom_expand), na UX integra o ratchet, na BX so poe mais metal no centro e por isso nao ganha anatomia propria. Descoberto ao investigar o UX-20 GloryValkyrie LF."
 }

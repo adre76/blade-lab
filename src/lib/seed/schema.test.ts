@@ -144,6 +144,7 @@ describe("BeybladeSchema", () => {
         lock_chip: "a", metal_blade: "b", over_blade: "c",
         assist_blade: "d", ratchet: "e", bit: "f",
       }],
+      ["custom_integrated", { lock_chip: "a", main_blade: "b", assist_blade: "c", integrated_bit: "d" }],
     ] as const;
     for (const [anatomy, parts] of casos) {
       expect(() => BeybladeSchema.parse({ ...BEY_VALIDO, anatomy, parts })).not.toThrow();

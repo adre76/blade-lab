@@ -73,6 +73,7 @@ export const ROTULO_SLOT: Record<Enums["part_slot"], string> = {
   integrated_blade: "Lâmina c/ catraca",
   ratchet: "Catraca",
   bit: "Ponta",
+  integrated_bit: "Ponta c/ catraca",
   lock_chip: "Lock Chip",
   main_blade: "Main Blade",
   metal_blade: "Metal Blade",
@@ -92,6 +93,7 @@ export const BUSCA_SLOT: Record<Enums["part_slot"], string[]> = {
   integrated_blade: ["lâmina com catraca", "ratchet-integrated blade", "integrated blade"],
   ratchet: ["catraca", "ratchet"],
   bit: ["ponta", "bit"],
+  integrated_bit: ["ponta com catraca", "ratchet-integrated bit", "combo ratchet-bit"],
   lock_chip: ["lock chip"],
   main_blade: ["main blade"],
   metal_blade: ["metal blade"],
@@ -113,6 +115,7 @@ export const ROTULO_ANATOMIA: Record<Enums["anatomy"], string> = {
   unique_expand: "Lâmina com catraca integrada",
   custom: "Custom Line",
   custom_expand: "Custom Line — Expand",
+  custom_integrated: "Custom Line — ponta com catraca",
 };
 
 export const ROTULO_LANCAMENTO: Record<Enums["release_type"], string> = {
