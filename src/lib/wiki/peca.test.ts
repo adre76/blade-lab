@@ -29,6 +29,7 @@ const MAIN_BLADE = `{{Part Infobox
 
 const ASSIST_BLADE = `{{Part Infobox
 |Name=Turn
+|ProductCode=CX-04 (Takara Tomy)<br>G1679 (Hasbro)
 |Classification=Assist Blade
 |Type=Balance
 |Weight=5.8 grams
@@ -41,6 +42,7 @@ const ASSIST_BLADE = `{{Part Infobox
 
 const DOIS_MODOS = `{{Part Infobox
 |Name=Turbo
+|ProductCode=CX-14 (Takara Tomy)
 |Classification=Ratchet-Integrated Bit
 |System=Custom Line
 |Weight=12.7 grams
@@ -48,6 +50,54 @@ const DOIS_MODOS = `{{Part Infobox
 |DefenseStat=30 > 20
 |StaminaStat=60 > 10
 |HeightStat=90 > 65
+}}`;
+
+const NOME_VAZIO = `{{Part Infobox
+|Name=
+|ProductCode=CX-15 (Takara Tomy)
+|Classification=Bit
+|System=Custom Line
+|AttackStat=10
+|DefenseStat=10
+|StaminaStat=10
+}}`;
+
+const STAG = `{{Part Infobox
+|Name=Stag
+|AKA=Bucks (Takara Tomy)
+|ProductCode=CX-06 (Takara Tomy)<br>G1680 (Hasbro)
+|Classification=Main Blade
+|Type=Attack
+|SpinDirection=Right-Spin
+|Weight=30.5 grams
+|System=Custom Line
+|AttackStat=35
+|DefenseStat=15
+|StaminaStat=10
+}}`;
+
+const ANTLER = `{{Part Infobox
+|Name=Antler
+|AKA=Antlers (Takara Tomy)
+|ProductCode=CX-07 (Takara Tomy)<br>G1681 (Hasbro)
+|Classification=Main Blade
+|Type=Balance
+|SpinDirection=Right-Spin
+|Weight=29.8 grams
+|System=Custom Line
+|AttackStat=20
+|DefenseStat=20
+|StaminaStat=20
+}}`;
+
+const pecaComCodigo = (codigo: string) => `{{Part Infobox
+|Name=Teste
+|ProductCode=${codigo}
+|Classification=Bit
+|System=Custom Line
+|AttackStat=10
+|DefenseStat=10
+|StaminaStat=10
 }}`;
 
 /**
@@ -112,10 +162,19 @@ describe("peça a partir da página", () => {
     expect(pecaDaPagina("Assist Blade - Turn", ASSIST_BLADE).height_mm).toBe(60);
   });
 
-  it("grava o primeiro dos dois modos e explica os dois em notes", () => {
+  /**
+   * Fix 4: o precedente do Hells Nether agrupa por MODO (um trio completo
+   * por vez), não um par por stat — e o texto não pode vazar o `>` ou o `/`
+   * crus da wiki, porque quem lê é uma criança e "30 > 55" soa como uma
+   * desigualdade falsa em português.
+   */
+  it("grava o primeiro dos dois modos e explica os dois em notes, por modo e sem separador cru", () => {
     const p = pecaDaPagina("Ratchet-Integrated Bit - Turbo", DOIS_MODOS);
     expect([p.attack, p.defense, p.stamina]).toEqual([30, 30, 60]);
     expect(p.notes).toMatch(/dois conjuntos/i);
+    expect(p.notes).toContain("ataque 30, defesa 30 e resistência 60");
+    expect(p.notes).toContain("ataque 55, defesa 20 e resistência 10");
+    expect(p.notes).not.toMatch(/[>/]/);
     expect(p.data_disputed).toBe(false);
   });
 
@@ -123,10 +182,64 @@ describe("peça a partir da página", () => {
     expect(pecaDaPagina("Main Blade - Brave", MAIN_BLADE).aka).toEqual(["Courage"]);
   });
 
+  // Fix 2: a página pode estar publicada sob o nome Hasbro, com o AKA
+  // rotulado (Takara Tomy) carregando o nome canônico — os dois trocam.
+  it("página sob nome Hasbro com AKA (Takara Tomy): o AKA vira nome, o Name vira aka", () => {
+    const stag = pecaDaPagina("Main Blade - Stag", STAG);
+    expect(stag.name).toBe("Bucks");
+    expect(stag.aka).toEqual(["Stag"]);
+
+    const antler = pecaDaPagina("Main Blade - Antler", ANTLER);
+    expect(antler.name).toBe("Antlers");
+    expect(antler.aka).toEqual(["Antler"]);
+  });
+
+  // Fix 3: `Name=` presente e vazio não é o mesmo que ausente — `??` não
+  // recai no título, `||` recai.
+  it("Name vazio cai no título, não vira nome vazio", () => {
+    expect(pecaDaPagina("Bit - Sharp", NOME_VAZIO).name).toBe("Sharp");
+  });
+
+  // Fix 5: spin_direction é exclusivo da lâmina principal (spec §4.4); nunca
+  // havia asserção direta sobre o valor, só sobre slots que não o carregam.
+  it("spin_direction só é gravado na lâmina principal", () => {
+    expect(pecaDaPagina("Main Blade - Brave", MAIN_BLADE).spin_direction).toBe("right");
+    expect(pecaDaPagina("Lock Chip - Dran", LOCK_CHIP).spin_direction).toBeNull();
+  });
+
   it("peça sem código Takara Tomy é hasbro", () => {
     expect(pecaDaPagina("Ratchet-Integrated Blade - Seize Jaguar", SEM_STATS).brand)
       .toBe("hasbro");
     expect(pecaDaPagina("Lock Chip - Dran", LOCK_CHIP).brand).toBe("takara_tomy");
+  });
+
+  // Fix 1: rótulo explícito manda; sem rótulo, o FORMATO do código decide;
+  // sem rótulo e sem formato reconhecível, lança em vez de adivinhar.
+  describe("marca a partir do ProductCode (Fix 1)", () => {
+    it("rótulo (Takara Tomy) explícito manda", () => {
+      expect(pecaDaPagina("Bit - Teste", pecaComCodigo("CX-05 (Takara Tomy)")).brand)
+        .toBe("takara_tomy");
+    });
+
+    it("rótulo (Hasbro) explícito manda, sem rótulo Takara Tomy", () => {
+      expect(pecaDaPagina("Bit - Teste", pecaComCodigo("G1670 (Hasbro)")).brand)
+        .toBe("hasbro");
+    });
+
+    it("sem rótulo, formato BX-/UX-/CX- seguido de dígitos é takara_tomy", () => {
+      expect(pecaDaPagina("Bit - Teste", pecaComCodigo("CX-13")).brand).toBe("takara_tomy");
+    });
+
+    it("sem rótulo, formato G seguido de dígitos é hasbro", () => {
+      expect(pecaDaPagina("Bit - Teste", pecaComCodigo("G1684")).brand).toBe("hasbro");
+    });
+
+    it("sem rótulo e sem formato reconhecível, lança nomeando a página e o código", () => {
+      expect(() => pecaDaPagina("Bit - Teste", pecaComCodigo("XYZ-99")))
+        .toThrow(/Bit - Teste/);
+      expect(() => pecaDaPagina("Bit - Teste", pecaComCodigo("XYZ-99")))
+        .toThrow(/XYZ-99/);
+    });
   });
 
   it("monta a source_url a partir do título", () => {

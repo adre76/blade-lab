@@ -54,6 +54,42 @@ export type PecaColetada = {
 const urlDoTitulo = (t: string) =>
   "https://beyblade.fandom.com/wiki/" + t.replace(/ /g, "_");
 
+/**
+ * Marca da peça a partir do `ProductCode`.
+ *
+ * Rótulo explícito manda: "(Takara Tomy)" ou "(Hasbro)" escrito no próprio
+ * código. Sem rótulo, decide o FORMATO do código — `BX-`, `UX-` ou `CX-`
+ * seguido de dígitos é Takara Tomy; `G` seguido de dígitos é Hasbro. Nem
+ * rótulo nem formato reconhecível: lança, nomeando a página e o código, em
+ * vez de adivinhar.
+ *
+ * Medido nas 103 peças reais da Custom Line, isso resolve todas — nenhuma
+ * cai no `throw`. A leitura antiga ("sem rótulo Takara Tomy = hasbro")
+ * classificava errado 22 dessas 103: todo código `CX-NN` sem rótulo, que é
+ * exatamente o formato Takara Tomy sem rótulo.
+ */
+function marcaDaPeca(titulo: string, codigo: string): "takara_tomy" | "hasbro" {
+  if (/\(Takara Tomy\)/.test(codigo)) return "takara_tomy";
+  if (/\(Hasbro\)/.test(codigo)) return "hasbro";
+  if (/\b(?:BX|UX|CX)-\d/.test(codigo)) return "takara_tomy";
+  if (/\bG\d/.test(codigo)) return "hasbro";
+  throw new Error(
+    `${titulo}: não dá para determinar a marca a partir de ProductCode "${codigo}"`,
+  );
+}
+
+/**
+ * Os dois números de um stat com dois modos ("30 > 55" ou "20/50"), na ordem
+ * publicada. Só chamar quando `temDoisModos` for true para o mesmo valor.
+ */
+function doisValores(bruto: string): [number, number] {
+  const numeros = bruto.match(/-?\d+(\.\d+)?/g);
+  if (!numeros || numeros.length < 2) {
+    throw new Error(`esperava dois valores numéricos em "${bruto}"`);
+  }
+  return [Number(numeros[0]), Number(numeros[1])];
+}
+
 export function pecaDaPagina(titulo: string, wikitext: string): PecaColetada {
   const box = lerInfobox(wikitext);
 
@@ -87,26 +123,60 @@ export function pecaDaPagina(titulo: string, wikitext: string): PecaColetada {
     );
   }
   if (Object.values(bruto).some(temDoisModos)) {
+    // Precedente do Hells Nether (UX-21): grava-se o PRIMEIRO modo nas
+    // colunas e explicam-se os dois em `notes`, agrupados por modo (um
+    // trio ataque/defesa/resistência por vez) — não um par por stat, que lido
+    // em português soa como desigualdade falsa ("30 > 55" parece dizer que
+    // trinta é maior que cinquenta e cinco). `notes` é lido por uma criança,
+    // então o texto sai por extenso, sem o `>` ou o `/` crus da wiki.
+    const [ataque1, ataque2] = doisValores(bruto.attack);
+    const [defesa1, defesa2] = doisValores(bruto.defense);
+    const [resistencia1, resistencia2] = doisValores(bruto.stamina);
     notas.push(
-      `A fonte publica dois conjuntos de atributos para esta peça, `
-      + `${bruto.attack}, ${bruto.defense} e ${bruto.stamina}, o que indica dois `
-      + `modos de montagem; o exibido aqui é o primeiro.`,
+      "A fonte publica dois conjuntos de atributos para esta peça: no primeiro "
+      + `modo, ataque ${ataque1}, defesa ${defesa1} e resistência ${resistencia1}; `
+      + `no segundo modo, ataque ${ataque2}, defesa ${defesa2} e resistência `
+      + `${resistencia2}. O modo exibido no resto desta ficha é o primeiro.`,
     );
   }
 
-  // O nome Hasbro vem rotulado: "Courage (Hasbro)". Sem o rótulo não dá para
-  // saber de quem é o nome — foi o que inverteu três lâminas na Onda 1.
-  const aka = (box.get("AKA") ?? "")
-    .split(/<br\s*\/?>/i)
-    .map((s) => s.match(/^(.+?)\s*\(Hasbro\)\s*$/)?.[1]?.trim())
-    .filter((s): s is string => Boolean(s));
+  // O nome canônico deste catálogo é o da Takara Tomy — mas nem toda página
+  // está publicada sob esse nome. Duas formas reais, e o rótulo de marca do
+  // PRÓPRIO campo é quem decide, nunca o título da página:
+  //
+  //  - "Courage (Hasbro)": a página já está sob o nome Takara Tomy (`Name`),
+  //    e o AKA guarda só o nome Hasbro. Vira `aka`; `Name` fica como está.
+  //  - "Bucks (Takara Tomy)" na página "Stag": a wiki publicou esta página
+  //    sob o nome HASBRO, e é o AKA rotulado (Takara Tomy) que carrega o
+  //    nome canônico. Aqui os dois trocam de lugar — o AKA vira `name`, e o
+  //    `Name` da página vira uma entrada de `aka`.
+  //
+  // Não é hipotético: numa onda anterior essa mesma confusão inverteu o nome
+  // de três lâminas, porque o código confiava no título da página em vez de
+  // ler o rótulo de marca do campo. Entradas de AKA sem rótulo (~15 de 17,
+  // medido: siglas como "GR"/"GU"/"LO"/"Nr"/"TK" e romanizações como "Five
+  // Fifty") são descartadas — não viram nome de peça nenhum.
+  let name = box.get("Name") || titulo.replace(/^.*? - /, "");
+  const aka: string[] = [];
+  for (const entrada of (box.get("AKA") ?? "").split(/<br\s*\/?>/i)) {
+    const hasbro = entrada.match(/^(.+?)\s*\(Hasbro\)\s*$/);
+    if (hasbro) {
+      aka.push(hasbro[1]!.trim());
+      continue;
+    }
+    const takaraTomy = entrada.match(/^(.+?)\s*\(Takara Tomy\)\s*$/);
+    if (takaraTomy) {
+      aka.push(name);
+      name = takaraTomy[1]!.trim();
+    }
+  }
 
   const codigo = box.get("ProductCode") ?? "";
 
   return {
     slot,
-    brand: /\(Takara Tomy\)/.test(codigo) ? "takara_tomy" : "hasbro",
-    name: box.get("Name") ?? titulo.replace(/^.*? - /, ""),
+    brand: marcaDaPeca(titulo, codigo),
+    name,
     line,
     attack: lido.attack ?? 0,
     defense: lido.defense ?? 0,
