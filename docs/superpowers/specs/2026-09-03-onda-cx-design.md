@@ -22,7 +22,7 @@ pendências que sobraram das ondas anteriores.
 | Beys CX | 47 páginas na categoria `Custom Line Beyblades` (TT + Hasbro, a filtrar) |
 | Peças CX | ~78 — 28 Lock Chips, 16 Main Blades, ~18 Assist Blades, 7 Metal Blades, 7 Over Blades, a catraca `5-50`, a ponta `Yielding` |
 | Ratchet-Integrated Bits | 2 peças (`Operate`, `Turbo`) e uma anatomia nova |
-| Ratchet-Integrated Blades pendentes | 4 (`Cutter Shinobi`, `Rampart Aegis`, `Valor Bison`, `Seize Jaguar`) |
+| Ratchet-Integrated Blades pendentes | **nenhuma** — o descarte continua válido, ver §6.2 |
 | Lightning L-Drago | 2 lâminas e os beys BX-00 correspondentes |
 
 A CX acrescenta pouquíssima catraca e ponta — uma de cada. O volume está nas
@@ -192,26 +192,80 @@ Entram como lâminas `basic` comuns. Um detalhe: são `Left-Spin`, e serão as
 **primeiras lâminas canhotas do catálogo** — exercitam um caminho que existe no
 schema e nunca teve dado.
 
-### 6.2 Ratchet-Integrated Blades
+### 6.2 Ratchet-Integrated Blades — o descarte continua de pé
+
+> **Corrigido em 09/09/2026.** A versão original desta seção dizia que três das
+> quatro "entram sem cerimônia". Está errado, e o erro foi pego por uma
+> pergunta simples: *não encontrei o Beyblade X da série UX chamado Valor
+> Bison*. Não existe. Nem ele, nem os outros três.
 
 Sete no total; três já estão no catálogo (`BulletGriffon`, `GloryValkyrie`,
-`HellsNether`). Das quatro que faltam, três entram sem cerimônia:
-`Cutter Shinobi`, `Rampart Aegis` e `Valor Bison`, todas Hasbro, todas com
-stats publicados.
+`HellsNether`). As quatro que faltam são **exclusivas da Hasbro**:
 
-### 6.3 `Seize Jaguar` — fonte que não publica
+| Peça | Código | Seção Takara Tomy na wiki | Nome TT |
+|---|---|---|---|
+| `Cutter Shinobi` | G1940 | comentada | `<!--ShinobiShuriken-->` |
+| `Rampart Aegis` | G1940 | comentada | `<!--AegisRampart-->` |
+| `Valor Bison` | G3497 | comentada | `<!--BisonBurrow-->` |
+| `Seize Jaguar` | G4570 | comentada | — |
 
-A quarta não tem stats. Isso é um terceiro estado, diferente dos dois que o
-modelo conhece: não é "as fontes divergem" (`data_disputed`) nem "o dado é
-zero".
+Nenhuma tem código Takara Tomy, e nas três primeiras o nome Takara Tomy está
+**comentado no wikitext** — a convenção da wiki para produto anunciado que não
+saiu. Elas não são "a versão Hasbro de uma peça que temos"; são exclusivas.
 
-**Decisão.** Entra com zeros, `data_disputed = true` e a razão em `notes`,
-alargando o sentido da coluna de "as fontes divergem" para **"este registro
+**Por que isso bloqueia.** O catálogo tem hoje **zero peças e zero beys da
+Hasbro**: a coluna `brand`, o `equivalent_id` e a resolução para canonical
+(§4.8 da spec principal) existem no schema e nunca tiveram dado. E o teste
+`toda peça hasbro aponta para uma peça takara_tomy existente` exige um
+equivalente canônico que estas quatro não têm.
+
+Ou seja, elas seriam as primeiras linhas Hasbro do catálogo — e são o pior
+primeiro caso possível, porque são exatamente o caso que o modelo assume não
+existir.
+
+**Decisão.** Continuam fora. A razão da Onda 1 estava registrada como "só da
+Hasbro", que é vago demais para ser reavaliado; passa a ficar registrada com a
+evidência, em `data/descartes.md` (§6.5).
+
+Abrir a Hasbro no catálogo é uma frente própria — decide como o catálogo trata
+a marca inteira, incluindo os beys e as repinturas, e não quatro peças de
+rodapé. Quando os produtos Takara Tomy saírem, `npm run coletar` reconfere
+sozinho; é o mesmo mecanismo que fez os stats do Lightning L-Drago
+reaparecerem.
+
+### 6.3 Fonte que não publica
+
+Existe um terceiro estado, diferente dos dois que o modelo conhece: não é "as
+fontes divergem" (`data_disputed`) nem "o dado é zero". É "a fonte não publica
+nada".
+
+O caso que motivou a regra era o `Seize Jaguar`, que sai de escopo por §6.2. A
+**regra fica** mesmo assim, no coletor: uma peça de classe que pontua, com os
+três stats vazios, entra com zeros, `data_disputed = true` e a razão em
+`notes`. É uma rede de segurança barata, e a CX tem ~78 peças novas em que ela
+pode disparar.
+
+Isso alarga o sentido da coluna, de "as fontes divergem" para **"este registro
 precisa de revisão"** — que é o que o índice parcial `parts_disputed_idx` já
 significa na prática, já que ele existe para responder *o que precisa de
-revisão*. O comentário da coluna é atualizado na migração para dizer isso.
+revisão*. O comentário da coluna é atualizado na migração.
 
-Uma linha não justifica coluna nova. Se aparecer uma terceira situação, aí sim.
+Não confundir com o Lock Chip (§3): lá o vazio é a natureza da classe, e não
+vira marca de revisão. A diferença entre os dois é o que o coletor precisa
+saber decidir.
+
+### 6.5 Onde os descartes passam a morar
+
+Hoje a lista de descartes só existe na saída do terminal de quem coletou. Some
+quando a janela fecha, e foi por isso que a razão do descarte destas quatro
+chegou até aqui como "só da Hasbro".
+
+`data/descartes.md` passa a guardar, para cada item deixado de fora: o que é, a
+razão, a evidência, e **o que teria de mudar para ele entrar**. É o campo que
+faltava — sem ele, reavaliar um descarte é refazer a investigação inteira.
+
+O arquivo é escrito à mão, não gerado: a razão de um descarte é julgamento, e
+o coletor só sabe dizer que falhou.
 
 ### 6.4 Stats de dois modos
 
