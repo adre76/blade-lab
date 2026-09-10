@@ -20,6 +20,9 @@ import { buscarNaRede, membrosDaCategoria, paginas } from "../src/lib/wiki/api.t
 import { pecaDaPagina, type PecaColetada } from "../src/lib/wiki/peca.ts";
 import { beyDaPagina, conferirGiro, type BeyColetado } from "../src/lib/wiki/bey.ts";
 import { carregarPartes } from "../src/lib/seed/carregar.ts";
+import {
+  CAMPOS_DA_PECA, CAMPOS_DO_BEY, chaveDeBey, chaveDePeca, fundirRegistros,
+} from "../src/lib/seed/merge.ts";
 
 const args = process.argv.slice(2);
 const opcao = (nome: string) => {
@@ -183,29 +186,36 @@ for (const [tituloPedido, pagina] of pgBeys) {
 }
 
 // ─── Escrita (ou simulação dela) ─────────────────────────────────────────────
-// Preserva o que já existe: o arquivo é reescrito com a UNIÃO do que estava
-// nele e do que veio agora, casando por chave natural. `data/` é upsert-only
-// (o seed nunca apaga), e a coleta segue a mesma regra. Em `--simular`, tudo
+// Preserva o que já existe: o arquivo é reescrito com a fusão do que estava
+// nele e do que veio agora, casando por chave natural. A regra de fusão —
+// qual campo o coletor tem autoridade para sobrescrever, qual é curadoria
+// intocável — mora em src/lib/seed/merge.ts, testada, porque `data/` é
+// upsert-only (o seed nunca apaga) e um registro fresco NÃO PODE substituir o
+// existente por inteiro: isso apagaria em silêncio `release_type`, `rarity`,
+// `rarity_reason` e qualquer outro campo curado à mão. Em `--simular`, tudo
 // isto roda até o fim — inclusive a leitura do arquivo atual — só a escrita
 // em si (`writeFileSync`) não acontece.
-function gravar(caminho: string, chave: string, novos: Record<string, unknown>[], nota: string) {
+function gravar(
+  caminho: string, chave: "parts" | "beyblades", novos: Record<string, unknown>[], nota: string,
+) {
   const url = new URL(caminho, RAIZ);
   const antigo = existsSync(url)
     ? JSON.parse(readFileSync(url, "utf8")) as Record<string, unknown>
     : {};
   const existentes = (antigo[chave] ?? []) as Record<string, unknown>[];
 
-  const id = (r: Record<string, unknown>) =>
-    `${r["brand"] ?? "takara_tomy"}|${r["slot"] ?? r["release_code"]}|${r["name"]}`;
+  const chaveDe = chave === "parts" ? chaveDePeca : chaveDeBey;
+  const campos = chave === "parts" ? CAMPOS_DA_PECA : CAMPOS_DO_BEY;
 
-  const mapa = new Map(existentes.map((r) => [id(r), r]));
-  const antes = mapa.size;
-  for (const n of novos) mapa.set(id(n), n);
-  const chavesNovas = mapa.size - antes;
+  const antes = existentes.length;
+  const fundidos = fundirRegistros(
+    existentes, novos, chaveDe as (r: Record<string, unknown>) => string, campos,
+  );
+  const chavesNovas = fundidos.length - antes;
 
   const acao = SIMULAR ? "SERIA gravado" : "gravado";
   console.log(
-    `  ${caminho}: ${mapa.size} registros no total `
+    `  ${caminho}: ${fundidos.length} registros no total `
     + `(${antes} já existiam, ${chavesNovas} entrariam de novo, `
     + `${novos.length} vieram desta coleta) — ${acao}`,
   );
@@ -214,7 +224,7 @@ function gravar(caminho: string, chave: string, novos: Record<string, unknown>[]
     writeFileSync(url, JSON.stringify({
       _fonte: "https://beyblade.fandom.com/wiki/",
       _nota: nota,
-      [chave]: [...mapa.values()],
+      [chave]: fundidos,
     }, null, 2) + "\n");
   }
 }
