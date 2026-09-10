@@ -13,11 +13,11 @@ const titulosDaUrl = (url: string): string[] => {
 };
 
 describe("cliente da wiki", () => {
-  it("devolve o wikitext indexado pelo título", async () => {
+  it("devolve o wikitext indexado pelo título, com o título canônico igual ao pedido", async () => {
     const buscar = async () =>
       resposta({ "1": { title: "Blade - Dran Sword", revisions: [{ slots: { main: { "*": "TEXTO" } } }] } });
     const r = await paginas(["Blade - Dran Sword"], buscar);
-    expect(r.get("Blade - Dran Sword")).toBe("TEXTO");
+    expect(r.get("Blade - Dran Sword")).toEqual({ titulo: "Blade - Dran Sword", texto: "TEXTO" });
   });
 
   /**
@@ -25,30 +25,66 @@ describe("cliente da wiki", () => {
    * um redirect. Sem reindexar, a coleta perdia essas peças em silêncio — foi
    * o defeito que deixou metade do catálogo sem imagem na Onda 1.
    */
-  it("reindexa o redirect de volta para o título PEDIDO", async () => {
+  it("resolve o redirect do título PEDIDO até a página canônica", async () => {
     const buscar = async () =>
       resposta(
         { "1": { title: "Tackle Goat", revisions: [{ slots: { main: { "*": "CABRA" } } }] } },
         [{ from: "GoatTackle", to: "Tackle Goat" }],
       );
     const r = await paginas(["GoatTackle"], buscar);
-    expect(r.get("GoatTackle")).toBe("CABRA");
+    expect(r.get("GoatTackle")).toEqual({ titulo: "Tackle Goat", texto: "CABRA" });
+  });
+
+  /**
+   * Nas tabelas de peças da wiki, o nome Hasbro e o nome Takara Tomy aparecem
+   * cada um em uma coluna — e um dos dois é redirect para o outro. Os dois
+   * acabam pedidos na mesma leva. Um mapa `to→from` andado de trás pra frente
+   * só cria entrada para quem foi pedido por último; o destino, que também foi
+   * pedido (e é o título canônico), fica sem nada. Resolvendo para frente a
+   * partir de cada título pedido, os dois recebem entrada — com o mesmo
+   * conteúdo e o mesmo `titulo` canônico.
+   */
+  it("quando o destino também foi pedido, ambos os títulos recebem entrada", async () => {
+    const buscar = async () =>
+      resposta(
+        { "1": { title: "Metal Blade - Fortress", revisions: [{ slots: { main: { "*": "TEXTO" } } }] } },
+        [{ from: "Metal Blade - Armor", to: "Metal Blade - Fortress" }],
+      );
+    const r = await paginas(["Metal Blade - Armor", "Metal Blade - Fortress"], buscar);
+    expect(r.get("Metal Blade - Armor")).toEqual({ titulo: "Metal Blade - Fortress", texto: "TEXTO" });
+    expect(r.get("Metal Blade - Fortress")).toEqual({ titulo: "Metal Blade - Fortress", texto: "TEXTO" });
+  });
+
+  /**
+   * Fan-in clássico: duas origens diferentes redirecionando para o mesmo
+   * destino. As duas devem receber entrada própria, ambas com o `titulo`
+   * canônico do destino.
+   */
+  it("quando duas origens redirecionam para o mesmo destino, ambas recebem entrada (fan-in)", async () => {
+    const buscar = async () =>
+      resposta(
+        { "1": { title: "B", revisions: [{ slots: { main: { "*": "TEXTO-B" } } }] } },
+        [{ from: "A", to: "B" }, { from: "C", to: "B" }],
+      );
+    const r = await paginas(["A", "C"], buscar);
+    expect(r.get("A")).toEqual({ titulo: "B", texto: "TEXTO-B" });
+    expect(r.get("C")).toEqual({ titulo: "B", texto: "TEXTO-B" });
   });
 
   /**
    * `redirects=1` resolve a cadeia inteira e devolve um hop por salto: para
    * A→B→C a página vem indexada em "C", mas os hops são [{A,B},{B,C}]. Uma
-   * busca de UM salto acharia só "B" — um título intermediário que ninguém
-   * pediu. Isto prova que a resolução anda a cadeia até o título pedido.
+   * resolução de UM salto pararia em "B" — um título intermediário que
+   * ninguém pediu. Isto prova que a resolução anda a cadeia até o final.
    */
-  it("resolve um redirect encadeado (A→B→C) até o título PEDIDO", async () => {
+  it("resolve um redirect encadeado (A→B→C) até o título canônico", async () => {
     const buscar = async () =>
       resposta(
         { "1": { title: "C", revisions: [{ slots: { main: { "*": "TEXTO-C" } } }] } },
         [{ from: "A", to: "B" }, { from: "B", to: "C" }],
       );
     const r = await paginas(["A"], buscar);
-    expect(r.get("A")).toBe("TEXTO-C");
+    expect(r.get("A")).toEqual({ titulo: "C", texto: "TEXTO-C" });
   });
 
   /**
