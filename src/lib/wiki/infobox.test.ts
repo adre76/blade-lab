@@ -71,4 +71,67 @@ describe("leitor de infobox", () => {
     expect(temDoisModos("20/50")).toBe(true);
     expect(temDoisModos("40")).toBe(false);
   });
+
+  /**
+   * Achado 1 do review: um template aninhado de várias linhas (ex.:
+   * {{Translation|en=...|ja=...}}) tem seu PRÓPRIO `}}` de fechamento antes
+   * do `}}` que fecha o infobox. Contar por substring (`indexOf("\n}}")`)
+   * para no primeiro que aparece — que é o do aninhado — e trunca o
+   * infobox ali: campos genuinamente presentes (System, AttackStat) somem,
+   * e os nomes dos parâmetros do aninhado (en, ja) vazam como se fossem
+   * campos do infobox. A profundidade de chaves resolve isso: só um `}}`
+   * que devolve a profundidade a zero fecha o infobox.
+   */
+  it("um template aninhado de várias linhas não trunca o infobox nem vaza seus parâmetros", () => {
+    const wikitext = `{{Part Infobox
+|Name=X
+|Description={{Translation
+|en=...
+|ja=...
+}}
+|System=Custom Line
+|AttackStat=
+}}`;
+    const box = lerInfobox(wikitext);
+    expect(box.get("Name")).toBe("X");
+    expect(box.has("System")).toBe(true);
+    expect(box.get("System")).toBe("Custom Line");
+    expect(box.has("AttackStat")).toBe(true);
+    expect(box.get("AttackStat")).toBe("");
+    expect(box.has("en")).toBe(false);
+    expect(box.has("ja")).toBe(false);
+  });
+
+  /**
+   * Achado 1 do review: algumas páginas trazem um hatnote (ex.:
+   * {{About|...}}) antes do infobox — caso real: "Lightning L-Drago 1-60F
+   * (Upper Type)". Fatiar a partir da posição 0 só funcionava por acidente,
+   * porque esses hatnotes eram sempre de uma linha só. O leitor precisa
+   * ancorar no template cujo nome contém "Infobox", não na posição 0.
+   */
+  it("ignora um hatnote antes do infobox e lê os campos corretamente", () => {
+    const wikitext = `{{About|the Upper Type|the original release|Lightning L-Drago}}
+{{Part Infobox
+|Name=Lightning L-Drago 1-60F (Upper Type)
+|System=Custom Line
+|AttackStat=100
+}}`;
+    const box = lerInfobox(wikitext);
+    expect(box.get("Name")).toBe("Lightning L-Drago 1-60F (Upper Type)");
+    expect(box.get("System")).toBe("Custom Line");
+    expect(box.get("AttackStat")).toBe("100");
+  });
+
+  /**
+   * Achado 3 do review: risco nomeado no brief (pesos compostos) sem trava.
+   * `gramas` já lida com isso por inspeção — este teste apenas garante que
+   * continue lendo o primeiro peso de um valor composto real da wiki.
+   */
+  it("gramas lê o primeiro peso de um valor composto (BulletGriffon)", () => {
+    expect(
+      gramas(
+        "60.6 grams (combined ''BulletGriffon'')<br>32.4 grams (''Bullet'' upper part)",
+      ),
+    ).toBe(60.6);
+  });
 });

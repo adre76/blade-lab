@@ -6,18 +6,93 @@
  * não pontua" de "este dado ainda não foi coletado" (spec §3).
  */
 
-/** Só as linhas do começo do arquivo, até o `}}` que fecha o infobox. */
+/**
+ * Localiza o template de infobox (`{{Part Infobox`, `{{Beyblade Infobox`,
+ * ...) e devolve os índices de início (o primeiro `{` do template) e fim
+ * (logo após o `}}` que fecha ESSE template, contando profundidade de
+ * chaves) — não o primeiro `}}` que aparecer, que pode pertencer a um
+ * template aninhado como `{{Translation|en=...|ja=...}}`.
+ *
+ * A busca ancora no nome do template, não na posição 0: algumas páginas
+ * trazem um hatnote (ex.: `{{About|...}}`) antes do infobox — caso real,
+ * "Lightning L-Drago 1-60F (Upper Type)". Fatiar a partir de 0 só
+ * funcionava por acidente, porque esses hatnotes são sempre de uma linha.
+ */
+function encontrarInfobox(wikitext: string): { inicio: number; fim: number } | null {
+  const nome = wikitext.match(/\{\{\s*[A-Za-z][A-Za-z ]*Infobox\b/);
+  if (!nome || nome.index === undefined) return null;
+  const inicio = nome.index;
+
+  let profundidade = 0;
+  for (let i = inicio; i < wikitext.length; ) {
+    if (wikitext.startsWith("{{", i)) {
+      profundidade++;
+      i += 2;
+    } else if (wikitext.startsWith("}}", i)) {
+      profundidade--;
+      i += 2;
+      if (profundidade === 0) return { inicio, fim: i };
+    } else {
+      i++;
+    }
+  }
+  return null; // chaves nunca fecham: página malformada, tratamos como "sem infobox legível".
+}
+
+/** Só os campos de dentro do infobox, até o `}}` que efetivamente o fecha. */
 export function lerInfobox(wikitext: string): Map<string, string> {
   const campos = new Map<string, string>();
-  const fim = wikitext.indexOf("\n}}");
-  const corpo = wikitext.slice(0, fim < 0 ? wikitext.length : fim);
+  const alvo = encontrarInfobox(wikitext);
+  // Nenhum template de infobox encontrado (ou chaves malformadas): mapa
+  // vazio. `has()` devolve `false` para qualquer campo, o mesmo resultado
+  // que "esta página não tem infobox" deve produzir para quem chama —
+  // sem lançar exceção para um cenário real do corpus.
+  if (!alvo) return campos;
+
+  const corpo = wikitext.slice(alvo.inicio, alvo.fim);
+
+  let profundidade = 0;
+  let campoAtual: string | null = null;
+  let valorAtual: string[] = [];
+
+  const fechaCampo = () => {
+    if (campoAtual !== null) campos.set(campoAtual, valorAtual.join("\n").trim());
+    campoAtual = null;
+    valorAtual = [];
+  };
 
   for (const linha of corpo.split("\n")) {
-    // `^\|` ancora no começo da linha: um `|` no meio de {{Ruby|S|スラッシュ}}
-    // não abre campo novo.
-    const m = linha.match(/^\|\s*([A-Za-z0-9_]+)\s*=(.*)$/);
-    if (m) campos.set(m[1]!, m[2]!.trim());
+    const profundidadeNaLinha = profundidade;
+    for (let i = 0; i < linha.length; i++) {
+      if (linha.startsWith("{{", i)) {
+        profundidade++;
+        i++;
+      } else if (linha.startsWith("}}", i)) {
+        profundidade--;
+        i++;
+      }
+    }
+
+    if (profundidadeNaLinha === 1) {
+      // `^\|` ancora no começo da linha, na profundidade 1 (direto dentro
+      // do infobox): um `|` no meio de {{Ruby|S|スラッシュ}} não abre campo
+      // novo. Uma linha `|en=...` dentro de um template aninhado como
+      // {{Translation|en=...}} começa com `|` mas está na profundidade 2+
+      // — cai no ramo abaixo, como continuação do valor atual, e não vaza
+      // como campo "en" do infobox.
+      const m = linha.match(/^\|\s*([A-Za-z0-9_]+)\s*=(.*)$/);
+      if (m) {
+        fechaCampo();
+        campoAtual = m[1]!;
+        valorAtual.push(m[2]!);
+        continue;
+      }
+    }
+    if (campoAtual !== null && profundidadeNaLinha > 1) {
+      valorAtual.push(linha);
+    }
   }
+  fechaCampo();
   return campos;
 }
 
@@ -32,6 +107,10 @@ export function primeiroValor(bruto: string): string {
  * em `notes`, seguindo o precedente do Hells Nether (UX-21).
  */
 export function temDoisModos(bruto: string): boolean {
+  // Assume que todo `/` ou `>` num stat é separador de par de números (ex.:
+  // "N/A" seria um falso positivo). Medido no corpus: nas 98 páginas de
+  // peça da Custom Line, os 8 valores com `/` ou `>` são todos pares
+  // genuínos, nos dois Ratchet-Integrated Bits — zero falsos positivos.
   return /[>/]/.test(bruto);
 }
 
