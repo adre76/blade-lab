@@ -19,6 +19,7 @@ import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { buscarNaRede, membrosDaCategoria, paginas } from "../src/lib/wiki/api.ts";
 import { pecaDaPagina, type PecaColetada } from "../src/lib/wiki/peca.ts";
 import { beyDaPagina, conferirGiro, type BeyColetado } from "../src/lib/wiki/bey.ts";
+import { analisarIndice, consultarIndice } from "../src/lib/wiki/indice.ts";
 import { carregarPartes } from "../src/lib/seed/carregar.ts";
 import {
   CAMPOS_DA_PECA, CAMPOS_DO_BEY, chaveDeBey, chaveDePeca, fundirRegistros,
@@ -41,6 +42,12 @@ const LISTA_DE_PECAS: Record<string, string> = {
   UX: "List of Unique Line parts",
   CX: "List of Custom Line parts",
 };
+
+// Página única, não uma por linha: o índice oficial de produtos cobre BX, UX
+// e CX na mesma wikitable (confirmado lendo a página inteira — linhas BX-00,
+// UX-00 e CX-nn convivem lado a lado). `release_type`/`release_date` não têm
+// outra fonte pública — nenhum infobox de bey carrega esses campos.
+const TITULO_INDICE = "List of Beyblade X products (Takara Tomy)";
 
 const linha = opcao("linha");
 if (!linha || !CATEGORIA[linha]) {
@@ -81,8 +88,8 @@ console.log(`\n=== coleta ${linha}${SIMULAR ? " — MODO SIMULAÇÃO, nada será
 // redirects. É o canônico que vai para `pecaDaPagina` (e por tabela, para
 // `source_url`): três páginas reais da Custom Line só são alcançadas por
 // redirect, e citar o nome do redirect como fonte estaria errado.
-const indice = await paginas([LISTA_DE_PECAS[linha]!], buscarNaRede);
-const wikitextDaLista = [...indice.values()][0]?.texto ?? "";
+const pgListaDePecas = await paginas([LISTA_DE_PECAS[linha]!], buscarNaRede);
+const wikitextDaLista = [...pgListaDePecas.values()][0]?.texto ?? "";
 const titulosDePeca = [...new Set(
   [...wikitextDaLista.matchAll(/\[\[(?!File:)([^\]|]+)\|/g)].map((m) => m[1]!.trim()),
 )].filter((t) => / - /.test(t));
@@ -90,6 +97,14 @@ const titulosDePeca = [...new Set(
 console.log(`lista de peças: ${titulosDePeca.length} títulos`);
 const pgPecas = await paginas(titulosDePeca, buscarNaRede);
 console.log(`páginas de peça respondidas: ${pgPecas.size}`);
+
+// ─── Índice oficial de produtos (release_type / release_date) ────────────────
+// Mais uma chamada `paginas`, sobre o cliente já existente — o índice é só
+// mais uma página da wiki, sem endpoint próprio.
+const pgIndiceDeProdutos = await paginas([TITULO_INDICE], buscarNaRede);
+const wikitextDoIndice = pgIndiceDeProdutos.get(TITULO_INDICE)?.texto ?? "";
+const entradasDoIndice = analisarIndice(wikitextDoIndice);
+console.log(`índice oficial de produtos: ${entradasDoIndice.length} entradas`);
 
 const pecasColetadas: PecaColetada[] = [];
 for (const [tituloPedido, pagina] of pgPecas) {
@@ -237,10 +252,23 @@ const NOTA = `Coletado por scripts/coletar.ts em ${new Date().toISOString().slic
 // `BeyColetado.parts` é uma lista ordenada (o infobox tem ordem visual); o
 // formato do arquivo é um objeto slot → nome, como em data/beyblades/*.json.
 // A reforma é só de formato — nenhum dado muda de valor.
-const beysParaGravar = beysValidos.map(({ parts, ...resto }) => ({
-  ...resto,
-  parts: Object.fromEntries(parts.map((p) => [p.slot, p.name])),
-}));
+//
+// `release_type`/`release_date` NÃO entram em `CAMPOS_DO_BEY` (merge.ts) —
+// de propósito. Eles só são gravados aqui porque não há registro existente
+// ainda (primeira coleta desta linha); numa recoleta futura, com o arquivo já
+// existindo, `fundirRegistro` ignora esses dois campos do lado fresco e
+// preserva o que já está gravado, curado ou não — a mesma proteção que já
+// existe para `rarity`/`rarity_reason`. Sem isso, uma correção manual feita
+// à mão no CX-00 ValkyrieVolt (por exemplo) seria apagada na próxima coleta.
+const beysParaGravar = beysValidos.map(({ parts, ...resto }) => {
+  const consulta = consultarIndice(entradasDoIndice, resto.name);
+  return {
+    ...resto,
+    release_type: consulta?.tipo.determinado ? consulta.tipo.tipo : null,
+    release_date: consulta?.data ?? null,
+    parts: Object.fromEntries(parts.map((p) => [p.slot, p.name])),
+  };
+});
 
 console.log(`\n${SIMULAR ? "seria gravado" : "gravando"}:`);
 for (const slot of new Set(pecasValidas.map((p) => p.slot))) {
@@ -270,6 +298,24 @@ console.log(`  dos quais marca hasbro (descartados): ${beysHasbroDescartados.len
 console.log(`beys válidos por anatomia:`);
 for (const anatomia of new Set(beysValidos.map((b) => b.anatomy))) {
   console.log(`  ${anatomia}: ${beysValidos.filter((b) => b.anatomy === anatomia).length}`);
+}
+
+// `release_type` nulo não é erro de coleta — é o índice genuinamente não
+// determinando o tipo (set/combo sem rótulo) ou o produto não aparecendo lá
+// (reedição sob CX-00 sem nome batendo, random booster/deck set individual
+// cujo nome não é o da linha do índice). NENHUM dos dois casos pode ficar
+// escondido: sem esta lista, um bey sem `release_type` só seria descoberto
+// quando `scripts/seed.ts` reprovasse o arquivo inteiro no Zod, muito depois
+// de a coleta já ter terminado — tarde demais para o humano que precisa
+// curar decidir com o contexto da coleta ainda fresco.
+const beysComTipo = beysParaGravar.filter((b) => b.release_type !== null);
+const beysSemTipo = beysParaGravar.filter((b) => b.release_type === null);
+console.log(
+  `\nrelease_type pelo índice oficial: ${beysComTipo.length} de ${beysParaGravar.length} `
+  + `beys — ${beysSemTipo.length} SEM tipo, para curadoria humana:`,
+);
+for (const b of beysSemTipo) {
+  console.log(`  ${b.name} (${b.release_code})`);
 }
 
 console.log(`\ncoletados: ${pecasValidas.length} peças, ${beysValidos.length} beys`);
