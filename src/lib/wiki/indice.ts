@@ -221,6 +221,17 @@ export type ConsultaIndice = {
  * bey como saiu de fábrica (spec §4.4) — a reedição não é um produto novo, é
  * o mesmo bey vendido de novo, e a tabela é cronológica: a primeira
  * ocorrência é sempre o lançamento original.
+ *
+ * ATENÇÃO — isto DEPENDE da tabela do índice continuar em ordem cronológica.
+ * Se a wiki um dia reordenar essas linhas (por code, por edição, o que for),
+ * "primeiro casamento vence" passaria a pegar a REEDIÇÃO em vez do
+ * lançamento original, em silêncio — sem erro, só um `release_type`/
+ * `release_date` errado. Verificado em 2026-09-10 contra os TRÊS casos reais
+ * de nome duplicado que existem hoje no índice (DranBrave S6-60V,
+ * PegasusBlast ATr, WizardArc R4-55LO): nos três, a ordem do documento
+ * coincide com a ordem cronológica. Não há guarda para isso — seria
+ * construir para um risco não observado — mas fica registrado para quem
+ * revisar depois de uma reordenação real.
  */
 export function consultarIndice(
   entradas: readonly EntradaDoIndice[], nomeProduto: string,
@@ -230,4 +241,108 @@ export function consultarIndice(
   if (!achada) return null;
 
   return { entrada: achada, tipo: tipoDaEntrada(achada), data: converterData(achada.dataCrua) };
+}
+
+/** Tipos de entrada do índice que apontam para uma PÁGINA DE CONJUNTO
+ * (Random Booster ou Deck Set) em vez de nomear um bey diretamente. */
+export type TipoDeConjunto = "random_booster" | "deck_set";
+
+/** Uma entrada do índice cujo tipo já determinado é `random_booster` ou
+ * `deck_set` — ou seja, `entrada.nome` não é o nome de um bey, é o PRODUTO
+ * (o volume, o set) que lista outros beys dentro. */
+export type EntradaDeConjunto = { entrada: EntradaDoIndice; tipo: TipoDeConjunto };
+
+/**
+ * Filtra, das entradas já parseadas, as que resolvem para `random_booster`
+ * ou `deck_set` — são as únicas cujo `entrada.nome` não é o nome de um bey,
+ * é o TÍTULO da página wiki do conjunto que precisa ser buscada à parte
+ * (ver `itensDoConjunto`, que lê essa página).
+ *
+ * Confirmado contra a wiki real: o índice já linka pelo nome certo da página
+ * do produto (ex.: linha CX-05 → "Random Booster Vol. 6", linha CX-00 do
+ * Evangelion → "Evangelion Deck Set") — nenhuma resolução extra de redirect é
+ * necessária além da que `paginas()` (src/lib/wiki/api.ts) já faz sozinha.
+ */
+export function entradasDeConjunto(entradas: readonly EntradaDoIndice[]): EntradaDeConjunto[] {
+  const saida: EntradaDeConjunto[] = [];
+  for (const entrada of entradas) {
+    const tipo = tipoDaEntrada(entrada);
+    if (tipo.determinado && (tipo.tipo === "random_booster" || tipo.tipo === "deck_set")) {
+      saida.push({ entrada, tipo: tipo.tipo });
+    }
+  }
+  return saida;
+}
+
+/**
+ * Acha, dentro da wikitext de uma página, a seção cujo cabeçalho bate com um
+ * dos nomes dados — e devolve só o texto ENTRE esse cabeçalho e o próximo
+ * cabeçalho de mesmo nível (`==...==`), ou o fim do texto. `null` se nenhum
+ * dos nomes aparecer.
+ *
+ * Comparação por linha exata (`==Nome==`, sem espaço) — é como as páginas de
+ * conjunto reais escrevem ("==Assortment==", "==Contents=="); não há caso
+ * medido de "== Assortment ==" com espaço extra para justificar tolerar
+ * isso agora.
+ */
+function extrairSecao(wikitext: string, nomes: readonly string[]): string | null {
+  const linhas = wikitext.split(/\r?\n/);
+  const alvos = nomes.map((n) => `==${n}==`);
+
+  const inicio = linhas.findIndex((l) => alvos.includes(l.trim()));
+  if (inicio === -1) return null;
+
+  const fimRelativo = linhas.slice(inicio + 1).findIndex((l) => /^==[^=].*==$/.test(l.trim()));
+  const fim = fimRelativo === -1 ? linhas.length : inicio + 1 + fimRelativo;
+
+  return linhas.slice(inicio + 1, fim).join("\n");
+}
+
+/**
+ * Lê a wikitext de uma página de CONJUNTO (Random Booster ou Deck Set) — não
+ * a do índice — e devolve os nomes de item listados na seção de conteúdo.
+ *
+ * O cabeçalho da seção muda por tipo de produto: um Random Booster usa
+ * "==Assortment==" (com o sub-código antes do link, ex.: "CX-05 01:", e às
+ * vezes um "(Prize)" depois — nem um nem outro entram no nome, só o ALVO do
+ * link importa); um Deck Set usa "==Contents==". As duas são tentadas, na
+ * ordem; uma página sem nenhuma das duas (ou sem seção nenhuma) devolve `[]`,
+ * nunca lança — a chamada é sempre condicional a `entradasDeConjunto` já ter
+ * dito que a linha do índice é um destes dois tipos, mas a FORMA da página em
+ * si não é garantida (nem toda página da wiki segue o mesmo molde).
+ *
+ * Um Deck Set mistura bey com item que NÃO é bey (lançador, caixa de guarda —
+ * ver "Evangelion Deck Set": 3 beys, 2 "Winder Launcher", 1 "Beyblade Storage
+ * Box"). Este módulo não tenta separar os dois — não tem como saber, só pelo
+ * nome, se "Winder Launcher" é ou não um bey. Quem sabe é o CHAMADOR, que já
+ * tem a lista de nomes de bey que coletou: ele casa essa lista contra o
+ * retorno daqui (com `mesmoNome`) e o que não bater é, por eliminação, item
+ * não-bey. Devolver tudo aqui e deixar o casamento para fora é o que a tarefa
+ * pediu explicitamente — o módulo não deve "adivinhar".
+ */
+export function itensDoConjunto(wikitext: string): string[] {
+  const secao = extrairSecao(wikitext, ["Assortment", "Contents"]);
+  if (secao === null) return [];
+
+  const itens: string[] = [];
+  for (const linha of secao.split(/\r?\n/)) {
+    if (!linha.trimStart().startsWith("*")) continue;
+
+    // Mesma forma de link do índice (ver `analisarIndice`): o alvo é o
+    // PRIMEIRO link da linha — texto antes (sub-código) e depois ("(Prize)",
+    // variante de cor) não faz parte do nome do item. Um link com pipe usa o
+    // alvo, não o texto exibido (que costuma vir em negrito parcial, ex.:
+    // [[HellsReaper T4-70K|'''HellsReaper T'''4-70'''K''']]).
+    const m = linha.match(/\[\[([^\]|]+)(?:\|[^\]]*)?\]\]/);
+    if (m) itens.push(m[1]!.trim());
+  }
+  return itens;
+}
+
+/** Compara dois nomes com a mesma tolerância de espaço/caixa que
+ * `consultarIndice` já usa internamente — exportada para o chamador casar um
+ * nome de bey já coletado contra a lista que `itensDoConjunto` devolve (que
+ * pode incluir item não-bey; ver comentário de `itensDoConjunto`). */
+export function mesmoNome(a: string, b: string): boolean {
+  return normalizarNome(a) === normalizarNome(b);
 }

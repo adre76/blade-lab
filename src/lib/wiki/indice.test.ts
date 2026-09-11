@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { analisarIndice, consultarIndice, converterData, tipoDaEntrada } from "./indice.ts";
+import {
+  analisarIndice, consultarIndice, converterData, entradasDeConjunto, itensDoConjunto,
+  mesmoNome, tipoDaEntrada,
+} from "./indice.ts";
 
 // Todas as linhas abaixo são recortes reais de
 // "List of Beyblade X products (Takara Tomy)" (lidos em 2026-09-10), não
@@ -236,5 +239,110 @@ describe("consultarIndice", () => {
     expect(consulta!.entrada.codigo).toBe("CX-01");
     expect(consulta!.tipo).toEqual({ determinado: true, tipo: "starter" });
     expect(consulta!.data).toBe("2025-03-29");
+  });
+});
+
+// Recorte real da página "Random Booster Vol. 6" (lido em 2026-09-10) — a
+// seção ==Assortment== inteira, mais o começo de ==Breakdown== e ==Gallery==
+// (Videos/Trivia/References cortados, não mudam o que os testes verificam).
+// Prova o "para no próximo cabeçalho": o Breakdown cita os MESMOS 6 beys,
+// com prefixo "**" (que também bate a checagem de "linha de lista") — se a
+// extração vazasse pra lá, o resultado teria 12 itens em vez de 6.
+const PAGINA_RANDOM_BOOSTER_VOL_6 = `==Assortment==
+Each individual booster will contain '''1 of the following Beyblades'''. Parts marked in '''bold''' are new to the series.
+*CX-05 01: [[HellsReaper T4-70K|'''HellsReaper T'''4-70'''K''']] (Prize)
+*CX-05 02: [[RhinoReaper C4-55D|'''RhinoReaper C'''4-55D]] (Prize)
+*CX-05 03: [[HellsArc T3-85O|'''Hells'''Arc '''T'''3-85O]]
+*CX-05 04: [[LeonCrest 9-80K|LeonCrest 9-80'''K''']]
+*CX-05 05: [[PhoenixRudder 4-70LF]]
+*CX-05 06: [[WhaleWave 7-60K|WhaleWave 7-60'''K''']]
+
+==Breakdown==
+*A factory sealed master carton contains 24 individual boosters, grouped into 4 "bags" (6 boosters × 4 bags). Each carton of 24 boosters contains:
+**3 [[HellsReaper T4-70K]]
+**4 [[RhinoReaper C4-55D]]
+**5 [[HellsArc T3-85O]]
+**4 [[LeonCrest 9-80K]]
+**4 [[PhoenixRudder 4-70LF]]
+**4 [[WhaleWave 7-60K]]
+
+==Gallery==
+<gallery widths="130">
+X Random Booster Vol. 6 Contents.jpeg|The possible contents of the Random Booster.
+HellsReaper T4-70K.png|HellsReaper T4-70K (CX-05 01)
+</gallery>`;
+
+// Recorte real da página "Evangelion Deck Set" (lido em 2026-09-10) — a
+// mesma citada no relato da tarefa. Prova que ==Contents== mistura bey com
+// item que NÃO é bey (dois "Winder Launcher", uma "Beyblade Storage Box") e
+// que o módulo devolve os dois sem filtrar — quem filtra é o chamador.
+const PAGINA_EVANGELION_DECK_SET = `==Contents==
+* [[EvaArc B0-70E]] (Unit-00 Version Metal Coat: Orange)
+* [[EvaBrave A1-70V]] (Unit-01 Version Metal Coat: Violet)
+* [[EvaBrush T2-70A]] (Unit-02 Version Metal Coat: Red)
+* [[Winder Launcher]] (Launch Version + Long Winder)
+* [[Winder Launcher]] (NERV Version + Long Winder)
+* [[Beyblade Storage Box]]
+
+==Gallery==
+===Takara Tomy===
+<gallery widths="130">
+Evangelion Deck Set Contents.png|Contents
+</gallery>`;
+
+describe("itensDoConjunto", () => {
+  it("extrai os alvos de link da seção Assortment (Random Booster), ignorando sub-código e '(Prize)'", () => {
+    expect(itensDoConjunto(PAGINA_RANDOM_BOOSTER_VOL_6)).toEqual([
+      "HellsReaper T4-70K", "RhinoReaper C4-55D", "HellsArc T3-85O",
+      "LeonCrest 9-80K", "PhoenixRudder 4-70LF", "WhaleWave 7-60K",
+    ]);
+  });
+
+  it("para no próximo cabeçalho (==Breakdown==) — não duplica os mesmos beys citados lá", () => {
+    expect(itensDoConjunto(PAGINA_RANDOM_BOOSTER_VOL_6)).toHaveLength(6);
+  });
+
+  it("extrai os alvos de link da seção Contents (Deck Set), incluindo item que não é bey", () => {
+    expect(itensDoConjunto(PAGINA_EVANGELION_DECK_SET)).toEqual([
+      "EvaArc B0-70E", "EvaBrave A1-70V", "EvaBrush T2-70A",
+      "Winder Launcher", "Winder Launcher", "Beyblade Storage Box",
+    ]);
+  });
+
+  it("página sem seção Assortment nem Contents devolve lista vazia, não lança", () => {
+    expect(itensDoConjunto(TABELA_CX)).toEqual([]);
+  });
+});
+
+describe("entradasDeConjunto", () => {
+  it("filtra as entradas cujo tipo é random_booster ou deck_set, com o tipo já resolvido", () => {
+    const entradas = analisarIndice(TABELA_CX);
+    const conjuntos = entradasDeConjunto(entradas)
+      .map((c) => ({ codigo: c.entrada.codigo, nome: c.entrada.nome, tipo: c.tipo }));
+    expect(conjuntos).toEqual([
+      { codigo: "CX-05", nome: "Random Booster Vol. 6", tipo: "random_booster" },
+      { codigo: "CX-06", nome: "Random Booster FoxBrush Select", tipo: "random_booster" },
+      { codigo: "CX-11", nome: "EmperorMight Deck Set", tipo: "deck_set" },
+    ]);
+  });
+
+  it("exclui entradas rotuladas (Starter/Booster) e as indeterminadas (Battle Entry Set C, Start Dash Set C)", () => {
+    const entradas = analisarIndice(TABELA_CX);
+    const codigos = entradasDeConjunto(entradas).map((c) => c.entrada.codigo);
+    expect(codigos).not.toContain("CX-01");
+    expect(codigos).not.toContain("CX-03");
+    expect(codigos).not.toContain("CX-04");
+    expect(codigos).not.toContain("CX-16");
+  });
+});
+
+describe("mesmoNome", () => {
+  it("ignora espaço e caixa — mesma tolerância que consultarIndice já usa", () => {
+    expect(mesmoNome("HornetFortR7-60T", "HornetFort R7-60T")).toBe(true);
+    expect(mesmoNome("evaarc b0-70e", "EvaArc B0-70E")).toBe(true);
+  });
+
+  it("nomes diferentes não casam", () => {
+    expect(mesmoNome("EvaArc B0-70E", "EvaBrave A1-70V")).toBe(false);
   });
 });

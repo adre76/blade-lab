@@ -19,7 +19,9 @@ import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { buscarNaRede, membrosDaCategoria, paginas } from "../src/lib/wiki/api.ts";
 import { pecaDaPagina, type PecaColetada } from "../src/lib/wiki/peca.ts";
 import { beyDaPagina, conferirGiro, type BeyColetado } from "../src/lib/wiki/bey.ts";
-import { analisarIndice, consultarIndice } from "../src/lib/wiki/indice.ts";
+import {
+  analisarIndice, consultarIndice, converterData, entradasDeConjunto, itensDoConjunto, mesmoNome,
+} from "../src/lib/wiki/indice.ts";
 import { carregarPartes } from "../src/lib/seed/carregar.ts";
 import {
   CAMPOS_DA_PECA, CAMPOS_DO_BEY, chaveDeBey, chaveDePeca, fundirRegistros,
@@ -105,6 +107,35 @@ const pgIndiceDeProdutos = await paginas([TITULO_INDICE], buscarNaRede);
 const wikitextDoIndice = pgIndiceDeProdutos.get(TITULO_INDICE)?.texto ?? "";
 const entradasDoIndice = analisarIndice(wikitextDoIndice);
 console.log(`índice oficial de produtos: ${entradasDoIndice.length} entradas`);
+
+// ─── Conjuntos (Random Booster / Deck Set): o índice nomeia o SET, não o bey ─
+// Uma linha do índice do tipo random_booster ou deck_set não nomeia um bey —
+// nomeia o VOLUME ou o SET ("Random Booster Vol. 6", "Evangelion Deck Set").
+// Esses produtos têm página própria, que lista os beys de dentro (seção
+// ==Assortment== ou ==Contents==) — é lá, não na linha do índice, que mora o
+// nome do bey. `entradasDeConjunto` (src/lib/wiki/indice.ts) diz QUAIS linhas
+// são essas e QUAL título buscar; a busca em si é responsabilidade deste
+// script (o módulo não faz rede, por design — ver seu comentário de topo).
+const entradasConjunto = entradasDeConjunto(entradasDoIndice);
+const titulosDeConjunto = [...new Set(entradasConjunto.map((c) => c.entrada.nome))];
+const pgConjuntos = await paginas(titulosDeConjunto, buscarNaRede);
+console.log(
+  `conjuntos do índice (random booster / deck set): ${entradasConjunto.length} linhas, `
+  + `${titulosDeConjunto.length} páginas distintas, ${pgConjuntos.size} respondidas`,
+);
+
+// Cada conjunto resolvido carrega o tipo e a data JÁ da linha do índice (o
+// conjunto todo sai junto, na mesma data) mais a lista de itens da própria
+// página do produto — bey e não-bey misturados (ver comentário de
+// `itensDoConjunto`). Uma página que não respondeu (título mudou, rede
+// falhou) cai com `itens: []`, sem derrubar a coleta inteira: o bey que
+// dependia dela simplesmente fica sem tipo, visível no relatório de
+// "SEM tipo" mais abaixo — o mesmo tratamento que qualquer outra ausência.
+const conjuntosResolvidos = entradasConjunto.map((c) => ({
+  tipo: c.tipo,
+  data: converterData(c.entrada.dataCrua),
+  itens: itensDoConjunto(pgConjuntos.get(c.entrada.nome)?.texto ?? ""),
+}));
 
 const pecasColetadas: PecaColetada[] = [];
 for (const [tituloPedido, pagina] of pgPecas) {
@@ -260,12 +291,36 @@ const NOTA = `Coletado por scripts/coletar.ts em ${new Date().toISOString().slic
 // preserva o que já está gravado, curado ou não — a mesma proteção que já
 // existe para `rarity`/`rarity_reason`. Sem isso, uma correção manual feita
 // à mão no CX-00 ValkyrieVolt (por exemplo) seria apagada na próxima coleta.
+//
+// Dois caminhos até o tipo, nesta ordem: primeiro `consultarIndice` pelo
+// nome do PRÓPRIO bey (starter/booster nomeados e reedições/eventos sob
+// CX-00, ex.: LeonFang, HornetFort). Quando isso não determina nada — nome
+// ausente do índice, ou achado sem rótulo (ValkyrieVolt) —, tenta o segundo
+// caminho: o bey pode estar DENTRO de um conjunto (random booster/deck set)
+// já resolvido em `conjuntosResolvidos`, casado por `mesmoNome` (mesma
+// tolerância de espaço/caixa usada em `consultarIndice`). Um bey achado por
+// nome próprio não é procurado nos conjuntos — não há caso real de um bey
+// aparecer nos dois ao mesmo tempo, mas a ordem definida aqui é a que
+// venceria se algum dia aparecesse.
 const beysParaGravar = beysValidos.map(({ parts, ...resto }) => {
   const consulta = consultarIndice(entradasDoIndice, resto.name);
+  let releaseType = consulta?.tipo.determinado ? consulta.tipo.tipo : null;
+  let releaseDate = consulta?.data ?? null;
+
+  if (releaseType === null) {
+    const doConjunto = conjuntosResolvidos.find(
+      (c) => c.itens.some((item) => mesmoNome(item, resto.name)),
+    );
+    if (doConjunto) {
+      releaseType = doConjunto.tipo;
+      releaseDate = doConjunto.data;
+    }
+  }
+
   return {
     ...resto,
-    release_type: consulta?.tipo.determinado ? consulta.tipo.tipo : null,
-    release_date: consulta?.data ?? null,
+    release_type: releaseType,
+    release_date: releaseDate,
     parts: Object.fromEntries(parts.map((p) => [p.slot, p.name])),
   };
 });
