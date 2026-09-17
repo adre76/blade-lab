@@ -1,0 +1,884 @@
+{
+  "_fonte": "https://beyblade.fandom.com/wiki/",
+  "_nota": "Coletado por scripts/coletar.ts em 2026-09-11. Anatomia derivada dos campos de peça do infobox; marca pelo rótulo/formato do ProductCode (ou pela promoção de um AKA rotulado Takara Tomy); só entram peças e beys de marca takara_tomy.",
+  "beyblades": [
+    {
+      "release_code": "CX-13",
+      "name": "BahamutBlitz BK1-50I",
+      "line": "CX",
+      "anatomy": "custom_expand",
+      "brand": "takara_tomy",
+      "bey_type": "attack",
+      "spin_direction": "right",
+      "aka": [
+        "Blitz Bahamut BK 1-50I"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/BahamutBlitz_BK1-50I",
+      "release_type": "starter",
+      "release_date": "2026-03-28",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Bahamut",
+        "metal_blade": "Blitz",
+        "over_blade": "Break",
+        "assist_blade": "Knuckle",
+        "ratchet": "1-50",
+        "bit": "Ignition"
+      }
+    },
+    {
+      "release_code": "CX-18",
+      "name": "BrachioWhip OW5-70Nr",
+      "line": "CX",
+      "anatomy": "custom_expand",
+      "brand": "takara_tomy",
+      "bey_type": "stamina",
+      "spin_direction": "right",
+      "aka": [
+        "Whip Brachio OW 5-70Nr"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/BrachioWhip_OW5-70Nr",
+      "release_type": "random_booster",
+      "release_date": "2026-06-13",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Brachio",
+        "metal_blade": "Whip",
+        "over_blade": "Outer",
+        "assist_blade": "Wheel",
+        "ratchet": "5-70",
+        "bit": "Narrow"
+      }
+    },
+    {
+      "release_code": "CX-00",
+      "name": "BucksAntlers B2-60D",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "defense",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/BucksAntlers_B2-60D",
+      "release_type": "booster",
+      "release_date": "2026-07-09",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Bucks",
+        "main_blade": "Antlers",
+        "assist_blade": "Bumper",
+        "ratchet": "2-60",
+        "bit": "Dot"
+      }
+    },
+    {
+      "release_code": "CX-08",
+      "name": "CerberusDark W1-60F",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "attack",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/CerberusDark_W1-60F",
+      "release_type": "random_booster",
+      "release_date": "2025-07-19",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Cerberus",
+        "main_blade": "Dark",
+        "assist_blade": "Wheel",
+        "ratchet": "1-60",
+        "bit": "Flat"
+      }
+    },
+    {
+      "release_code": "CX-08",
+      "name": "CerberusFlame W5-80WB",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "stamina",
+      "spin_direction": "right",
+      "aka": [
+        "Flame Cerberus W 5-80WB"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/CerberusFlame_W5-80WB",
+      "release_type": "random_booster",
+      "release_date": "2025-07-19",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Cerberus",
+        "main_blade": "Flame",
+        "assist_blade": "Wheel",
+        "ratchet": "5-80",
+        "bit": "Wall Ball"
+      }
+    },
+    {
+      "release_code": "BX-50",
+      "name": "CerberusReaper B0-80WB",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "stamina",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/CerberusReaper_B0-80WB",
+      "release_type": "random_booster",
+      "release_date": "2026-07-11",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Cerberus",
+        "main_blade": "Reaper",
+        "assist_blade": "Bumper",
+        "ratchet": "0-80",
+        "bit": "Wall Ball"
+      }
+    },
+    {
+      "release_code": "CX-19",
+      "name": "CrocoTread TQ5-50GN",
+      "line": "CX",
+      "anatomy": "custom_expand",
+      "brand": "takara_tomy",
+      "bey_type": "defense",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/CrocoTread_TQ5-50GN",
+      "release_type": "random_booster",
+      "release_date": "2026-09-12",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Croco",
+        "metal_blade": "Tread",
+        "over_blade": "Tough",
+        "assist_blade": "Quell",
+        "ratchet": "5-50",
+        "bit": "Gear Needle"
+      }
+    },
+    {
+      "release_code": "CX-00",
+      "name": "DrakeBrave G4-70I",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "attack",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/DrakeBrave_G4-70I",
+      "release_type": "booster",
+      "release_date": "2026-07-09",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Drake",
+        "main_blade": "Brave",
+        "assist_blade": "Gravity",
+        "ratchet": "4-70",
+        "bit": "Ignition"
+      }
+    },
+    {
+      "release_code": "CX-00",
+      "name": "DranArc S2-70K",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "balance",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/DranArc_S2-70K",
+      "release_type": "limited",
+      "release_date": null,
+      "rarity": "exclusive",
+      "rarity_reason": "Foi um prêmio de sorteio da revista japonesa CoroCoro Comic, com apenas 100 unidades distribuídas — não foi vendido nas lojas.",
+      "parts": {
+        "lock_chip": "Dran",
+        "main_blade": "Arc",
+        "assist_blade": "Slash",
+        "ratchet": "2-70",
+        "bit": "Kick"
+      }
+    },
+    {
+      "release_code": "CX-01",
+      "name": "DranBrave S6-60V",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "attack",
+      "spin_direction": "right",
+      "aka": [
+        "Courage Dran S 6-60V"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/DranBrave_S6-60V",
+      "release_type": "starter",
+      "release_date": "2025-03-29",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Dran",
+        "main_blade": "Brave",
+        "assist_blade": "Slash",
+        "ratchet": "6-60",
+        "bit": "Vortex"
+      }
+    },
+    {
+      "release_code": "CX-11",
+      "name": "EmperorMight HOp",
+      "line": "CX",
+      "anatomy": "custom_integrated",
+      "brand": "takara_tomy",
+      "bey_type": "balance",
+      "spin_direction": "right",
+      "aka": [
+        "Might Emperor H Op"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/EmperorMight_HOp",
+      "release_type": "deck_set",
+      "release_date": "2025-11-01",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Emperor",
+        "main_blade": "Might",
+        "assist_blade": "Heavy",
+        "integrated_bit": "Operate"
+      }
+    },
+    {
+      "release_code": "CX-00",
+      "name": "EvaArc B0-70E",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "balance",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/EvaArc_B0-70E",
+      "release_type": "deck_set",
+      "release_date": "2026-08-29",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Eva",
+        "main_blade": "Arc",
+        "assist_blade": "Bumper",
+        "ratchet": "0-70",
+        "bit": "Elevate"
+      }
+    },
+    {
+      "release_code": "CX-00",
+      "name": "EvaBrave A1-70V",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "attack",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/EvaBrave_A1-70V",
+      "release_type": "deck_set",
+      "release_date": "2026-08-29",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Eva",
+        "main_blade": "Brave",
+        "assist_blade": "Assault",
+        "ratchet": "1-70",
+        "bit": "Vortex"
+      }
+    },
+    {
+      "release_code": "CX-00",
+      "name": "EvaBrush T2-70A",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "attack",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/EvaBrush_T2-70A",
+      "release_type": "deck_set",
+      "release_date": "2026-08-29",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Eva",
+        "main_blade": "Brush",
+        "assist_blade": "Turn",
+        "ratchet": "2-70",
+        "bit": "Accel"
+      }
+    },
+    {
+      "release_code": "CX-00",
+      "name": "HornetFort R7-60T",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "balance",
+      "spin_direction": "right",
+      "aka": [
+        "Fort Hornet R 7-60T"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/Fort_Hornet_R_7-60T",
+      "release_type": "booster",
+      "release_date": "2026-07-09",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Hornet",
+        "main_blade": "Fort",
+        "assist_blade": "Round",
+        "ratchet": "7-60",
+        "bit": "Taper"
+      }
+    },
+    {
+      "release_code": "CX-06",
+      "name": "FoxBrush J0-80DB",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "stamina",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/FoxBrush_J0-80DB",
+      "release_type": "random_booster",
+      "release_date": "2025-05-17",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Fox",
+        "main_blade": "Brush",
+        "assist_blade": "Jaggy",
+        "ratchet": "0-80",
+        "bit": "Disk Ball"
+      }
+    },
+    {
+      "release_code": "CX-06",
+      "name": "FoxBrush J2-60U",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "balance",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/FoxBrush_J2-60U",
+      "release_type": "random_booster",
+      "release_date": "2025-05-17",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Fox",
+        "main_blade": "Brush",
+        "assist_blade": "Jaggy",
+        "ratchet": "2-60",
+        "bit": "Unite"
+      }
+    },
+    {
+      "release_code": "CX-06",
+      "name": "FoxBrush J9-70GR",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "attack",
+      "spin_direction": "right",
+      "aka": [
+        "Brush Fox J9-70GR"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/FoxBrush_J9-70GR",
+      "release_type": "random_booster",
+      "release_date": "2025-05-17",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Fox",
+        "main_blade": "Brush",
+        "assist_blade": "Jaggy",
+        "ratchet": "9-70",
+        "bit": "Gear Rush"
+      }
+    },
+    {
+      "release_code": "CX-05",
+      "name": "HellsArc T3-85O",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "stamina",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/HellsArc_T3-85O",
+      "release_type": "random_booster",
+      "release_date": "2025-04-26",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Hells",
+        "main_blade": "Arc",
+        "assist_blade": "Turn",
+        "ratchet": "3-85",
+        "bit": "Orb"
+      }
+    },
+    {
+      "release_code": "UX-15",
+      "name": "HellsBrave J3-60GF",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "attack",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/HellsBrave_J3-60GF",
+      "release_type": "deck_set",
+      "release_date": "2025-08-09",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Hells",
+        "main_blade": "Brave",
+        "assist_blade": "Jaggy",
+        "ratchet": "3-60",
+        "bit": "Gear Flat"
+      }
+    },
+    {
+      "release_code": "CX-05",
+      "name": "HellsReaper T4-70K",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "balance",
+      "spin_direction": "right",
+      "aka": [
+        "Reaper Incendio T 4-70K"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/HellsReaper_T4-70K",
+      "release_type": "random_booster",
+      "release_date": "2025-04-26",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Hells",
+        "main_blade": "Reaper",
+        "assist_blade": "Turn",
+        "ratchet": "4-70",
+        "bit": "Kick"
+      }
+    },
+    {
+      "release_code": "CX-14",
+      "name": "KnightFortress GV8-70UN",
+      "line": "CX",
+      "anatomy": "custom_expand",
+      "brand": "takara_tomy",
+      "bey_type": "defense",
+      "spin_direction": "right",
+      "aka": [
+        "Armor Knight GV 8-70UN"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/KnightFortress_GV8-70UN",
+      "release_type": "starter",
+      "release_date": "2026-03-28",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Knight",
+        "metal_blade": "Fortress",
+        "over_blade": "Guard",
+        "assist_blade": "Vertical",
+        "ratchet": "8-70",
+        "bit": "Under Needle"
+      }
+    },
+    {
+      "release_code": "CX-00",
+      "name": "KrakenWriggle S3-70O",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "stamina",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/KrakenWriggle_S3-70O",
+      "release_type": "booster",
+      "release_date": "2026-07-09",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Kraken",
+        "main_blade": "Wriggle",
+        "assist_blade": "Slash",
+        "ratchet": "3-70",
+        "bit": "Orb"
+      }
+    },
+    {
+      "release_code": "CX-00",
+      "name": "LeonFang T4-60A",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "attack",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/LeonFang_T4-60A",
+      "release_type": "booster",
+      "release_date": "2025-11-13",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Leon",
+        "main_blade": "Fang",
+        "assist_blade": "Turn",
+        "ratchet": "4-60",
+        "bit": "Accel"
+      }
+    },
+    {
+      "release_code": "CX-07",
+      "name": "PegasusBlast ATr",
+      "line": "CX",
+      "anatomy": "custom_integrated",
+      "brand": "takara_tomy",
+      "bey_type": "attack",
+      "spin_direction": "right",
+      "aka": [
+        "Blast Pegasus A Tr"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/PegasusBlast_ATr",
+      "release_type": "starter",
+      "release_date": "2025-07-19",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Pegasus",
+        "main_blade": "Blast",
+        "assist_blade": "Assault",
+        "integrated_bit": "Turbo"
+      }
+    },
+    {
+      "release_code": "UX-18",
+      "name": "PegasusBrush M3-85W",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "defense",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/PegasusBrush_M3-85W",
+      "release_type": "random_booster",
+      "release_date": "2025-12-27",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Pegasus",
+        "main_blade": "Brush",
+        "assist_blade": "Massive",
+        "ratchet": "3-85",
+        "bit": "Wedge"
+      }
+    },
+    {
+      "release_code": "CX-03",
+      "name": "PerseusDark B6-80W",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "defense",
+      "spin_direction": "right",
+      "aka": [
+        "Dark Perseus B 6-80W"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/PerseusDark_B6-80W",
+      "release_type": "booster",
+      "release_date": "2025-03-29",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Perseus",
+        "main_blade": "Dark",
+        "assist_blade": "Bumper",
+        "ratchet": "6-80",
+        "bit": "Wedge"
+      }
+    },
+    {
+      "release_code": "CX-12",
+      "name": "PhoenixFlare Z9-80WW",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "defense",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/PhoenixFlare_Z9-80WW",
+      "release_type": "booster",
+      "release_date": "2026-01-24",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Phoenix",
+        "main_blade": "Flare",
+        "assist_blade": "Zillion",
+        "ratchet": "9-80",
+        "bit": "Wall Wedge"
+      }
+    },
+    {
+      "release_code": "CX-15",
+      "name": "RagnaRage FE4-55Y",
+      "line": "CX",
+      "anatomy": "custom_expand",
+      "brand": "takara_tomy",
+      "bey_type": "stamina",
+      "spin_direction": "right",
+      "aka": [
+        "Rage Ragna FE 4-55Y"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/RagnaRage_FE4-55Y",
+      "release_type": "booster",
+      "release_date": "2026-03-28",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Ragna",
+        "metal_blade": "Rage",
+        "over_blade": "Flow",
+        "assist_blade": "Erase",
+        "ratchet": "4-55",
+        "bit": "Yielding"
+      }
+    },
+    {
+      "release_code": "CX-05",
+      "name": "RhinoReaper C4-55D",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "defense",
+      "spin_direction": "right",
+      "aka": [
+        "Reaper Rhino C4-55D"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/RhinoReaper_C4-55D",
+      "release_type": "random_booster",
+      "release_date": "2025-04-26",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Rhino",
+        "main_blade": "Reaper",
+        "assist_blade": "Charge",
+        "ratchet": "4-55",
+        "bit": "Dot"
+      }
+    },
+    {
+      "release_code": "UX-18",
+      "name": "SolBrave C9-70TP",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "balance",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/SolBrave_C9-70TP",
+      "release_type": "random_booster",
+      "release_date": "2025-12-27",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Sol",
+        "main_blade": "Brave",
+        "assist_blade": "Charge",
+        "ratchet": "9-70",
+        "bit": "Trans Point"
+      }
+    },
+    {
+      "release_code": "CX-09",
+      "name": "SolEclipse D5-70TK",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "balance",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/SolEclipse_D5-70TK",
+      "release_type": "starter",
+      "release_date": "2025-09-27",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Sol",
+        "main_blade": "Eclipse",
+        "assist_blade": "Dual",
+        "ratchet": "5-70",
+        "bit": "Trans Kick"
+      }
+    },
+    {
+      "release_code": "CX-00",
+      "name": "TigaRage FT3-60T",
+      "line": "CX",
+      "anatomy": "custom_expand",
+      "brand": "takara_tomy",
+      "bey_type": "balance",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/TigaRage_FT3-60T",
+      "release_type": "starter",
+      "release_date": "2026-09-12",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Tiga",
+        "metal_blade": "Rage",
+        "over_blade": "Flow",
+        "assist_blade": "Turn",
+        "ratchet": "3-60",
+        "bit": "Taper"
+      }
+    },
+    {
+      "release_code": "CX-17",
+      "name": "UnicornDelta PO1-80GR",
+      "line": "CX",
+      "anatomy": "custom_expand",
+      "brand": "takara_tomy",
+      "bey_type": "attack",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/UnicornDelta_PO1-80GR",
+      "release_type": "random_booster",
+      "release_date": "2026-04-25",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Unicorn",
+        "metal_blade": "Delta",
+        "over_blade": "Peak",
+        "assist_blade": "Odd",
+        "ratchet": "1-80",
+        "bit": "Gear Rush"
+      }
+    },
+    {
+      "release_code": "CX-17",
+      "name": "UnicornDelta PO3-60GU",
+      "line": "CX",
+      "anatomy": "custom_expand",
+      "brand": "takara_tomy",
+      "bey_type": "balance",
+      "spin_direction": "right",
+      "aka": [
+        "Delta Unicorn PO 3-60GU"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/UnicornDelta_PO3-60GU",
+      "release_type": "random_booster",
+      "release_date": "2026-04-25",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Unicorn",
+        "metal_blade": "Delta",
+        "over_blade": "Peak",
+        "assist_blade": "Odd",
+        "ratchet": "3-60",
+        "bit": "Gear Unite"
+      }
+    },
+    {
+      "release_code": "CX-00",
+      "name": "ValkyrieVolt S4-70V",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "attack",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/ValkyrieVolt_S4-70V",
+      "release_type": "event_exclusive",
+      "release_date": "2025-07-17",
+      "rarity": "exclusive",
+      "rarity_reason": "Foi um prêmio distribuído no evento Rare Bey Get Battle — não foi vendido nas lojas.",
+      "parts": {
+        "lock_chip": "Valkyrie",
+        "main_blade": "Volt",
+        "assist_blade": "Slash",
+        "ratchet": "4-70",
+        "bit": "Vortex"
+      }
+    },
+    {
+      "release_code": "CX-08",
+      "name": "WhaleFlame M3-85HT",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "balance",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/WhaleFlame_M3-85HT",
+      "release_type": "random_booster",
+      "release_date": "2025-07-19",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Whale",
+        "main_blade": "Flame",
+        "assist_blade": "Massive",
+        "ratchet": "3-85",
+        "bit": "High Taper"
+      }
+    },
+    {
+      "release_code": "CX-02",
+      "name": "WizardArc R4-55LO",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "stamina",
+      "spin_direction": "right",
+      "aka": [
+        "Arc Wizard R 4-55LO"
+      ],
+      "source_url": "https://beyblade.fandom.com/wiki/WizardArc_R4-55LO",
+      "release_type": "starter",
+      "release_date": "2025-03-29",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Wizard",
+        "main_blade": "Arc",
+        "assist_blade": "Round",
+        "ratchet": "4-55",
+        "bit": "Low Orb"
+      }
+    },
+    {
+      "release_code": "BX-50",
+      "name": "WolfFlame D9-65L",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "attack",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/WolfFlame_D9-65L",
+      "release_type": "random_booster",
+      "release_date": "2026-07-11",
+      "rarity": "rare",
+      "parts": {
+        "lock_chip": "Wolf",
+        "main_blade": "Flame",
+        "assist_blade": "Dual",
+        "ratchet": "9-65",
+        "bit": "Level"
+      }
+    },
+    {
+      "release_code": "CX-10",
+      "name": "WolfHunt F0-60DB",
+      "line": "CX",
+      "anatomy": "custom",
+      "brand": "takara_tomy",
+      "bey_type": "stamina",
+      "spin_direction": "right",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/WolfHunt_F0-60DB",
+      "release_type": "booster",
+      "release_date": "2025-11-01",
+      "rarity": "common",
+      "parts": {
+        "lock_chip": "Wolf",
+        "main_blade": "Hunt",
+        "assist_blade": "Free",
+        "ratchet": "0-60",
+        "bit": "Disk Ball"
+      }
+    }
+  ]
+}

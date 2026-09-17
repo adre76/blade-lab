@@ -305,8 +305,10 @@ function extrairSecao(wikitext: string, nomes: readonly string[]): string | null
  * O cabeçalho da seção muda por tipo de produto: um Random Booster usa
  * "==Assortment==" (com o sub-código antes do link, ex.: "CX-05 01:", e às
  * vezes um "(Prize)" depois — nem um nem outro entram no nome, só o ALVO do
- * link importa); um Deck Set usa "==Contents==". As duas são tentadas, na
- * ordem; uma página sem nenhuma das duas (ou sem seção nenhuma) devolve `[]`,
+ * link importa); um Deck Set usa "==Contents==". `extrairSecao` procura os
+ * dois nomes ao mesmo tempo e devolve o que aparecer PRIMEIRO no documento —
+ * não tenta "Assortment" e só cai para "Contents" se o primeiro faltar; uma
+ * página sem nenhuma das duas (ou sem seção nenhuma) devolve `[]`,
  * nunca lança — a chamada é sempre condicional a `entradasDeConjunto` já ter
  * dito que a linha do índice é um destes dois tipos, mas a FORMA da página em
  * si não é garantida (nem toda página da wiki segue o mesmo molde).

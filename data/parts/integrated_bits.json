@@ -1,0 +1,40 @@
+{
+  "_fonte": "https://beyblade.fandom.com/wiki/",
+  "_nota": "Coletado por scripts/coletar.ts em 2026-09-11. Anatomia derivada dos campos de peça do infobox; marca pelo rótulo/formato do ProductCode (ou pela promoção de um AKA rotulado Takara Tomy); só entram peças e beys de marca takara_tomy.",
+  "parts": [
+    {
+      "slot": "integrated_bit",
+      "brand": "takara_tomy",
+      "name": "Operate",
+      "line": "CX",
+      "attack": 20,
+      "defense": 50,
+      "stamina": 50,
+      "weight_g": 14.1,
+      "height_mm": 80,
+      "spin_direction": null,
+      "part_type": "balance",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/Ratchet-Integrated_Bit_-_Operate",
+      "notes": "A fonte publica dois conjuntos de atributos para esta peça: no primeiro modo, ataque 20, defesa 50 e resistência 50; no segundo modo, ataque 50, defesa 35 e resistência 10. O modo exibido no resto desta ficha é o primeiro.",
+      "data_disputed": false
+    },
+    {
+      "slot": "integrated_bit",
+      "brand": "takara_tomy",
+      "name": "Turbo",
+      "line": "CX",
+      "attack": 30,
+      "defense": 30,
+      "stamina": 60,
+      "weight_g": 12.7,
+      "height_mm": 90,
+      "spin_direction": null,
+      "part_type": "attack",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/Ratchet-Integrated_Bit_-_Turbo",
+      "notes": "A fonte publica dois conjuntos de atributos para esta peça: no primeiro modo, ataque 30, defesa 30 e resistência 60; no segundo modo, ataque 55, defesa 20 e resistência 10. O modo exibido no resto desta ficha é o primeiro.",
+      "data_disputed": false
+    }
+  ]
+}

@@ -59,6 +59,38 @@ chamado Valor Bison"*. Não existe.
 
 ---
 
+## Lock Chip Enlil, Metal Blade Hurricane e Over Blade I — exclusivas da Hasbro
+
+**O que é.** Três peças da Custom Line que só existem sob a marca Hasbro: a
+trava (`lock_chip`) `Enlil`, a lâmina metálica (`metal_blade`) `Hurricane` e a
+ponta (`over_blade`) `I` — as três compõem o Infinity Starter Pack Hasbro
+`Hurricane Enlil IS 7-55T`.
+
+| Peça | Código | Seção Takara Tomy na wiki | Nome TT |
+|---|---|---|---|
+| `Enlil` | G2750 (Hasbro) | comentada | — |
+| `Hurricane` | G2750 (Hasbro) | inexistente | — |
+| `I` | G2750 (Hasbro) | comentada | — |
+
+**Razão.** A mesma política já registrada acima para as Ratchet-Integrated
+Blades, aplicada à mesma classe de problema: nenhuma das três tem
+correspondente Takara Tomy conhecido, e o catálogo só tem peça e bey Takara
+Tomy.
+
+**Evidência.** Nenhuma das três tem `AKA` nem nome Takara Tomy no infobox.
+Em duas (`Enlil`, `I`) a seção `===Takara Tomy===` de `==Products==` está
+comentada no wikitext; na terceira (`Hurricane`) a seção nem existe,
+comentada ou não — só `===Hasbro===`. Verificado em 10/09/2026 pela API.
+
+**O que teria de mudar.** As mesmas duas condições já registradas acima para
+as Ratchet-Integrated Blades: o produto Takara Tomy equivalente sair (o
+coletor reconfere sozinho, sem intervenção), ou o catálogo abrir a marca
+Hasbro (frente própria, não rodapé).
+
+**Registrado em.** Onda CX, na coleta real de 10/09/2026.
+
+---
+
 ## Custom Line, durante as Ondas 1 a 3
 
 **O que é.** A linha CX inteira — beys e peças.

@@ -26,6 +26,7 @@ import { carregarPartes } from "../src/lib/seed/carregar.ts";
 import {
   CAMPOS_DA_PECA, CAMPOS_DO_BEY, chaveDeBey, chaveDePeca, fundirRegistros,
 } from "../src/lib/seed/merge.ts";
+import { raridadePadraoDoTipo } from "../src/lib/seed/raridade.ts";
 
 const args = process.argv.slice(2);
 const opcao = (nome: string) => {
@@ -308,6 +309,16 @@ const beysParaGravar = beysValidos.map(({ parts, ...resto }) => {
   let releaseDate = consulta?.data ?? null;
 
   if (releaseType === null) {
+    // Pega o PRIMEIRO conjunto (na ordem de `conjuntosResolvidos`, que segue
+    // a ordem do documento do índice) cujos itens citam este bey pelo nome —
+    // sem checar se algum conjunto POSTERIOR também o cita. Mesmo risco já
+    // documentado para "primeiro casamento vence" em `consultarIndice`
+    // (`src/lib/wiki/indice.ts`): se um dia um bey aparecesse legitimamente
+    // em dois conjuntos (ex.: reeditado num segundo Random Booster), esta
+    // busca atribuiria a ele o tipo/data do conjunto ERRADO — o que aparece
+    // primeiro no índice, não necessariamente o que o chamador queria — em
+    // silêncio, sem erro algum. Não observado nos 40 beys da CX; sem guarda
+    // por não haver caso real a proteger ainda.
     const doConjunto = conjuntosResolvidos.find(
       (c) => c.itens.some((item) => mesmoNome(item, resto.name)),
     );
@@ -317,10 +328,26 @@ const beysParaGravar = beysValidos.map(({ parts, ...resto }) => {
     }
   }
 
+  // `rarity`/`rarity_reason` são obrigatórios em `BeybladeSchema`, mas nenhum
+  // módulo de coleta os produz — só o `release_type`, quando determinado,
+  // sugere um padrão (spec §4.4, `raridadePadraoDoTipo`). Sem tipo
+  // determinado, não há de onde derivar: os dois ficam `null`, junto com
+  // `release_type`, para o mesmo humano curar os três campos juntos antes do
+  // seed. Como `rarity`/`rarity_reason` também estão FORA de `CAMPOS_DO_BEY`
+  // (mesma razão do comentário acima sobre `release_type`), este default só
+  // vale para a primeira coleta — uma correção manual depois (ex.: a divisão
+  // de random_booster em uncommon/rare/very_rare por caixa, já usada em
+  // BX/UX) nunca é apagada por uma recoleta futura.
+  const { rarity, rarity_reason } = releaseType === null
+    ? { rarity: null, rarity_reason: null }
+    : raridadePadraoDoTipo(releaseType);
+
   return {
     ...resto,
     release_type: releaseType,
     release_date: releaseDate,
+    rarity,
+    rarity_reason,
     parts: Object.fromEntries(parts.map((p) => [p.slot, p.name])),
   };
 });
