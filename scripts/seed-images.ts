@@ -190,7 +190,14 @@ async function buscarImagens(titulos: string[]): Promise<Map<string, string>> {
 /** Baixa, converte para WebP e envia. Devolve o caminho relativo no bucket. */
 async function processar(urlImagem: string, destino: string): Promise<string | null> {
   const resp = await fetch(urlImagem, {
-    headers: { "User-Agent": "blade-x-lab/1.0 (catalogo de fas; contato via github.com/adre76/blade-lab)" },
+    // O `Referer` é obrigatório: a CDN de imagens da Fandom
+    // (static.wikia.nocookie.net) devolve 403 para QUALQUER requisição que não
+    // diga ter vindo do domínio dela — inclusive com User-Agent de browser.
+    // Sem este header, nenhuma imagem baixa. Medido em 18/09/2026.
+    headers: {
+      "User-Agent": "blade-x-lab/1.0 (catalogo de fas; contato via github.com/adre76/blade-lab)",
+      "Referer": "https://beyblade.fandom.com/",
+    },
   });
   if (!resp.ok) {
     console.warn(`  download falhou (${resp.status}): ${destino}`);
