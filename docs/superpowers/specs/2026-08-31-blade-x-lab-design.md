@@ -131,9 +131,16 @@ Em três anos a composição do Beyblade X mudou quatro vezes:
 | Anatomia | Composição | Slots |
 |---|---|---|
 | `basic` (BX) | Blade + Ratchet + Bit | 3 |
-| `unique` (UX) | Blade + Assist Blade + Ratchet + Bit | 4 |
+| `unique` (UX) | Blade + Ratchet + Bit | 3 |
+| `unique_expand` (UX Expand Blade) | Ratchet-Integrated Blade + Bit | 2 |
 | `custom` (CX) | Lock Chip + Main Blade + Assist Blade + Ratchet + Bit | 5 |
+| `custom_integrated` (CX) | Lock Chip + Main Blade + Assist Blade + Ratchet-Integrated Bit | 4 |
 | `custom_expand` (CX, fev/2026) | Lock Chip + Metal Blade + Over Blade + Assist Blade + Ratchet + Bit | 6 |
+
+> **Corrigido em 03/09/2026.** A tabela original dava quatro slots à `unique`,
+> incluindo `assist_blade` — o Assist Blade é exclusivo da Custom Line. Faltavam
+> também `unique_expand` (Onda 1) e `custom_integrated` (Onda CX). A §5.1 já
+> havia sido corrigida em 02/09; esta seção ficou para trás.
 
 **O Expand Blade não é uma linha de produto nova** — é uma composição estendida *dentro*
 da linha CX. Por isso o modelo separa dois conceitos:
@@ -149,14 +156,22 @@ migra, e o motor continua iterando os slots presentes sem conhecê-los de antem�
 permiti-la exigiria regras de agregação que não existiriam para nada. As chaves primárias
 refletem isso: `(bey, slot)`, sem coluna de posição.
 
+**De onde a anatomia é lida.** O coletor deriva a anatomia de **quais campos
+de peça o infobox declara** (`LockChip`, `MainBlade`, `RatchetBit`, …), e não
+do campo `System`. O `System2` distingue o Expand Blade mas também carrega
+`X-Over Project` nos beys de colaboração; testar a presença dele daria
+anatomia errada ao Lightning L-Drago. Um conjunto de slots sem anatomia
+conhecida faz a coleta parar, em vez de escolher a mais parecida.
+
 ### 4.2 Enums
 
 ```sql
 create type part_slot as enum (
   'lock_chip', 'main_blade', 'metal_blade', 'over_blade', 'assist_blade',
-  'blade', 'ratchet', 'bit'
+  'blade', 'integrated_blade', 'ratchet', 'bit', 'integrated_bit'
 );
-create type anatomy          as enum ('basic', 'unique', 'custom', 'custom_expand');
+create type anatomy          as enum ('basic', 'unique', 'unique_expand',
+                             'custom', 'custom_integrated', 'custom_expand');
 create type product_line     as enum ('BX', 'UX', 'CX');
 create type brand            as enum ('takara_tomy', 'hasbro');
 create type spin_direction   as enum ('right', 'left', 'dual');
