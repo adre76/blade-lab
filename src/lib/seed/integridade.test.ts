@@ -8,6 +8,7 @@
 import { describe, expect, it } from "vitest";
 import { carregarPartes, carregarBeyblades } from "./carregar.ts";
 import { ANATOMIAS } from "../anatomias.ts";
+import { NOTA_SEM_ATRIBUTOS, SLOTS_QUE_NAO_PONTUAM } from "../wiki/peca.ts";
 
 const RAIZ = new URL("../../../data/", import.meta.url);
 
@@ -142,9 +143,26 @@ describe("integridade do catálogo", () => {
     expect(vazando).toEqual([]);
   });
 
+  /**
+   * Zero nos três atributos normalmente é lacuna de coleta (a fonte não
+   * publicou), não uma medição de verdade — por isso o teste reprova. Duas
+   * exceções, ambas já convencionadas em `../wiki/peca.ts`:
+   *
+   * - `lock_chip`: a peça prende a Main Blade na Assist Blade, não é ponto de
+   *   contato, e nenhuma das suas páginas na wiki declara atributo algum (ver
+   *   `SLOTS_QUE_NAO_PONTUAM`). Ali zero é a natureza da peça, não um buraco
+   *   — sinalizar isso aqui reprovaria as 27 peças `lock_chip` do catálogo CX
+   *   por não terem o que nunca tiveram.
+   * - qualquer peça cujo `notes` já avisa o leitor de que a fonte não
+   *   publicou os atributos (o texto que `pecaDaPagina` grava quando os três
+   *   vêm nulos) — a lacuna já está documentada onde a tela exibe; reprovar
+   *   de novo aqui duplicaria o aviso sem apontar nada novo.
+   */
   it("atributos das peças estão numa faixa plausível", () => {
     const fora = partes
+      .filter((p) => !SLOTS_QUE_NAO_PONTUAM.includes(p.slot))
       .filter((p) => p.attack + p.defense + p.stamina === 0)
+      .filter((p) => p.notes !== NOTA_SEM_ATRIBUTOS)
       .map((p) => `${p.slot} ${p.name}: todos os atributos zerados`);
     expect(fora).toEqual([]);
   });

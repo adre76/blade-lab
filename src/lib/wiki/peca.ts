@@ -26,7 +26,16 @@ const SLOT_POR_CLASSE: Record<string, PartSlot> = {
  * StaminaStat nem Type (spec §3). Zero aqui é a natureza da peça, não lacuna —
  * e é por isso que não vira marca de revisão.
  */
-const SLOTS_QUE_NAO_PONTUAM: readonly PartSlot[] = ["lock_chip"];
+export const SLOTS_QUE_NAO_PONTUAM: readonly PartSlot[] = ["lock_chip"];
+
+/**
+ * Texto gravado em `notes` quando a fonte não publica nenhum dos três
+ * atributos de uma peça que normalmente os teria (exportado para o teste de
+ * integridade reconhecer a lacuna já documentada e não reprová-la de novo).
+ */
+export const NOTA_SEM_ATRIBUTOS =
+  "A fonte não publica os atributos desta peça. Os zeros exibidos são "
+  + "ausência de dado, não medição.";
 
 /** Slots que carregam sentido de giro: só a lâmina principal (spec §4.4). */
 const LAMINAS_PRINCIPAIS: readonly PartSlot[] = [
@@ -93,10 +102,7 @@ export function pecaDaPagina(titulo: string, wikitext: string): PecaColetada {
 
   const notas: string[] = [];
   if (semStats && !naoPontua) {
-    notas.push(
-      "A fonte não publica os atributos desta peça. Os zeros exibidos são "
-      + "ausência de dado, não medição.",
-    );
+    notas.push(NOTA_SEM_ATRIBUTOS);
   }
   if (Object.values(bruto).some(temDoisModos)) {
     // Precedente do Hells Nether (UX-21): grava-se o PRIMEIRO modo nas
