@@ -1,6 +1,6 @@
 {
-  "_fonte": "https://byybladebuilder.com/parts",
-  "_nota": "Atributos medidos pela comunidade, nao folha oficial da Takara Tomy. Apenas linhas BX e UX — a CX tem onda propria. spin_direction so aqui: e propriedade da lamina principal (spec 4.4). Nomes conferidos um a um contra a infobox das paginas de lamina da Beyblade Wiki, usando o rotulo de marca do campo (Name x AKA) para saber qual grafia e a Takara Tomy — a wiki inverte a convencao em algumas paginas. Registros com source_url proprio vieram da wiki; os demais, de byybladebuilder.com. Entra so lamina com produto Takara Tomy: as exclusivas Hasbro (Gill Shark, Yell Kong, os colabs Marvel/Star Wars/Transformers e outras) ficaram de fora, e voltam na onda da Hasbro. Fora tambem as duas Lightning L-Drago 1-60F (BX-00, 25o aniversario): sao Takara Tomy, mas a wiki ainda nao publicou os atributos, e o laboratorio precisa deles. O campo `aka` traz os outros nomes da MESMA peca — o Hasbro e, quando houver, o da repintura de colaboracao. Sao 52 laminas; ratchets e bits usam os mesmos nomes nas duas marcas. Nao confundir com equivalent_name, que liga DUAS pecas distintas.",
+  "_fonte": "https://beyblade.fandom.com/wiki/",
+  "_nota": "Coletado por scripts/coletar.ts em 2026-09-18. Anatomia derivada dos campos de peça do infobox; marca pelo rótulo/formato do ProductCode (ou pela promoção de um AKA rotulado Takara Tomy); só entram peças e beys de marca takara_tomy.",
   "parts": [
     {
       "slot": "blade",
@@ -227,7 +227,7 @@
       "attack": 22,
       "defense": 50,
       "stamina": 28,
-      "weight_g": 31.0,
+      "weight_g": 31,
       "spin_direction": "right",
       "part_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/Blade_-_General_Grievous"
@@ -334,7 +334,7 @@
       "attack": 75,
       "defense": 25,
       "stamina": 10,
-      "weight_g": 39.0,
+      "weight_g": 39,
       "spin_direction": "right",
       "part_type": "attack"
     },
@@ -345,7 +345,7 @@
       "attack": 17,
       "defense": 55,
       "stamina": 28,
-      "weight_g": 32.0,
+      "weight_g": 32,
       "spin_direction": "right",
       "part_type": "defense",
       "source_url": "https://beyblade.fandom.com/wiki/Blade_-_Iron_Man"
@@ -462,7 +462,7 @@
       "attack": 75,
       "defense": 15,
       "stamina": 35,
-      "weight_g": 39.0,
+      "weight_g": 39,
       "spin_direction": "left",
       "part_type": "attack",
       "aka": [
@@ -514,7 +514,7 @@
       "attack": 60,
       "defense": 27,
       "stamina": 13,
-      "weight_g": 35.0,
+      "weight_g": 35,
       "spin_direction": "right",
       "part_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/Blade_-_Optimus_Primal"
@@ -636,7 +636,7 @@
       "attack": 40,
       "defense": 30,
       "stamina": 30,
-      "weight_g": 36.0,
+      "weight_g": 36,
       "spin_direction": "right",
       "part_type": "balance",
       "aka": [
@@ -786,7 +786,7 @@
       "attack": 33,
       "defense": 17,
       "stamina": 50,
-      "weight_g": 33.0,
+      "weight_g": 33,
       "spin_direction": "right",
       "part_type": "stamina",
       "source_url": "https://beyblade.fandom.com/wiki/Blade_-_Spider-Man"
@@ -821,7 +821,7 @@
       "attack": 30,
       "defense": 40,
       "stamina": 30,
-      "weight_g": 31.0,
+      "weight_g": 31,
       "spin_direction": "right",
       "part_type": "balance",
       "source_url": "https://beyblade.fandom.com/wiki/Blade_-_StormSpriggan"
@@ -887,7 +887,7 @@
       "attack": 65,
       "defense": 30,
       "stamina": 5,
-      "weight_g": 37.0,
+      "weight_g": 37,
       "spin_direction": "right",
       "part_type": "attack",
       "aka": [
@@ -901,7 +901,7 @@
       "attack": 60,
       "defense": 28,
       "stamina": 12,
-      "weight_g": 36.0,
+      "weight_g": 36,
       "spin_direction": "right",
       "part_type": "attack",
       "source_url": "https://beyblade.fandom.com/wiki/Blade_-_Roar_Tyranno",
@@ -916,7 +916,7 @@
       "attack": 35,
       "defense": 35,
       "stamina": 30,
-      "weight_g": 34.0,
+      "weight_g": 34,
       "spin_direction": "right",
       "part_type": "balance",
       "aka": [
@@ -1052,9 +1052,43 @@
       "attack": 65,
       "defense": 25,
       "stamina": 10,
-      "weight_g": 31.0,
+      "weight_g": 31,
       "spin_direction": "right",
       "part_type": "attack"
+    },
+    {
+      "slot": "blade",
+      "brand": "takara_tomy",
+      "name": "Lightning L-Drago (Upper Type)",
+      "line": "BX",
+      "attack": 55,
+      "defense": 25,
+      "stamina": 20,
+      "weight_g": 34,
+      "height_mm": null,
+      "spin_direction": "left",
+      "part_type": "attack",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/Blade_-_Lightning_L-Drago_(Upper_Type)",
+      "notes": null,
+      "data_disputed": false
+    },
+    {
+      "slot": "blade",
+      "brand": "takara_tomy",
+      "name": "Lightning L-Drago (Rapid-Hit Type)",
+      "line": "BX",
+      "attack": 50,
+      "defense": 30,
+      "stamina": 20,
+      "weight_g": 33.5,
+      "height_mm": null,
+      "spin_direction": "left",
+      "part_type": "attack",
+      "aka": null,
+      "source_url": "https://beyblade.fandom.com/wiki/Blade_-_Lightning_L-Drago_(Rapid-Hit_Type)",
+      "notes": null,
+      "data_disputed": false
     }
   ]
 }

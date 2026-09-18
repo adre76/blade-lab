@@ -12,8 +12,21 @@
  * humano lê a lista de descartes ANTES de o dado entrar: todo defeito de
  * dado das ondas anteriores estava numa lista de descartes que ninguém leu.
  *
- * Uso:  npm run coletar -- --linha CX --simular   (só relatório, não grava)
- *       npm run coletar -- --linha CX             (grava de verdade)
+ * Dois modos:
+ *
+ *   --linha BX|UX|CX    coleta a categoria de beys inteira da linha, mais
+ *                        toda peça citada na "List of ... parts" dela.
+ *   --paginas "A;B"     coleta só as PEÇAS das páginas dadas (título exato,
+ *                        separadas por ";") — sem categoria de bey nenhuma.
+ *                        Existe para o caso de uma ou duas peças pontuais
+ *                        entrarem tarde (ex.: a wiki só publicou os
+ *                        atributos depois que a linha inteira já tinha sido
+ *                        coletada), sem recoletar a linha toda de novo.
+ *
+ * Uso:  npm run coletar -- --linha CX --simular              (só relatório)
+ *       npm run coletar -- --linha CX                        (grava)
+ *       npm run coletar -- --paginas "Blade - X;Blade - Y" --simular
+ *       npm run coletar -- --paginas "Blade - X;Blade - Y"
  */
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { buscarNaRede, membrosDaCategoria, paginas } from "../src/lib/wiki/api.ts";
@@ -53,8 +66,16 @@ const LISTA_DE_PECAS: Record<string, string> = {
 const TITULO_INDICE = "List of Beyblade X products (Takara Tomy)";
 
 const linha = opcao("linha");
-if (!linha || !CATEGORIA[linha]) {
-  console.error("uso: npm run coletar -- --linha CX [--simular]");
+const listaDePaginas = opcao("paginas");
+const titulosDePaginaPedidos = listaDePaginas
+  ? listaDePaginas.split(";").map((t) => t.trim()).filter((t) => t.length > 0)
+  : null;
+
+if (!titulosDePaginaPedidos && (!linha || !CATEGORIA[linha])) {
+  console.error(
+    "uso: npm run coletar -- --linha CX [--simular]\n"
+    + '     npm run coletar -- --paginas "Título A;Título B" [--simular]',
+  );
   process.exit(1);
 }
 
@@ -83,7 +104,8 @@ function linhaDeDescarte(
   return `${tipo} ${rotuloDaPagina(tituloPedido, tituloCanonico)}: ${msg}`;
 }
 
-console.log(`\n=== coleta ${linha}${SIMULAR ? " — MODO SIMULAÇÃO, nada será gravado" : ""} ===\n`);
+const rotuloDoModo = titulosDePaginaPedidos ? "páginas avulsas" : linha;
+console.log(`\n=== coleta ${rotuloDoModo}${SIMULAR ? " — MODO SIMULAÇÃO, nada será gravado" : ""} ===\n`);
 
 // ─── Peças ───────────────────────────────────────────────────────────────────
 // Correção 1: `paginas` devolve Map<string, {titulo, texto}> — a chave é o
@@ -91,52 +113,24 @@ console.log(`\n=== coleta ${linha}${SIMULAR ? " — MODO SIMULAÇÃO, nada será
 // redirects. É o canônico que vai para `pecaDaPagina` (e por tabela, para
 // `source_url`): três páginas reais da Custom Line só são alcançadas por
 // redirect, e citar o nome do redirect como fonte estaria errado.
-const pgListaDePecas = await paginas([LISTA_DE_PECAS[linha]!], buscarNaRede);
-const wikitextDaLista = [...pgListaDePecas.values()][0]?.texto ?? "";
-const titulosDePeca = [...new Set(
-  [...wikitextDaLista.matchAll(/\[\[(?!File:)([^\]|]+)\|/g)].map((m) => m[1]!.trim()),
-)].filter((t) => / - /.test(t));
-
-console.log(`lista de peças: ${titulosDePeca.length} títulos`);
+//
+// Em `--paginas`, a lista de títulos é a que veio da linha de comando — não
+// há "List of ... parts" nenhuma para varrer, porque não é uma linha inteira
+// que está sendo coletada, são páginas pontuais já nomeadas pelo chamador.
+let titulosDePeca: string[];
+if (titulosDePaginaPedidos) {
+  titulosDePeca = titulosDePaginaPedidos;
+  console.log(`páginas pedidas: ${titulosDePeca.length}`);
+} else {
+  const pgListaDePecas = await paginas([LISTA_DE_PECAS[linha!]!], buscarNaRede);
+  const wikitextDaLista = [...pgListaDePecas.values()][0]?.texto ?? "";
+  titulosDePeca = [...new Set(
+    [...wikitextDaLista.matchAll(/\[\[(?!File:)([^\]|]+)\|/g)].map((m) => m[1]!.trim()),
+  )].filter((t) => / - /.test(t));
+  console.log(`lista de peças: ${titulosDePeca.length} títulos`);
+}
 const pgPecas = await paginas(titulosDePeca, buscarNaRede);
 console.log(`páginas de peça respondidas: ${pgPecas.size}`);
-
-// ─── Índice oficial de produtos (release_type / release_date) ────────────────
-// Mais uma chamada `paginas`, sobre o cliente já existente — o índice é só
-// mais uma página da wiki, sem endpoint próprio.
-const pgIndiceDeProdutos = await paginas([TITULO_INDICE], buscarNaRede);
-const wikitextDoIndice = pgIndiceDeProdutos.get(TITULO_INDICE)?.texto ?? "";
-const entradasDoIndice = analisarIndice(wikitextDoIndice);
-console.log(`índice oficial de produtos: ${entradasDoIndice.length} entradas`);
-
-// ─── Conjuntos (Random Booster / Deck Set): o índice nomeia o SET, não o bey ─
-// Uma linha do índice do tipo random_booster ou deck_set não nomeia um bey —
-// nomeia o VOLUME ou o SET ("Random Booster Vol. 6", "Evangelion Deck Set").
-// Esses produtos têm página própria, que lista os beys de dentro (seção
-// ==Assortment== ou ==Contents==) — é lá, não na linha do índice, que mora o
-// nome do bey. `entradasDeConjunto` (src/lib/wiki/indice.ts) diz QUAIS linhas
-// são essas e QUAL título buscar; a busca em si é responsabilidade deste
-// script (o módulo não faz rede, por design — ver seu comentário de topo).
-const entradasConjunto = entradasDeConjunto(entradasDoIndice);
-const titulosDeConjunto = [...new Set(entradasConjunto.map((c) => c.entrada.nome))];
-const pgConjuntos = await paginas(titulosDeConjunto, buscarNaRede);
-console.log(
-  `conjuntos do índice (random booster / deck set): ${entradasConjunto.length} linhas, `
-  + `${titulosDeConjunto.length} páginas distintas, ${pgConjuntos.size} respondidas`,
-);
-
-// Cada conjunto resolvido carrega o tipo e a data JÁ da linha do índice (o
-// conjunto todo sai junto, na mesma data) mais a lista de itens da própria
-// página do produto — bey e não-bey misturados (ver comentário de
-// `itensDoConjunto`). Uma página que não respondeu (título mudou, rede
-// falhou) cai com `itens: []`, sem derrubar a coleta inteira: o bey que
-// dependia dela simplesmente fica sem tipo, visível no relatório de
-// "SEM tipo" mais abaixo — o mesmo tratamento que qualquer outra ausência.
-const conjuntosResolvidos = entradasConjunto.map((c) => ({
-  tipo: c.tipo,
-  data: converterData(c.entrada.dataCrua),
-  itens: itensDoConjunto(pgConjuntos.get(c.entrada.nome)?.texto ?? ""),
-}));
 
 const pecasColetadas: PecaColetada[] = [];
 for (const [tituloPedido, pagina] of pgPecas) {
@@ -168,68 +162,187 @@ for (const p of pecasColetadas) {
 }
 
 // ─── Beys ────────────────────────────────────────────────────────────────────
-const titulosDeBey = await membrosDaCategoria(CATEGORIA[linha]!, buscarNaRede);
-console.log(`categoria de beys: ${titulosDeBey.length} títulos`);
-const pgBeys = await paginas(titulosDeBey, buscarNaRede);
-console.log(`páginas de bey respondidas: ${pgBeys.size}`);
+// Só existe em `--linha`: `--paginas` coleta peças avulsas, não uma
+// categoria de bey. Todas as variáveis usadas no relatório final ficam
+// declaradas fora do bloco, com o "vazio" como default de `--paginas`.
+let beysValidos: BeyColetado[] = [];
+let beysHasbroDescartados: BeyColetado[] = [];
+let beysParaGravar: Record<string, unknown>[] = [];
+let beysComTipo: Record<string, unknown>[] = [];
+let beysSemTipo: Record<string, unknown>[] = [];
 
-// Correção 2: a existência de peça citada é conferida contra a UNIÃO da
-// coleta desta linha com o catálogo que já está em data/ — não só contra o
-// que foi coletado agora. Sem a união, um bey CX que cita uma catraca ou
-// ponta Basic/Unique Line (ex.: "2-60", "Dot", "Flat") perderia a peça por
-// ela nunca ter sido coletada NESTA rodada, mesmo já existindo no catálogo.
-// Medido contra a wiki real: sem a união, 39 dos 40 beys Takara Tomy da CX
-// seriam descartados; com ela, zero.
-const partesExistentes = carregarPartes(RAIZ);
-const porNome = new Map<string, { spin_direction?: "right" | "left" | "dual" | null }>();
-for (const p of partesExistentes) porNome.set(`${p.slot}|${p.name}`, p);
-for (const p of pecasValidas) porNome.set(`${p.slot}|${p.name}`, p);
+if (!titulosDePaginaPedidos) {
+  // ─── Índice oficial de produtos (release_type / release_date) ────────────
+  // Mais uma chamada `paginas`, sobre o cliente já existente — o índice é só
+  // mais uma página da wiki, sem endpoint próprio.
+  const pgIndiceDeProdutos = await paginas([TITULO_INDICE], buscarNaRede);
+  const wikitextDoIndice = pgIndiceDeProdutos.get(TITULO_INDICE)?.texto ?? "";
+  const entradasDoIndice = analisarIndice(wikitextDoIndice);
+  console.log(`índice oficial de produtos: ${entradasDoIndice.length} entradas`);
 
-const LAMINAS = ["blade", "integrated_blade", "main_blade", "metal_blade"];
+  // ─── Conjuntos (Random Booster / Deck Set): o índice nomeia o SET, não o bey ─
+  // Uma linha do índice do tipo random_booster ou deck_set não nomeia um bey —
+  // nomeia o VOLUME ou o SET ("Random Booster Vol. 6", "Evangelion Deck Set").
+  // Esses produtos têm página própria, que lista os beys de dentro (seção
+  // ==Assortment== ou ==Contents==) — é lá, não na linha do índice, que mora o
+  // nome do bey. `entradasDeConjunto` (src/lib/wiki/indice.ts) diz QUAIS linhas
+  // são essas e QUAL título buscar; a busca em si é responsabilidade deste
+  // script (o módulo não faz rede, por design — ver seu comentário de topo).
+  const entradasConjunto = entradasDeConjunto(entradasDoIndice);
+  const titulosDeConjunto = [...new Set(entradasConjunto.map((c) => c.entrada.nome))];
+  const pgConjuntos = await paginas(titulosDeConjunto, buscarNaRede);
+  console.log(
+    `conjuntos do índice (random booster / deck set): ${entradasConjunto.length} linhas, `
+    + `${titulosDeConjunto.length} páginas distintas, ${pgConjuntos.size} respondidas`,
+  );
 
-const beysValidos: BeyColetado[] = [];
-const beysHasbroDescartados: BeyColetado[] = [];
+  // Cada conjunto resolvido carrega o tipo e a data JÁ da linha do índice (o
+  // conjunto todo sai junto, na mesma data) mais a lista de itens da própria
+  // página do produto — bey e não-bey misturados (ver comentário de
+  // `itensDoConjunto`). Uma página que não respondeu (título mudou, rede
+  // falhou) cai com `itens: []`, sem derrubar a coleta inteira: o bey que
+  // dependia dela simplesmente fica sem tipo, visível no relatório de
+  // "SEM tipo" mais abaixo — o mesmo tratamento que qualquer outra ausência.
+  const conjuntosResolvidos = entradasConjunto.map((c) => ({
+    tipo: c.tipo,
+    data: converterData(c.entrada.dataCrua),
+    itens: itensDoConjunto(pgConjuntos.get(c.entrada.nome)?.texto ?? ""),
+  }));
 
-for (const [tituloPedido, pagina] of pgBeys) {
-  try {
-    // Correção 6: `beyDaPagina` estoura para classificação/sistema
-    // desconhecidos, para ProductCode ausente (página de anime/mangá que
-    // nunca foi produto) e para ProductCode que `marcaDoCodigo` não sabe
-    // atribuir. Cada estouro vira um descarte, e a coleta continua — uma
-    // página ruim não pode parar a rodada inteira.
-    const b = beyDaPagina(pagina.titulo, pagina.texto);
+  const titulosDeBey = await membrosDaCategoria(CATEGORIA[linha!]!, buscarNaRede);
+  console.log(`categoria de beys: ${titulosDeBey.length} títulos`);
+  const pgBeys = await paginas(titulosDeBey, buscarNaRede);
+  console.log(`páginas de bey respondidas: ${pgBeys.size}`);
 
-    // Correção 3: o catálogo só tem beys Takara Tomy (a nota em
-    // data/beyblades/ux.json já registra essa política). A categoria da CX
-    // traz beys nomeados pela Hasbro junto dos Takara Tomy; filtrar por
-    // marca aqui é aplicar a MESMA política já em vigor, não uma nova.
-    if (b.brand === "hasbro") {
-      beysHasbroDescartados.push(b);
-      descartes.push(
-        `BEY ${rotuloDaPagina(tituloPedido, pagina.titulo)}: marca hasbro — o catálogo só `
-        + "tem beys Takara Tomy (ver nota em data/beyblades/ux.json).",
-      );
-      continue;
+  // Correção 2: a existência de peça citada é conferida contra a UNIÃO da
+  // coleta desta linha com o catálogo que já está em data/ — não só contra o
+  // que foi coletado agora. Sem a união, um bey CX que cita uma catraca ou
+  // ponta Basic/Unique Line (ex.: "2-60", "Dot", "Flat") perderia a peça por
+  // ela nunca ter sido coletada NESTA rodada, mesmo já existindo no catálogo.
+  // Medido contra a wiki real: sem a união, 39 dos 40 beys Takara Tomy da CX
+  // seriam descartados; com ela, zero.
+  const partesExistentes = carregarPartes(RAIZ);
+  const porNome = new Map<string, { spin_direction?: "right" | "left" | "dual" | null }>();
+  for (const p of partesExistentes) porNome.set(`${p.slot}|${p.name}`, p);
+  for (const p of pecasValidas) porNome.set(`${p.slot}|${p.name}`, p);
+
+  const LAMINAS = ["blade", "integrated_blade", "main_blade", "metal_blade"];
+
+  for (const [tituloPedido, pagina] of pgBeys) {
+    try {
+      // Correção 6: `beyDaPagina` estoura para classificação/sistema
+      // desconhecidos, para ProductCode ausente (página de anime/mangá que
+      // nunca foi produto) e para ProductCode que `marcaDoCodigo` não sabe
+      // atribuir. Cada estouro vira um descarte, e a coleta continua — uma
+      // página ruim não pode parar a rodada inteira.
+      const b = beyDaPagina(pagina.titulo, pagina.texto);
+
+      // Correção 3: o catálogo só tem beys Takara Tomy (a nota em
+      // data/beyblades/ux.json já registra essa política). A categoria da CX
+      // traz beys nomeados pela Hasbro junto dos Takara Tomy; filtrar por
+      // marca aqui é aplicar a MESMA política já em vigor, não uma nova.
+      if (b.brand === "hasbro") {
+        beysHasbroDescartados.push(b);
+        descartes.push(
+          `BEY ${rotuloDaPagina(tituloPedido, pagina.titulo)}: marca hasbro — o catálogo só `
+          + "tem beys Takara Tomy (ver nota em data/beyblades/ux.json).",
+        );
+        continue;
+      }
+
+      // Toda peça citada tem de existir na união coleta+catálogo (correção 2).
+      const faltando = b.parts.filter((p) => !porNome.has(`${p.slot}|${p.name}`));
+      if (faltando.length) {
+        throw new Error(
+          "peças não encontradas nem nesta coleta nem no catálogo já existente: "
+          + faltando.map((p) => `${p.slot}=${p.name}`).join(", "),
+        );
+      }
+
+      // Giro derivado das peças × giro declarado pelo bey.
+      const lamina = b.parts.find((p) => LAMINAS.includes(p.slot));
+      const giro = lamina ? porNome.get(`${lamina.slot}|${lamina.name}`)!.spin_direction ?? null : null;
+      conferirGiro(b, giro);
+
+      beysValidos.push(b);
+    } catch (e) {
+      descartes.push(linhaDeDescarte("BEY", tituloPedido, pagina.titulo, e as Error));
     }
-
-    // Toda peça citada tem de existir na união coleta+catálogo (correção 2).
-    const faltando = b.parts.filter((p) => !porNome.has(`${p.slot}|${p.name}`));
-    if (faltando.length) {
-      throw new Error(
-        "peças não encontradas nem nesta coleta nem no catálogo já existente: "
-        + faltando.map((p) => `${p.slot}=${p.name}`).join(", "),
-      );
-    }
-
-    // Giro derivado das peças × giro declarado pelo bey.
-    const lamina = b.parts.find((p) => LAMINAS.includes(p.slot));
-    const giro = lamina ? porNome.get(`${lamina.slot}|${lamina.name}`)!.spin_direction ?? null : null;
-    conferirGiro(b, giro);
-
-    beysValidos.push(b);
-  } catch (e) {
-    descartes.push(linhaDeDescarte("BEY", tituloPedido, pagina.titulo, e as Error));
   }
+
+  // `BeyColetado.parts` é uma lista ordenada (o infobox tem ordem visual); o
+  // formato do arquivo é um objeto slot → nome, como em data/beyblades/*.json.
+  // A reforma é só de formato — nenhum dado muda de valor.
+  //
+  // `release_type`/`release_date` NÃO entram em `CAMPOS_DO_BEY` (merge.ts) —
+  // de propósito. Eles só são gravados aqui porque não há registro existente
+  // ainda (primeira coleta desta linha); numa recoleta futura, com o arquivo já
+  // existindo, `fundirRegistro` ignora esses dois campos do lado fresco e
+  // preserva o que já está gravado, curado ou não — a mesma proteção que já
+  // existe para `rarity`/`rarity_reason`. Sem isso, uma correção manual feita
+  // à mão no CX-00 ValkyrieVolt (por exemplo) seria apagada na próxima coleta.
+  //
+  // Dois caminhos até o tipo, nesta ordem: primeiro `consultarIndice` pelo
+  // nome do PRÓPRIO bey (starter/booster nomeados e reedições/eventos sob
+  // CX-00, ex.: LeonFang, HornetFort). Quando isso não determina nada — nome
+  // ausente do índice, ou achado sem rótulo (ValkyrieVolt) —, tenta o segundo
+  // caminho: o bey pode estar DENTRO de um conjunto (random booster/deck set)
+  // já resolvido em `conjuntosResolvidos`, casado por `mesmoNome` (mesma
+  // tolerância de espaço/caixa usada em `consultarIndice`). Um bey achado por
+  // nome próprio não é procurado nos conjuntos — não há caso real de um bey
+  // aparecer nos dois ao mesmo tempo, mas a ordem definida aqui é a que
+  // venceria se algum dia aparecesse.
+  beysParaGravar = beysValidos.map(({ parts, ...resto }) => {
+    const consulta = consultarIndice(entradasDoIndice, resto.name);
+    let releaseType = consulta?.tipo.determinado ? consulta.tipo.tipo : null;
+    let releaseDate = consulta?.data ?? null;
+
+    if (releaseType === null) {
+      // Pega o PRIMEIRO conjunto (na ordem de `conjuntosResolvidos`, que segue
+      // a ordem do documento do índice) cujos itens citam este bey pelo nome —
+      // sem checar se algum conjunto POSTERIOR também o cita. Mesmo risco já
+      // documentado para "primeiro casamento vence" em `consultarIndice`
+      // (`src/lib/wiki/indice.ts`): se um dia um bey aparecesse legitimamente
+      // em dois conjuntos (ex.: reeditado num segundo Random Booster), esta
+      // busca atribuiria a ele o tipo/data do conjunto ERRADO — o que aparece
+      // primeiro no índice, não necessariamente o que o chamador queria — em
+      // silêncio, sem erro algum. Não observado nos 40 beys da CX; sem guarda
+      // por não haver caso real a proteger ainda.
+      const doConjunto = conjuntosResolvidos.find(
+        (c) => c.itens.some((item) => mesmoNome(item, resto.name)),
+      );
+      if (doConjunto) {
+        releaseType = doConjunto.tipo;
+        releaseDate = doConjunto.data;
+      }
+    }
+
+    // `rarity`/`rarity_reason` são obrigatórios em `BeybladeSchema`, mas nenhum
+    // módulo de coleta os produz — só o `release_type`, quando determinado,
+    // sugere um padrão (spec §4.4, `raridadePadraoDoTipo`). Sem tipo
+    // determinado, não há de onde derivar: os dois ficam `null`, junto com
+    // `release_type`, para o mesmo humano curar os três campos juntos antes do
+    // seed. Como `rarity`/`rarity_reason` também estão FORA de `CAMPOS_DO_BEY`
+    // (mesma razão do comentário acima sobre `release_type`), este default só
+    // vale para a primeira coleta — uma correção manual depois (ex.: a divisão
+    // de random_booster em uncommon/rare/very_rare por caixa, já usada em
+    // BX/UX) nunca é apagada por uma recoleta futura.
+    const { rarity, rarity_reason } = releaseType === null
+      ? { rarity: null, rarity_reason: null }
+      : raridadePadraoDoTipo(releaseType);
+
+    return {
+      ...resto,
+      release_type: releaseType,
+      release_date: releaseDate,
+      rarity,
+      rarity_reason,
+      parts: Object.fromEntries(parts.map((p) => [p.slot, p.name])),
+    };
+  });
+
+  beysComTipo = beysParaGravar.filter((b) => b.release_type !== null);
+  beysSemTipo = beysParaGravar.filter((b) => b.release_type === null);
 }
 
 // ─── Escrita (ou simulação dela) ─────────────────────────────────────────────
@@ -281,77 +394,6 @@ const NOTA = `Coletado por scripts/coletar.ts em ${new Date().toISOString().slic
   + "ProductCode (ou pela promoção de um AKA rotulado Takara Tomy); só entram peças "
   + "e beys de marca takara_tomy.";
 
-// `BeyColetado.parts` é uma lista ordenada (o infobox tem ordem visual); o
-// formato do arquivo é um objeto slot → nome, como em data/beyblades/*.json.
-// A reforma é só de formato — nenhum dado muda de valor.
-//
-// `release_type`/`release_date` NÃO entram em `CAMPOS_DO_BEY` (merge.ts) —
-// de propósito. Eles só são gravados aqui porque não há registro existente
-// ainda (primeira coleta desta linha); numa recoleta futura, com o arquivo já
-// existindo, `fundirRegistro` ignora esses dois campos do lado fresco e
-// preserva o que já está gravado, curado ou não — a mesma proteção que já
-// existe para `rarity`/`rarity_reason`. Sem isso, uma correção manual feita
-// à mão no CX-00 ValkyrieVolt (por exemplo) seria apagada na próxima coleta.
-//
-// Dois caminhos até o tipo, nesta ordem: primeiro `consultarIndice` pelo
-// nome do PRÓPRIO bey (starter/booster nomeados e reedições/eventos sob
-// CX-00, ex.: LeonFang, HornetFort). Quando isso não determina nada — nome
-// ausente do índice, ou achado sem rótulo (ValkyrieVolt) —, tenta o segundo
-// caminho: o bey pode estar DENTRO de um conjunto (random booster/deck set)
-// já resolvido em `conjuntosResolvidos`, casado por `mesmoNome` (mesma
-// tolerância de espaço/caixa usada em `consultarIndice`). Um bey achado por
-// nome próprio não é procurado nos conjuntos — não há caso real de um bey
-// aparecer nos dois ao mesmo tempo, mas a ordem definida aqui é a que
-// venceria se algum dia aparecesse.
-const beysParaGravar = beysValidos.map(({ parts, ...resto }) => {
-  const consulta = consultarIndice(entradasDoIndice, resto.name);
-  let releaseType = consulta?.tipo.determinado ? consulta.tipo.tipo : null;
-  let releaseDate = consulta?.data ?? null;
-
-  if (releaseType === null) {
-    // Pega o PRIMEIRO conjunto (na ordem de `conjuntosResolvidos`, que segue
-    // a ordem do documento do índice) cujos itens citam este bey pelo nome —
-    // sem checar se algum conjunto POSTERIOR também o cita. Mesmo risco já
-    // documentado para "primeiro casamento vence" em `consultarIndice`
-    // (`src/lib/wiki/indice.ts`): se um dia um bey aparecesse legitimamente
-    // em dois conjuntos (ex.: reeditado num segundo Random Booster), esta
-    // busca atribuiria a ele o tipo/data do conjunto ERRADO — o que aparece
-    // primeiro no índice, não necessariamente o que o chamador queria — em
-    // silêncio, sem erro algum. Não observado nos 40 beys da CX; sem guarda
-    // por não haver caso real a proteger ainda.
-    const doConjunto = conjuntosResolvidos.find(
-      (c) => c.itens.some((item) => mesmoNome(item, resto.name)),
-    );
-    if (doConjunto) {
-      releaseType = doConjunto.tipo;
-      releaseDate = doConjunto.data;
-    }
-  }
-
-  // `rarity`/`rarity_reason` são obrigatórios em `BeybladeSchema`, mas nenhum
-  // módulo de coleta os produz — só o `release_type`, quando determinado,
-  // sugere um padrão (spec §4.4, `raridadePadraoDoTipo`). Sem tipo
-  // determinado, não há de onde derivar: os dois ficam `null`, junto com
-  // `release_type`, para o mesmo humano curar os três campos juntos antes do
-  // seed. Como `rarity`/`rarity_reason` também estão FORA de `CAMPOS_DO_BEY`
-  // (mesma razão do comentário acima sobre `release_type`), este default só
-  // vale para a primeira coleta — uma correção manual depois (ex.: a divisão
-  // de random_booster em uncommon/rare/very_rare por caixa, já usada em
-  // BX/UX) nunca é apagada por uma recoleta futura.
-  const { rarity, rarity_reason } = releaseType === null
-    ? { rarity: null, rarity_reason: null }
-    : raridadePadraoDoTipo(releaseType);
-
-  return {
-    ...resto,
-    release_type: releaseType,
-    release_date: releaseDate,
-    rarity,
-    rarity_reason,
-    parts: Object.fromEntries(parts.map((p) => [p.slot, p.name])),
-  };
-});
-
 console.log(`\n${SIMULAR ? "seria gravado" : "gravando"}:`);
 for (const slot of new Set(pecasValidas.map((p) => p.slot))) {
   gravar(
@@ -360,11 +402,9 @@ for (const slot of new Set(pecasValidas.map((p) => p.slot))) {
     NOTA,
   );
 }
-gravar(
-  `beyblades/${linha.toLowerCase()}.json`, "beyblades",
-  beysParaGravar as unknown as Record<string, unknown>[],
-  NOTA,
-);
+if (!titulosDePaginaPedidos) {
+  gravar(`beyblades/${linha!.toLowerCase()}.json`, "beyblades", beysParaGravar, NOTA);
+}
 
 // ─── Relatório ───────────────────────────────────────────────────────────────
 console.log(`\n=== contagens ===`);
@@ -375,29 +415,29 @@ for (const slot of new Set(pecasValidas.map((p) => p.slot))) {
   console.log(`  ${slot}: ${pecasValidas.filter((p) => p.slot === slot).length}`);
 }
 
-console.log(`\nbeys válidos (takara_tomy): ${beysValidos.length}`);
-console.log(`  dos quais marca hasbro (descartados): ${beysHasbroDescartados.length}`);
-console.log(`beys válidos por anatomia:`);
-for (const anatomia of new Set(beysValidos.map((b) => b.anatomy))) {
-  console.log(`  ${anatomia}: ${beysValidos.filter((b) => b.anatomy === anatomia).length}`);
-}
+if (!titulosDePaginaPedidos) {
+  console.log(`\nbeys válidos (takara_tomy): ${beysValidos.length}`);
+  console.log(`  dos quais marca hasbro (descartados): ${beysHasbroDescartados.length}`);
+  console.log(`beys válidos por anatomia:`);
+  for (const anatomia of new Set(beysValidos.map((b) => b.anatomy))) {
+    console.log(`  ${anatomia}: ${beysValidos.filter((b) => b.anatomy === anatomia).length}`);
+  }
 
-// `release_type` nulo não é erro de coleta — é o índice genuinamente não
-// determinando o tipo (set/combo sem rótulo) ou o produto não aparecendo lá
-// (reedição sob CX-00 sem nome batendo, random booster/deck set individual
-// cujo nome não é o da linha do índice). NENHUM dos dois casos pode ficar
-// escondido: sem esta lista, um bey sem `release_type` só seria descoberto
-// quando `scripts/seed.ts` reprovasse o arquivo inteiro no Zod, muito depois
-// de a coleta já ter terminado — tarde demais para o humano que precisa
-// curar decidir com o contexto da coleta ainda fresco.
-const beysComTipo = beysParaGravar.filter((b) => b.release_type !== null);
-const beysSemTipo = beysParaGravar.filter((b) => b.release_type === null);
-console.log(
-  `\nrelease_type pelo índice oficial: ${beysComTipo.length} de ${beysParaGravar.length} `
-  + `beys — ${beysSemTipo.length} SEM tipo, para curadoria humana:`,
-);
-for (const b of beysSemTipo) {
-  console.log(`  ${b.name} (${b.release_code})`);
+  // `release_type` nulo não é erro de coleta — é o índice genuinamente não
+  // determinando o tipo (set/combo sem rótulo) ou o produto não aparecendo lá
+  // (reedição sob CX-00 sem nome batendo, random booster/deck set individual
+  // cujo nome não é o da linha do índice). NENHUM dos dois casos pode ficar
+  // escondido: sem esta lista, um bey sem `release_type` só seria descoberto
+  // quando `scripts/seed.ts` reprovasse o arquivo inteiro no Zod, muito depois
+  // de a coleta já ter terminado — tarde demais para o humano que precisa
+  // curar decidir com o contexto da coleta ainda fresco.
+  console.log(
+    `\nrelease_type pelo índice oficial: ${beysComTipo.length} de ${beysParaGravar.length} `
+    + `beys — ${beysSemTipo.length} SEM tipo, para curadoria humana:`,
+  );
+  for (const b of beysSemTipo) {
+    console.log(`  ${b.name} (${b.release_code})`);
+  }
 }
 
 console.log(`\ncoletados: ${pecasValidas.length} peças, ${beysValidos.length} beys`);

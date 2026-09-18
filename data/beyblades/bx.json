@@ -4,6 +4,42 @@
   "beyblades": [
     {
       "release_code": "BX-00",
+      "name": "Lightning L-Drago 1-60F (Upper Type)",
+      "line": "BX",
+      "anatomy": "basic",
+      "brand": "takara_tomy",
+      "release_type": "random_booster",
+      "release_date": "2024-09-14",
+      "rarity": "rare",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/Lightning_L-Drago_1-60F_(Upper_Type)",
+      "parts": {
+        "blade": "Lightning L-Drago (Upper Type)",
+        "ratchet": "1-60",
+        "bit": "Flat"
+      },
+      "rarity_reason": "Vem de uma caixa por sorteio (Random Booster), não é vendido avulso na loja; a proporção exata de saída dentro da caixa ainda não foi conferida."
+    },
+    {
+      "release_code": "BX-00",
+      "name": "Lightning L-Drago 1-60F (Rapid-Hit Type)",
+      "line": "BX",
+      "anatomy": "basic",
+      "brand": "takara_tomy",
+      "release_type": "random_booster",
+      "release_date": "2024-09-14",
+      "rarity": "rare",
+      "bey_type": "attack",
+      "source_url": "https://beyblade.fandom.com/wiki/Lightning_L-Drago_1-60F_(Rapid-Hit_Type)",
+      "parts": {
+        "blade": "Lightning L-Drago (Rapid-Hit Type)",
+        "ratchet": "1-60",
+        "bit": "Flat"
+      },
+      "rarity_reason": "Vem de uma caixa por sorteio (Random Booster), não é vendido avulso na loja; a proporção exata de saída dentro da caixa ainda não foi conferida."
+    },
+    {
+      "release_code": "BX-00",
       "name": "Cobalt Dragoon 9-60F",
       "line": "BX",
       "anatomy": "basic",
