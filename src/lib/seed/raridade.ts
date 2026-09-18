@@ -23,6 +23,22 @@
  * `uncommon`/`rare`/`very_rare` por caixa, medida no catálogo BX/UX já
  * curado) nunca é sobrescrita por uma recoleta futura — o default é só o
  * ponto de partida, não a última palavra.
+ *
+ * ATENÇÃO — a mesma proteção também bloqueia a direção oposta: um default
+ * ACRESCENTADO a este módulo depois que uma linha já foi coletada pela
+ * primeira vez NUNCA alcança os registros que já existiam em `data/`.
+ * Recoletar não conserta isso — `fundirRegistro` (`./merge.ts`) preserva o
+ * que já está gravado, inclusive a ausência de um campo. É exatamente o que
+ * aconteceu no caso que motivou este comentário: as 17 entradas
+ * `random_booster` de `data/beyblades/cx.json` foram gravadas numa versão
+ * deste módulo que ainda não devolvia `rarity_reason` junto com `rarity`;
+ * quando o motivo genérico foi adicionado aqui, essas 17 continuaram sem
+ * ele, e `carregarBeyblades` (`./carregar.ts`) passou a rejeitá-las por
+ * violar a exigência de `BeybladeSchema.superRefine`. A correção não foi
+ * recoletar — foi editar `rarity_reason` diretamente nos 17 registros já
+ * existentes, copiando o texto exato que `raridadePadraoDoTipo` já produz
+ * para `random_booster`. Um default novo cobre coletas futuras; registros
+ * antigos precisam ser preenchidos à mão nos dados.
  */
 import type { Beyblade } from "./schema.ts";
 import type { TipoLancamento } from "../wiki/indice.ts";
