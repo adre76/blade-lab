@@ -16,12 +16,13 @@ const POR_ORDINAL = Object.entries(ORDINAL_RESISTENCIA).reduce<Record<number, Re
  *
  * O Lock Chip fica de fora de propósito: a retenção depende do encaixe entre
  * catraca e ponta, e o Lock Chip prende as lâminas entre si (spec §5.3). Na
- * unique_expand a catraca vem embutida na lâmina, então é ela quem entra.
+ * unique_expand a catraca vem embutida na lâmina, e na custom_integrated ela
+ * vem embutida na PONTA — nos dois casos é a peça integrada que entra.
  */
-const SLOTS_DE_BURST: PartSlot[] = ["ratchet", "integrated_blade", "bit"];
+const SLOTS_DE_BURST: PartSlot[] = ["ratchet", "integrated_blade", "bit", "integrated_bit"];
 
-/** Slots que carregam altura: a catraca, ou a lâmina que a traz embutida. */
-const SLOTS_DE_ALTURA: PartSlot[] = ["ratchet", "integrated_blade"];
+/** Slots que carregam altura: a catraca, ou a peça que a traz embutida. */
+const SLOTS_DE_ALTURA: PartSlot[] = ["ratchet", "integrated_blade", "integrated_bit"];
 
 /** Precedência do sentido de giro: só a lâmina principal o carrega (spec §4.4). */
 const ORDEM_GIRO: PartSlot[] = ["blade", "integrated_blade", "main_blade", "metal_blade"];

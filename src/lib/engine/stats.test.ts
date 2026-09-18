@@ -119,4 +119,43 @@ describe("agregação", () => {
       very_low: 1, low: 2, medium: 3, high: 4, very_high: 5,
     });
   });
+
+  /**
+   * Numa custom_integrated não há catraca nem ponta separadas: a peça é as
+   * duas. Então é ela sozinha que decide a retenção, e o mínimo sai de um
+   * valor só.
+   */
+  it("a ponta-com-catraca decide o burst sozinha", () => {
+    const r = agregar({
+      anatomy: "custom_integrated",
+      pecas: {
+        integrated_bit: peca("integrated_bit", { burst_resistance: "high", weight_g: 12.7 }),
+      },
+    });
+    expect(r.burst_resistance).toBe("high");
+  });
+
+  it("a ponta-com-catraca carrega a altura do combo", () => {
+    const r = agregar({
+      anatomy: "custom_integrated",
+      pecas: { integrated_bit: peca("integrated_bit", { height_mm: 90 }) },
+    });
+    expect(r.height_mm).toBe(90);
+  });
+
+  /**
+   * O Lock Chip não entra no burst pela mesma razão que já vale hoje: a
+   * retenção depende do encaixe entre catraca e ponta, e o Lock Chip prende as
+   * lâminas entre si. Se ele entrasse, este combo daria `very_low`.
+   */
+  it("o Lock Chip continua fora do burst", () => {
+    const r = agregar({
+      anatomy: "custom",
+      pecas: {
+        lock_chip: peca("lock_chip", { burst_resistance: "very_low" }),
+        ratchet: peca("ratchet", { burst_resistance: "high" }),
+      },
+    });
+    expect(r.burst_resistance).toBe("high");
+  });
 });
