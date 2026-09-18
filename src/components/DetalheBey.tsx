@@ -8,7 +8,7 @@ import { urlImagem } from "../lib/imagens.ts";
 import AvisoDivergencia from "./AvisoDivergencia.tsx";
 import ControleInventario from "./ControleInventario.tsx";
 import {
-  COR_TIPO, ROTULO_TIPO, MARCA, ROTULO_SLOT,
+  COR_TIPO, ROTULO_TIPO, MARCA, ROTULO_SLOT, SLOTS_SEM_PONTUACAO,
   ROTULO_RARIDADE, COR_RARIDADE, ROTULO_LANCAMENTO,
 } from "./rotulos.ts";
 
@@ -170,11 +170,17 @@ export default function DetalheBey() {
                     {part.height_mm != null && ` · ${part.height_mm} mm`}
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: 12, marginTop: 7, fontSize: 12 }}>
-                  <span style={{ color: T.typeAttack }}>ATQ {part.attack}</span>
-                  <span style={{ color: T.typeDefense }}>DEF {part.defense}</span>
-                  <span style={{ color: T.typeStamina }}>RES {part.stamina}</span>
-                </div>
+                {SLOTS_SEM_PONTUACAO.includes(slot) ? (
+                  <div style={{ color: T.textMuted, fontSize: 12, marginTop: 7 }}>
+                    não pontua — prende as lâminas
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", gap: 12, marginTop: 7, fontSize: 12 }}>
+                    <span style={{ color: T.typeAttack }}>ATQ {part.attack}</span>
+                    <span style={{ color: T.typeDefense }}>DEF {part.defense}</span>
+                    <span style={{ color: T.typeStamina }}>RES {part.stamina}</span>
+                  </div>
+                )}
               </Link>
             ))}
           </div>

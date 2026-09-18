@@ -62,8 +62,9 @@ export const COR_RARIDADE: Record<Enums["rarity"], string> = {
  * mostrar uma traduzida e duas não. *Catraca* é a tradução literal de ratchet,
  * e *Ponta* é o que o bit é — a ponta que toca o estádio.
  *
- * Os slots da Custom Line ficam em inglês até a onda da CX: traduzir nome de
- * peça que ninguém consegue ver ainda seria decidir no escuro.
+ * Os slots da Custom Line entram traduzidos nesta onda: agora que a CX está
+ * no catálogo, alguém consegue ver a peça e a tradução deixa de ser decisão
+ * no escuro.
  */
 export const ROTULO_SLOT: Record<Enums["part_slot"], string> = {
   blade: "Lâmina",
@@ -73,12 +74,13 @@ export const ROTULO_SLOT: Record<Enums["part_slot"], string> = {
   integrated_blade: "Lâmina c/ catraca",
   ratchet: "Catraca",
   bit: "Ponta",
+  // A ponta que traz a catraca: espelho de baixo da lâmina c/ catraca.
   integrated_bit: "Ponta c/ catraca",
-  lock_chip: "Lock Chip",
-  main_blade: "Main Blade",
-  metal_blade: "Metal Blade",
-  over_blade: "Over Blade",
-  assist_blade: "Assist Blade",
+  lock_chip: "Trava",
+  main_blade: "Lâmina principal",
+  metal_blade: "Lâmina de metal",
+  over_blade: "Lâmina superior",
+  assist_blade: "Lâmina auxiliar",
 };
 
 /**
@@ -94,12 +96,28 @@ export const BUSCA_SLOT: Record<Enums["part_slot"], string[]> = {
   ratchet: ["catraca", "ratchet"],
   bit: ["ponta", "bit"],
   integrated_bit: ["ponta com catraca", "ratchet-integrated bit", "combo ratchet-bit"],
-  lock_chip: ["lock chip"],
-  main_blade: ["main blade"],
-  metal_blade: ["metal blade"],
-  over_blade: ["over blade"],
-  assist_blade: ["assist blade"],
+  lock_chip: ["trava", "lock chip"],
+  main_blade: ["lâmina principal", "main blade", "primary blade"],
+  metal_blade: ["lâmina de metal", "metal blade"],
+  over_blade: ["lâmina superior", "over blade"],
+  assist_blade: ["lâmina auxiliar", "assist blade", "auxiliary blade"],
 };
+
+/**
+ * Slots cuja classe de peça não tem atributos.
+ *
+ * O infobox do Lock Chip traz os campos de ataque, defesa e resistência
+ * VAZIOS — verificado nas 28 páginas —, e a peça também não tem tipo. Ele
+ * prende a lâmina principal na auxiliar; não é ponto de contato.
+ *
+ * Mostrar "0 · 0 · 0" seria dizer "peça ruim". Ele não é ruim, é de outra
+ * natureza — e um catálogo que mostra o número certo com o sentido errado erra
+ * do mesmo jeito. O peso continua aparecendo, porque é medida de verdade.
+ *
+ * Mora aqui, e não no motor: o motor soma zero corretamente e não precisa
+ * saber disso. É regra de como se conta a coisa ao leitor.
+ */
+export const SLOTS_SEM_PONTUACAO: readonly Enums["part_slot"][] = ["lock_chip"];
 
 /**
  * Nome de cada anatomia pela COMPOSIÇÃO, e não pela linha de produto.

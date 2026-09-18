@@ -5,6 +5,7 @@ import AvisoDivergencia from "./AvisoDivergencia.tsx";
 import {
   COR_TIPO, ROTULO_TIPO, MARCA, ROTULO_SLOT, ROTULO_RARIDADE,
   ROTULO_LANCAMENTO, ROTULO_RESISTENCIA, ROTULO_GIRO, ROTULO_LINHA,
+  SLOTS_SEM_PONTUACAO,
 } from "./rotulos.ts";
 
 function Dado({ rotulo, valor }: { rotulo: string; valor: string | number | null | undefined }) {
@@ -83,7 +84,12 @@ export default function DetalhePeca() {
         <h3 style={{ margin: "0 0 10px", fontSize: 14, color: T.textSecondary }}>
           Atributos
         </h3>
-        {([
+        {SLOTS_SEM_PONTUACAO.includes(peca.slot) ? (
+          <p style={{ color: T.textMuted, fontSize: 13, lineHeight: 1.6, maxWidth: 420 }}>
+            Esta peça não tem atributos: ela prende a lâmina principal na
+            auxiliar e não toca o adversário. O que ela acrescenta ao bey é peso.
+          </p>
+        ) : ([
           ["Ataque", peca.attack, T.typeAttack],
           ["Defesa", peca.defense, T.typeDefense],
           ["Resistência", peca.stamina, T.typeStamina],

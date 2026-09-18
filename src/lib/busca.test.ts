@@ -96,3 +96,18 @@ describe("busca do catálogo", () => {
     expect(casaTermos(indice, termosDaBusca("Shark Edge"))).toBe(true);
   });
 });
+
+describe("busca pelos slots da CX", () => {
+  /**
+   * Mesma razão de catraca/ratchet: a comunidade e as lojas dizem "main
+   * blade". Se a tradução tirasse o termo inglês da busca, ela pioraria o
+   * catálogo em vez de melhorar.
+   */
+  it("cada slot da CX é achável nos dois idiomas", () => {
+    for (const slot of ["lock_chip", "main_blade", "assist_blade",
+                        "metal_blade", "over_blade", "integrated_bit"] as const) {
+      const termos = BUSCA_SLOT[slot];
+      expect(termos.length, `${slot} precisa dos dois idiomas`).toBeGreaterThanOrEqual(2);
+    }
+  });
+});

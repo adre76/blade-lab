@@ -8,7 +8,7 @@ import { useEstoquePecas } from "../hooks/useEstoquePecas.ts";
 import SeletorPeca from "./SeletorPeca.tsx";
 import SeletorAnatomia from "./SeletorAnatomia.tsx";
 import Confrontos from "./Confrontos.tsx";
-import { ROTULO_SLOT, COR_TIPO } from "./rotulos.ts";
+import { ROTULO_SLOT, COR_TIPO, SLOTS_SEM_PONTUACAO } from "./rotulos.ts";
 import { anatomiasMontaveis, slotsDe } from "../lib/engine/slots.ts";
 import { validar } from "../lib/engine/compatibility.ts";
 import { normalizar } from "../lib/engine/normalization.ts";
@@ -165,11 +165,17 @@ export default function Laboratorio() {
                 <div key={c.slot} style={{ marginTop: 9, fontSize: 12.5 }}>
                   <div style={{ color: T.textMuted, fontSize: 11 }}>{ROTULO_SLOT[c.slot]}</div>
                   <div>{c.peca.name}</div>
-                  <div style={{ display: "flex", gap: 11, marginTop: 3, fontSize: 11.5 }}>
-                    <span style={{ color: COR_TIPO.attack }}>ATQ {c.attack}</span>
-                    <span style={{ color: COR_TIPO.defense }}>DEF {c.defense}</span>
-                    <span style={{ color: COR_TIPO.stamina }}>RES {c.stamina}</span>
-                  </div>
+                  {SLOTS_SEM_PONTUACAO.includes(c.slot) ? (
+                    <div style={{ color: T.textMuted, fontSize: 11.5, marginTop: 3 }}>
+                      não pontua
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", gap: 11, marginTop: 3, fontSize: 11.5 }}>
+                      <span style={{ color: COR_TIPO.attack }}>ATQ {c.attack}</span>
+                      <span style={{ color: COR_TIPO.defense }}>DEF {c.defense}</span>
+                      <span style={{ color: COR_TIPO.stamina }}>RES {c.stamina}</span>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
